@@ -6,9 +6,9 @@ import {
 	CardHeader
 } from '@/components/ui/card';
 import useApiMutation from '@/hooks/use-api-mutation';
+import useNotification from '@/hooks/use-notification';
 import { __ } from '@/lib/i18n';
 import { useCallback, useEffect, useState } from '@wordpress/element';
-import { toast } from 'sonner';
 
 type PendingInstallStatus = {
 	last_check: {
@@ -25,6 +25,7 @@ type CheckNowResponse = {
 };
 
 export default function PendingInstallsCard() {
+	const notify = useNotification();
 	const { mutateAsync: checkNow, isPending: isChecking } =
 		useApiMutation<CheckNowResponse>('pending-install/check-now');
 	const { mutateAsync: getStatus } = useApiMutation<PendingInstallStatus>(
@@ -48,13 +49,13 @@ export default function PendingInstallsCard() {
 	const handleCheckNow = useCallback(async () => {
 		try {
 			const result = await checkNow({});
-			toast.success(result.message);
+			notify.success(result.message);
 			// Refresh status after check
 			await fetchStatus();
 		} catch {
-			toast.error(__('Failed to check for pending installs'));
+			notify.error(__('Failed to check for pending installs'));
 		}
-	}, [checkNow, fetchStatus]);
+	}, [checkNow, fetchStatus, notify]);
 
 	const formatTimestamp = (ts: number) => {
 		const date = new Date(ts * 1000);

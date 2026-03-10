@@ -2,13 +2,15 @@ import { siteConfig } from '@/config/site';
 import { BulkProvider } from '@/hooks/use-bulk';
 import { DownloadProvider } from '@/hooks/use-download';
 import { NoticeProvider } from '@/hooks/use-notice';
+import { NotificationProvider } from '@/hooks/use-notification';
 import { ThemeProvider } from '@/hooks/use-theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
 import { InstantSearch } from 'react-instantsearch';
 import TypesenseInstantSearchAdapter from 'typesense-instantsearch-adapter';
-import { Toaster } from './ui/sonner';
+import DownloadManager from './download-manager';
+import NotificationManager from './notification-manager';
 
 type ProvidersProps = {
 	children: React.ReactNode;
@@ -52,23 +54,21 @@ export function Providers({ children }: ProvidersProps) {
 				future={{ preserveSharedStateOnUnmount: true }}
 			>
 				<NoticeProvider>
-					<DownloadProvider>
-						<BulkProvider>
-							<ThemeProvider
-								defaultTheme="system"
-								storageKey="grootmade-theme"
-							>
-								{children}
-								<Toaster
-									richColors
-									position="bottom-left"
-									expand
-									pauseWhenPageIsHidden={true}
-								/>
-								<ReactQueryDevtools initialIsOpen={false} />
-							</ThemeProvider>
-						</BulkProvider>
-					</DownloadProvider>
+					<NotificationProvider>
+						<DownloadProvider>
+							<BulkProvider>
+								<ThemeProvider
+									defaultTheme="system"
+									storageKey="grootmade-theme"
+								>
+									{children}
+									<DownloadManager />
+									<NotificationManager />
+									<ReactQueryDevtools initialIsOpen={false} />
+								</ThemeProvider>
+							</BulkProvider>
+						</DownloadProvider>
+					</NotificationProvider>
 				</NoticeProvider>
 			</InstantSearch>
 		</QueryClientProvider>

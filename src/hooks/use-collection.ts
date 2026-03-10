@@ -11,10 +11,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from '@wordpress/element';
 import { decodeEntities } from '@wordpress/html-entities';
 import { sprintf } from '@wordpress/i18n';
-import { toast } from 'sonner';
 import { z } from 'zod';
 import useActivation from './use-activation';
 import useApiFetch from './use-api-fetch';
+import useNotification from './use-notification';
 
 const ERROR_MESSAGES = {
 	MAX_COLLECTION_LIMIT: __('You have reached your max collection limit.'),
@@ -25,6 +25,7 @@ const ERROR_MESSAGES = {
 export default function useBookmark() {
 	const queryClient = useQueryClient();
 	const { activated } = useActivation();
+	const notify = useNotification();
 	const clearCache = useCallback(() => {
 		queryClient.invalidateQueries({
 			queryKey: ['collection/list']
@@ -62,7 +63,7 @@ export default function useBookmark() {
 			new Promise((resolve, reject) => {
 				const isAdd =
 					item.collections?.includes(collection.id) === false;
-				toast.promise(
+				notify.promise(
 					addItemAsync({ cid: collection.id, id: Number(item.id) }),
 					{
 						description: decodeEntities(item.title),
@@ -100,7 +101,7 @@ export default function useBookmark() {
 					}
 				);
 			}),
-		[addItemAsync, clearCache]
+		[addItemAsync, clearCache, notify]
 	);
 	const addNewCollection = useCallback(
 		(
@@ -111,7 +112,7 @@ export default function useBookmark() {
 				const postData =
 					BookmarkPostCollectionSchema.safeParse(collection);
 				if (postData.success) {
-					toast.promise(addCollectionAsync(postData.data), {
+					notify.promise(addCollectionAsync(postData.data), {
 						description: update
 							? decodeEntities(collection.title)
 							: __('Add New Collection'),
@@ -134,7 +135,7 @@ export default function useBookmark() {
 					});
 				}
 			}),
-		[clearCache, addCollectionAsync]
+		[clearCache, addCollectionAsync, notify]
 	);
 	const removeCollection = useCallback(
 		(collection: z.infer<typeof BookmarkPostCollectionSchema>) =>
@@ -142,7 +143,7 @@ export default function useBookmark() {
 				const postData =
 					BookmarkPostCollectionSchema.safeParse(collection);
 				if (postData.success) {
-					toast.promise(
+					notify.promise(
 						removeCollectionAsync({ id: collection.id }),
 						{
 							description: decodeEntities(collection.title),
@@ -160,7 +161,7 @@ export default function useBookmark() {
 					);
 				}
 			}),
-		[removeCollectionAsync, clearCache]
+		[removeCollectionAsync, clearCache, notify]
 	);
 
 	return {

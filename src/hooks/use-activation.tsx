@@ -3,14 +3,15 @@ import { TActivationDetail } from '@/types/license';
 import { useQueryClient } from '@tanstack/react-query';
 import { Ban } from 'lucide-react';
 import { useCallback, useEffect, useMemo } from 'react';
-import { toast } from 'sonner';
 import useApiFetch from './use-api-fetch';
 import useApiMutation from './use-api-mutation';
 import useNotice from './use-notice';
+import useNotification from './use-notification';
 
 export default function useActivation() {
 	const queryClient = useQueryClient();
 	const { addNotice, removeNotice, flushNotice } = useNotice();
+	const notify = useNotification();
 	const { data, isLoading, isFetching } =
 		useApiFetch<TActivationDetail>(`license/detail`);
 	const { isPending: isDeactivatePending, mutateAsync: deactivateAsync } =
@@ -22,7 +23,7 @@ export default function useActivation() {
 		});
 	}, [queryClient]);
 	const deactivate = useCallback(() => {
-		toast.promise(deactivateAsync({}), {
+		notify.promise(deactivateAsync({}), {
 			loading: __('Deactivating License'),
 			success: __('License Deactivated Successfully'),
 			error: __('Error Deactivating License'),
@@ -30,7 +31,7 @@ export default function useActivation() {
 				queryClient.invalidateQueries({ queryKey: ['license/detail'] });
 			}
 		});
-	}, [deactivateAsync, queryClient]);
+	}, [deactivateAsync, queryClient, notify]);
 	const can_bulk_download = useMemo(
 		() => data?.bulk_download === true,
 		[data]
@@ -39,6 +40,10 @@ export default function useActivation() {
 	const can_install = useMemo(() => data?.install_allowed === true, [data]);
 	const can_download = useMemo(() => data?.download_allowed === true, [data]);
 	const can_autoupdate = useMemo(() => data?.autoupdate === true, [data]);
+	const can_collection_download = useMemo(
+		() => data?.collection_download === true,
+		[data]
+	);
 	const activated = useMemo(() => data?.status !== 'not-activated', [data]);
 	const active = useMemo(() => data?.status === 'active', [data]);
 	const statusToNotice = useMemo(
@@ -115,6 +120,7 @@ export default function useActivation() {
 		can_bulk_download,
 		can_bulk_install,
 		can_autoupdate,
+		can_collection_download,
 		can_download,
 		can_install,
 		data,

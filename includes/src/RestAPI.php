@@ -10,6 +10,7 @@ use Grootmade\api\{
 	History,
 	Item,
 	License,
+	Pack,
 	PendingInstall,
 	Popular,
 	Setting,
@@ -32,6 +33,7 @@ class RestAPI
 		$this->register(new Announcement());
 		$this->register(new History());
 		$this->register(new Collection());
+		$this->register(new Pack());
 		$this->register(new Popular());
 		$this->register(new Disclaimer());
 		$this->register(new PendingInstall());

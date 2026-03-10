@@ -1,30 +1,40 @@
 import {
-	Sheet,
-	SheetClose,
-	SheetContent,
-	SheetDescription,
-	SheetFooter,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger
-} from '@/components/ui/sheet';
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger
+} from '@/components/ui/dialog';
 import useActivation from '@/hooks/use-activation';
 import useBulk from '@/hooks/use-bulk';
 import { __ } from '@/lib/i18n';
 import { decodeEntities } from '@wordpress/html-entities';
 import { sprintf } from '@wordpress/i18n';
-import { ShoppingBag, X } from 'lucide-react';
+import {
+	Download,
+	DownloadCloud,
+	Package,
+	ShoppingBag,
+	Trash2,
+	X
+} from 'lucide-react';
 import { memo } from 'react';
-import { Alert } from './ui/alert';
+import { Badge } from './ui/badge';
 import { Button } from './ui/button';
+import { ScrollArea } from './ui/scroll-area';
+import { Separator } from './ui/separator';
+
 export default memo(function BulkAction() {
-	const { items, removeItem, install, download } = useBulk();
+	const { items, removeItem, clearItems, install, download } = useBulk();
 	const { active, activated, can_bulk_download, can_bulk_install } =
 		useActivation();
 	return (
 		(can_bulk_download || can_bulk_install) && (
-			<Sheet>
-				<SheetTrigger asChild>
+			<Dialog>
+				<DialogTrigger asChild>
 					<Button
 						variant="outline"
 						size={items && items.length > 0 ? 'default' : 'icon'}
@@ -34,83 +44,140 @@ export default memo(function BulkAction() {
 						<ShoppingBag size={16} />
 						{items.length > 0 && <span>{items.length}</span>}
 					</Button>
-				</SheetTrigger>
-				<SheetContent className="overflow-y-auto py-3">
-					<SheetHeader className="items-start">
-						<SheetTitle>{__('Bulk Cart')}</SheetTitle>
-						<SheetDescription>{__('Your items')}</SheetDescription>
-					</SheetHeader>
+				</DialogTrigger>
+				<DialogContent className="flex max-h-[80vh] flex-col gap-0 p-0">
+					<DialogHeader className="px-6 pb-4 pt-6">
+						<div className="flex items-center justify-between">
+							<div>
+								<DialogTitle className="flex items-center gap-2">
+									{__('Bulk Cart')}
+									{items.length > 0 && (
+										<Badge variant="secondary">
+											{sprintf(
+												__('%d items'),
+												items.length
+											)}
+										</Badge>
+									)}
+								</DialogTitle>
+								<DialogDescription className="mt-1">
+									{items.length > 0
+										? __(
+												'Review items before installing or downloading'
+											)
+										: __(
+												'Add items to your cart to get started'
+											)}
+								</DialogDescription>
+							</div>
+						</div>
+					</DialogHeader>
 
-					<div className="my-4 flex flex-col gap-5 sm:gap-4">
-						{items.length > 0 ? (
-							items.map((item) => (
-								<div
-									key={item.id}
-									className="flex flex-col gap-2 sm:flex-row sm:items-center"
-								>
-									<div className="sm:w-14">
-										<img
-											src={item.image}
-											className=" aspect-square w-20 object-contain sm:h-14 sm:w-14"
-										/>
-									</div>
-									<div className="flex flex-1 flex-row gap-2">
-										<div className="flex flex-1 flex-col gap-1 text-sm">
-											<h3>
-												{decodeEntities(item.title)}
-											</h3>
-											<div className="text-xs text-muted-foreground">
-												{sprintf(
-													__('Version: %s'),
-													item.version
-												)}
+					<Separator />
+
+					{items.length > 0 ? (
+						<>
+							<ScrollArea className="max-h-[50vh] flex-1">
+								<div className="divide-y">
+									{items.map((item) => (
+										<div
+											key={item.id}
+											className="flex items-center gap-3 px-6 py-3"
+										>
+											<img
+												src={item.image ?? ''}
+												alt=""
+												className="size-10 shrink-0 rounded-md border object-contain"
+											/>
+											<div className="min-w-0 flex-1">
+												<p className="truncate text-sm font-medium">
+													{decodeEntities(item.title)}
+												</p>
+												<p className="text-xs text-muted-foreground">
+													{sprintf(
+														__('v%s · %s'),
+														item.version,
+														item.type
+													)}
+												</p>
 											</div>
-										</div>
-										<div>
 											<Button
-												variant="destructive"
-												size="iconSmall"
-												onClick={() => {
-													removeItem(item.id);
-												}}
+												variant="ghost"
+												size="icon"
+												className="size-8 shrink-0 text-muted-foreground hover:text-destructive"
+												onClick={() =>
+													removeItem(item.id)
+												}
 											>
-												<X size={16} />
+												<X className="size-4" />
 											</Button>
 										</div>
-									</div>
+									))}
 								</div>
-							))
-						) : (
-							<Alert className="text-muted-foreground">
-								{__('No items found in bulk cart')}
-							</Alert>
-						)}
-					</div>
+							</ScrollArea>
 
-					<SheetFooter className="gap-4">
-						{can_bulk_install && (
-							<SheetClose asChild>
+							<Separator />
+
+							<DialogFooter className="flex-row justify-between gap-2 px-6 py-4">
 								<Button
-									disabled={items.length === 0}
-									onClick={install}
+									variant="ghost"
+									size="sm"
+									className="gap-1.5 text-muted-foreground"
+									onClick={clearItems}
 								>
-									{__('Install')}
+									<Trash2 className="size-3.5" />
+									{__('Clear')}
 								</Button>
-							</SheetClose>
-						)}
-						{can_bulk_download && (
-							<SheetClose asChild>
-								<Button
-									disabled={items.length === 0}
-									onClick={download}
-								>
-									{__('Download')}
-								</Button>
-							</SheetClose>
-						)}
-					</SheetFooter>
-				</SheetContent>
-			</Sheet>
+								<div className="flex gap-2">
+									{can_bulk_download && (
+										<DialogClose asChild>
+											<Button
+												variant="outline"
+												size="sm"
+												className="gap-1.5"
+												disabled={items.length === 0}
+												onClick={download}
+											>
+												<Download className="size-3.5" />
+												{__('Download')}
+											</Button>
+										</DialogClose>
+									)}
+									{can_bulk_install && (
+										<DialogClose asChild>
+											<Button
+												size="sm"
+												className="gap-1.5"
+												disabled={items.length === 0}
+												onClick={install}
+											>
+												<DownloadCloud className="size-3.5" />
+												{__('Install')}
+											</Button>
+										</DialogClose>
+									)}
+								</div>
+							</DialogFooter>
+						</>
+					) : (
+						<div className="flex flex-col items-center justify-center gap-3 px-6 py-12 text-center">
+							<div className="rounded-full bg-muted p-3">
+								<Package className="size-6 text-muted-foreground" />
+							</div>
+							<div>
+								<p className="text-sm font-medium">
+									{__('Your cart is empty')}
+								</p>
+								<p className="text-xs text-muted-foreground">
+									{__(
+										'Browse items and add them to your cart'
+									)}
+								</p>
+							</div>
+						</div>
+					)}
+				</DialogContent>
+			</Dialog>
 		)
 	);
 });

@@ -10,6 +10,7 @@ import {
 	PluginInstallSchema
 } from '@/hooks/use-install';
 import useInstalled from '@/hooks/use-is-installed';
+import useNotification from '@/hooks/use-notification';
 import useTaskQueue from '@/hooks/use-task-queue';
 import { __ } from '@/lib/i18n';
 import { TApiError } from '@/types/api';
@@ -20,7 +21,6 @@ import {
 import { TThemePluginItem } from '@/types/item';
 import { ColumnDef } from '@tanstack/react-table';
 import { useCallback, useMemo } from '@wordpress/element';
-import { toast } from 'sonner';
 import { getColumns } from './columns';
 
 const filterableColumns: DataTableFilterableColumn<TThemePluginItem>[] = [
@@ -63,19 +63,20 @@ export default function UpdatesTable({ data }: UpdateTableProps) {
 	const { clearCache } = useInstalled();
 	const { addTask } = useTaskQueue();
 	const { activated, active } = useActivation();
+	const notify = useNotification();
 	const ifCanDoBulkAction = useCallback(() => {
 		return new Promise((resolve, reject) => {
 			if (!activated) {
-				toast.error(__('License not activated'));
+				notify.error(__('License not activated'));
 				reject(__('License not activated'));
 			} else if (!active) {
-				toast.error(__('License suspended'));
+				notify.error(__('License suspended'));
 				reject(__('License suspended'));
 			} else {
 				resolve('yes');
 			}
 		});
-	}, [activated, active]);
+	}, [activated, active, notify]);
 	const bulkActions: BulkActionType<TThemePluginItem>[] = [
 		{
 			id: 'update',
@@ -85,7 +86,7 @@ export default function UpdatesTable({ data }: UpdateTableProps) {
 					items.forEach(({ original: item }) => {
 						addTask(() => {
 							return new Promise((resolve, reject) => {
-								toast.promise(
+								notify.promise(
 									installPlugin({
 										item_id: item.id,
 										method: 'update'
@@ -118,7 +119,7 @@ export default function UpdatesTable({ data }: UpdateTableProps) {
 					items.forEach(({ original: item }) => {
 						addTask(() => {
 							return new Promise((resolve, reject) => {
-								toast.promise(
+								notify.promise(
 									installPlugin({
 										item_id: item.id,
 										method: 'install'
@@ -131,7 +132,7 @@ export default function UpdatesTable({ data }: UpdateTableProps) {
 											clearCache();
 											return __('Re-Install Success');
 										},
-										error(err) {
+										error(err: TApiError) {
 											reject(err);
 											return (
 												err.message ??

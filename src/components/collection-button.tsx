@@ -23,7 +23,7 @@ import AddCollectionButton from './add-collection-dialog';
 type Props = {
 	item: TPostItem;
 } & ButtonProps;
-export default function CollectionButton({ item, size }: Props) {
+export default function CollectionButton({ item, size, variant }: Props) {
 	const { addItemToCollection, collections } = useBookmark();
 	const { activated, active } = useActivation();
 
@@ -41,10 +41,12 @@ export default function CollectionButton({ item, size }: Props) {
 			>
 				<Button
 					variant={
-						item.collections?.length > 0 ? 'secondary' : 'outline'
+						variant ??
+						(item.collections?.length > 0 ? 'secondary' : 'outline')
 					}
 					size={size}
 					className="flex items-center gap-2"
+					title={__('Add to Collection')}
 				>
 					<Star width={16} />
 				</Button>

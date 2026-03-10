@@ -1,59 +1,46 @@
-import useDownload, { type DownloadItem } from '@/hooks/use-download';
+import useNotification, {
+	type NotificationItem
+} from '@/hooks/use-notification';
 import { __ } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { useState } from '@wordpress/element';
 import {
+	Bell,
 	CheckCircle,
 	ChevronDown,
 	ChevronUp,
-	Download,
+	Info,
 	Loader2,
 	X,
 	XCircle
 } from 'lucide-react';
 import { Button } from './ui/button';
 
-function DownloadItemRow({ item }: { item: DownloadItem }) {
-	const { removeDownload } = useDownload();
+function NotificationItemRow({ item }: { item: NotificationItem }) {
+	const { remove } = useNotification();
 
 	return (
 		<div className="flex items-center gap-3 px-3 py-2">
 			<div className="shrink-0">
-				{item.status === 'completed' && (
+				{item.status === 'success' && (
 					<CheckCircle className="size-4 text-green-500" />
 				)}
 				{item.status === 'error' && (
 					<XCircle className="size-4 text-destructive" />
 				)}
-				{(item.status === 'downloading' ||
-					item.status === 'pending') && (
+				{item.status === 'loading' && (
 					<Loader2 className="size-4 animate-spin text-primary" />
+				)}
+				{item.status === 'info' && (
+					<Info className="size-4 text-blue-500" />
 				)}
 			</div>
 
 			<div className="min-w-0 flex-1">
-				<p className="truncate text-sm font-medium">{item.filename}</p>
-
-				{(item.status === 'downloading' ||
-					item.status === 'pending') && (
-					<div className="mt-1 flex items-center gap-2">
-						<div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
-							<div
-								className="h-full rounded-full bg-primary transition-all duration-300 ease-out"
-								style={{
-									width: `${item.percentage}%`
-								}}
-							/>
-						</div>
-						<span className="shrink-0 text-xs tabular-nums text-muted-foreground">
-							{item.percentage}%
-						</span>
-					</div>
-				)}
-
-				{item.status === 'error' && (
-					<p className="text-xs text-destructive">
-						{item.error || __('Download failed')}
+				<p className="truncate text-sm font-medium">{item.title}</p>
+				{item.description && (
+					<p className="truncate text-xs text-muted-foreground">
+						{item.description}
 					</p>
 				)}
 			</div>
@@ -62,7 +49,7 @@ function DownloadItemRow({ item }: { item: DownloadItem }) {
 				size="sm"
 				variant="ghost"
 				className="h-auto shrink-0 p-1 text-muted-foreground hover:text-foreground"
-				onClick={() => removeDownload(item.uid)}
+				onClick={() => remove(item.uid)}
 			>
 				<X className="size-3.5" />
 			</Button>
@@ -70,18 +57,18 @@ function DownloadItemRow({ item }: { item: DownloadItem }) {
 	);
 }
 
-export default function DownloadManager() {
+export default function NotificationManager() {
 	const {
-		downloads,
+		notifications,
 		activeItems,
 		completedItems,
 		clearCompleted,
 		open,
 		setOpen
-	} = useDownload();
+	} = useNotification();
 	const [collapsed, setCollapsed] = useState(false);
 
-	if (!open || downloads.length === 0) return null;
+	if (!open || notifications.length === 0) return null;
 
 	const hasActive = activeItems.length > 0;
 
@@ -95,11 +82,11 @@ export default function DownloadManager() {
 			{/* Header */}
 			<div className="flex items-center justify-between border-b bg-muted/50 px-3 py-2">
 				<div className="flex items-center gap-2">
-					<Download className="size-4" />
+					<Bell className="size-4" />
 					<span className="text-sm font-medium">
 						{hasActive
-							? `${__('Downloading')} ${activeItems.length} ${activeItems.length > 1 ? __('files') : __('file')}...`
-							: __('Downloads')}
+							? `${activeItems.length} ${activeItems.length > 1 ? __('tasks') : __('task')} ${__('in progress')}...`
+							: __('Notifications')}
 					</span>
 				</div>
 				<div className="flex items-center gap-1">
@@ -130,8 +117,8 @@ export default function DownloadManager() {
 			{!collapsed && (
 				<>
 					<div className="max-h-72 divide-y divide-border overflow-y-auto">
-						{downloads.map((item) => (
-							<DownloadItemRow
+						{notifications.map((item) => (
+							<NotificationItemRow
 								key={item.uid}
 								item={item}
 							/>

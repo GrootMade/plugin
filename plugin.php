@@ -1,9 +1,9 @@
 <?php
 /*
- * Plugin Name: Grootmade Connect
+ * Plugin Name: GrootMade
  * Plugin URI: https://grootmade.com
  * Description: Your all-in-one dashboard for discovering, installing, and managing premium themes, plugins, and template kits.
- * Version: 6.1.1771431680
+ * Version: 5.0.0-beta.2.4.3.4
  * Requires at Least: 6.0
  * Requires PHP: 7.4
  * Author: Grootmade

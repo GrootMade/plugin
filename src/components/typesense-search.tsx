@@ -1,36 +1,29 @@
 import { __ } from '@/lib/i18n';
 import placeholder from '@/lib/placeholder';
+import { cn } from '@/lib/utils';
 import { Link } from '@/router';
 import { TPostItem } from '@/types/item';
 import { decodeEntities } from '@wordpress/html-entities';
+import { Loader, Search, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Hits, useSearchBox } from 'react-instantsearch';
 import { Input } from './ui/input';
 
 function Hit({ hit }: { hit: TPostItem }) {
 	return (
-		<div className="relative flex flex-col items-center gap-2 transition-colors hover:opacity-70 sm:flex-row">
-			<div className="flex-shrink">
-				<img
-					src={hit.image ?? placeholder(hit.title)}
-					className="aspect-video w-full object-cover sm:w-24"
-				/>
-			</div>
-
-			<div className="flex flex-1 flex-col">
-				<div>{hit.title}</div>
-				{hit.is_forked ? (
-					<div className="space-x-1 text-sm text-muted-foreground">
-						<span>{__('Forked From')}</span>
-						<a
-							href={hit.product_url}
-							className="text-foreground"
-							target="_blank"
-							rel="noreferrer"
-						>
-							{decodeEntities(hit.original_title)}
-						</a>
-					</div>
+		<div className="group/hit relative flex items-center gap-3 rounded-md p-2 transition-colors hover:bg-accent">
+			<img
+				src={hit.image ?? placeholder(hit.title)}
+				className="size-10 shrink-0 rounded-md border object-cover"
+			/>
+			<div className="flex min-w-0 flex-1 flex-col">
+				<span className="truncate text-sm font-medium">
+					{decodeEntities(hit.title)}
+				</span>
+				{hit.is_forked && hit.original_title ? (
+					<span className="truncate text-xs text-muted-foreground">
+						{__('Forked From')} {decodeEntities(hit.original_title)}
+					</span>
 				) : null}
 			</div>
 			<Link
@@ -39,18 +32,18 @@ function Hit({ hit }: { hit: TPostItem }) {
 					id: hit.id,
 					slug: hit.type
 				}}
-				className="absolute left-0 top-0 h-full w-full"
-			></Link>
+				className="absolute inset-0"
+			/>
 		</div>
 	);
 }
+
 export default function TypeSenseSearch() {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { query, refine, isSearchStalled, clear, ...rest } = useSearchBox();
+	const { query, refine, isSearchStalled, clear } = useSearchBox();
 	const [showResults, setShowResults] = useState(false);
 	const wrapperRef = useRef<HTMLDivElement>(null);
+	const inputRef = useRef<HTMLInputElement>(null);
 
-	// Hide results on outside click
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
 			if (
@@ -65,13 +58,24 @@ export default function TypeSenseSearch() {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
 	}, []);
+
 	return (
 		<div
 			className="relative"
 			ref={wrapperRef}
 		>
+			<div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50">
+				{isSearchStalled ? (
+					<Loader className="size-4 animate-spin" />
+				) : (
+					<Search className="size-4" />
+				)}
+			</div>
+
 			<Input
+				ref={inputRef}
 				type="text"
+				value={query}
 				onChange={(event) => {
 					refine(event.currentTarget.value);
 					setShowResults(event.currentTarget.value.length > 0);
@@ -79,15 +83,30 @@ export default function TypeSenseSearch() {
 				onClick={(event) => {
 					setShowResults(event.currentTarget.value.length > 0);
 				}}
-				placeholder="Search themes and plugins"
-				{...rest}
+				placeholder={__('Search themes and plugins...')}
+				className={cn('pl-9', query.length > 0 && 'pr-9')}
 			/>
-			{showResults && query.length > 0 ? (
+
+			{query.length > 0 && (
+				<button
+					type="button"
+					onClick={() => {
+						clear();
+						setShowResults(false);
+						inputRef.current?.focus();
+					}}
+					className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground"
+				>
+					<X className="size-4" />
+				</button>
+			)}
+
+			{showResults && query.length > 0 && (
 				<Hits
 					hitComponent={Hit}
-					className="absolute left-0 top-[102%] z-[999] h-auto  w-full rounded-sm border bg-card p-4 text-card-foreground shadow"
+					className="absolute left-0 top-full z-[999] mt-1 max-h-80 w-full overflow-y-auto overscroll-contain rounded-lg border bg-popover p-1 text-popover-foreground shadow-md"
 				/>
-			) : null}
+			)}
 		</div>
 	);
 }

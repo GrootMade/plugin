@@ -1,3 +1,4 @@
+import AdCard from '@/components/ad-card';
 import AddCollectionButton from '@/components/add-collection-dialog';
 import { AppPageShell } from '@/components/body/page-shell';
 import { Button } from '@/components/ui/button';
@@ -56,6 +57,7 @@ export default function Component() {
 					{__('No Collections Found')}
 				</div>
 			)}
+			<AdCard />
 		</AppPageShell>
 	);
 }

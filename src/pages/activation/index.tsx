@@ -1,3 +1,4 @@
+import AdCard from '@/components/ad-card';
 import { AppPageShell } from '@/components/body/page-shell';
 import { Button } from '@/components/ui/button';
 import useActivation from '@/hooks/use-activation';
@@ -56,6 +57,7 @@ export default function Component() {
 					<RegisterLicenseForm />
 				)}
 			</div>
+			<AdCard />
 		</AppPageShell>
 	);
 }

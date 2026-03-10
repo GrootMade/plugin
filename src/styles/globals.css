@@ -7,9 +7,6 @@
 		--font-sans: 'Inter';
 		--font-heading: 'Bricolage Grotesque';
 		--radius: 0.5rem;
-		--chart-1: #e21d48;
-		--chart-2: #2a9d90;
-
 	}
 
 }
@@ -36,5 +33,5 @@
 	}
 }
 .ais-Hits-list {
-	@apply flex flex-col gap-4;
+	@apply flex flex-col gap-0.5;
 }

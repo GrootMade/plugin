@@ -1,5 +1,6 @@
 import BulkButton from '@/components/bulk-button';
 import CollectionButton from '@/components/collection-button';
+import DownloadButton from '@/components/download-button';
 import InstallButton from '@/components/install-button';
 import { Button } from '@/components/ui/button';
 import { siteConfig } from '@/config/site';
@@ -24,6 +25,7 @@ export default function DetailTabHeaders({ item, tabs }: Props) {
 			<div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
 				<div className="flex flex-col gap-4 sm:flex-row">
 					<InstallButton item={item} />
+					<DownloadButton item={item} />
 					{(item.preview ?? item.product_url) ? (
 						<Button
 							asChild

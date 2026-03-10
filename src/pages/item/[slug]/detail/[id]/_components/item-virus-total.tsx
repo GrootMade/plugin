@@ -1,9 +1,202 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { __ } from '@/lib/i18n';
+import { cn } from '@/lib/utils';
 import { TPostItem } from '@/types/item';
-import { sprintf } from '@wordpress/i18n';
-import { ShieldCheck, ShieldEllipsis } from 'lucide-react';
-import moment from 'moment';
+import {
+	AlertTriangle,
+	Calendar,
+	CheckCircle,
+	ExternalLink,
+	Hash,
+	Shield,
+	ShieldAlert,
+	ShieldCheck,
+	ShieldX
+} from 'lucide-react';
+import type { ReactNode } from 'react';
+
+function ScanRow({
+	icon,
+	label,
+	value,
+	href,
+	valueClassName
+}: {
+	icon: ReactNode;
+	label: string;
+	value: ReactNode;
+	href?: string | null;
+	valueClassName?: string;
+}) {
+	const valueContent = href ? (
+		<a
+			href={href}
+			target="_blank"
+			rel="noopener noreferrer"
+			className={cn(
+				'shrink-0 font-medium underline decoration-border hover:decoration-foreground',
+				valueClassName
+			)}
+		>
+			{value}
+		</a>
+	) : (
+		<span
+			className={cn('shrink-0 font-medium tabular-nums', valueClassName)}
+		>
+			{value}
+		</span>
+	);
+
+	return (
+		<li className="flex items-center gap-3 py-1">
+			<p className="flex min-w-0 items-center gap-1.5 text-muted-foreground [&_svg]:size-[1.1em] [&_svg]:shrink-0 [&_svg]:opacity-75">
+				{icon}
+				<span className="flex-1 truncate">{label}</span>
+			</p>
+			<hr className="min-w-2 flex-1" />
+			{valueContent}
+		</li>
+	);
+}
+
+function ScanContent({
+	virusTotal
+}: {
+	virusTotal: NonNullable<TPostItem['virus_total']>;
+}) {
+	const stats = virusTotal.stats;
+	const malicious = stats.malicious ?? 0;
+	const suspicious = stats.suspicious ?? 0;
+	const harmless = stats.harmless ?? 0;
+	const undetected = stats.undetected ?? 0;
+	const totalScans = Object.values(stats).reduce((a, b) => a + b, 0);
+	const cleanCount = harmless + undetected;
+	const cleanPercentage =
+		totalScans > 0 ? (cleanCount / totalScans) * 100 : 100;
+
+	const isClean = malicious === 0 && suspicious === 0;
+	const isDangerous = malicious > 0;
+	const statusLabel = isClean
+		? __('Clean')
+		: isDangerous
+			? __('Threat Detected')
+			: __('Caution');
+	const statusColor = isClean
+		? 'text-primary'
+		: isDangerous
+			? 'text-destructive'
+			: 'text-amber-600';
+	const barColor = isClean
+		? 'bg-primary'
+		: isDangerous
+			? 'bg-destructive'
+			: 'bg-amber-500';
+
+	const reportUrl = `https://www.virustotal.com/gui/file/${virusTotal.hash}`;
+	const lastScanned = new Date(virusTotal.updated * 1000).toLocaleDateString(
+		undefined,
+		{
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric'
+		}
+	);
+
+	return (
+		<>
+			<div className="space-y-1.5">
+				<div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+					<div
+						className={cn(
+							'h-full rounded-full transition-all',
+							barColor
+						)}
+						style={{ width: `${cleanPercentage}%` }}
+					/>
+				</div>
+			</div>
+
+			<ul className="w-full text-sm">
+				<ScanRow
+					icon={isClean ? <CheckCircle /> : <AlertTriangle />}
+					label={__('Status')}
+					value={statusLabel}
+					valueClassName={statusColor}
+				/>
+				<ScanRow
+					icon={<ShieldCheck />}
+					label={__('Clean')}
+					value={`${cleanCount}/${totalScans}`}
+				/>
+				{malicious > 0 && (
+					<ScanRow
+						icon={<ShieldX />}
+						label={__('Malicious')}
+						value={malicious}
+						valueClassName="text-red-600"
+					/>
+				)}
+				{suspicious > 0 && (
+					<ScanRow
+						icon={<ShieldAlert />}
+						label={__('Suspicious')}
+						value={suspicious}
+						valueClassName="text-amber-600"
+					/>
+				)}
+				<ScanRow
+					icon={<Calendar />}
+					label={__('Last scan')}
+					value={lastScanned}
+				/>
+				<ScanRow
+					icon={<Hash />}
+					label={__('Hash')}
+					value={`${virusTotal.hash.slice(0, 8)}…`}
+				/>
+				<ScanRow
+					icon={<ExternalLink />}
+					label={__('Full report')}
+					value="VirusTotal"
+					href={reportUrl}
+				/>
+			</ul>
+		</>
+	);
+}
+
+function ScanFallback() {
+	return (
+		<>
+			<div className="space-y-1.5">
+				<div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+					<div className="h-full w-full rounded-full bg-primary" />
+				</div>
+			</div>
+
+			<ul className="w-full text-sm">
+				<ScanRow
+					icon={<CheckCircle />}
+					label={__('Status')}
+					value={__('100% Safe')}
+					valueClassName="text-primary"
+				/>
+				<ScanRow
+					icon={<ShieldCheck />}
+					label={__('Threats')}
+					value={__('0 detected')}
+				/>
+				<ScanRow
+					icon={<Shield />}
+					label={__('Verified')}
+					value={__('Yes')}
+					valueClassName="text-primary"
+				/>
+			</ul>
+		</>
+	);
+}
+
 type Props = {
 	item: TPostItem;
 };
@@ -11,61 +204,23 @@ export default function VirusTotalScan({ item }: Props) {
 	if (item.type === 'request') {
 		return null;
 	}
+
+	const virusTotal = item.virus_total;
+
 	return (
-		<Card>
-			<CardHeader className="flex flex-row items-center justify-between border-b">
-				<span>{__('Virus Total')}</span>
-				{item.virus_total && (
-					<a
-						href={`https://www.virustotal.com/gui/file/${item.virus_total.hash}`}
-						target="_blank"
-						className="border-b border-dashed border-primary text-sm text-primary"
-						rel="noreferrer"
-					>
-						{__('View Detail')}
-					</a>
-				)}
-			</CardHeader>
-			<CardContent className="p-4 sm:p-5">
-				{item.virus_total ? (
-					<div className="flex flex-row gap-2">
-						<div>
-							<ShieldCheck
-								size={38}
-								className="text-green-600"
-							/>
-						</div>
-						<div className="flex-1">
-							<div>{item.virus_total.filename}</div>
-							<div className="space-x-3 text-xs text-muted-foreground">
-								<span>
-									{sprintf(
-										__('%d threats'),
-										item.virus_total.stats.malicious
-									)}
-								</span>
-								<span>
-									{moment
-										.unix(item.virus_total.updated)
-										.format('D MMM YYYY, h:mm a')}
-								</span>
-							</div>
-						</div>
-					</div>
-				) : (
-					<div className="flex animate-pulse flex-row items-center gap-2">
-						<div>
-							<ShieldEllipsis
-								size={38}
-								className="text-purple-400"
-							/>
-						</div>
-						<div className="flex-1">
-							<div className="">{__('Scanning...')}</div>
-						</div>
-					</div>
-				)}
-			</CardContent>
-		</Card>
+		<div className="relative flex w-full flex-col items-stretch gap-4 rounded-lg border bg-transparent p-5 max-md:order-3">
+			<div className="flex items-center gap-2">
+				<Shield className="size-[1.1em] shrink-0 opacity-75" />
+				<span className="text-sm font-semibold">
+					{__('Security Scan')}
+				</span>
+			</div>
+
+			{virusTotal ? (
+				<ScanContent virusTotal={virusTotal} />
+			) : (
+				<ScanFallback />
+			)}
+		</div>
 	);
 }

@@ -15,12 +15,12 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import useApiMutation from '@/hooks/use-api-mutation';
+import useNotification from '@/hooks/use-notification';
 import { __ } from '@/lib/i18n';
 import { licenseFormZodSchema } from '@/zod/license';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 import * as z from 'zod';
 
 type LicenseActivationResponse = {
@@ -28,6 +28,7 @@ type LicenseActivationResponse = {
 };
 export type LicenseActivationSchema = z.infer<typeof licenseFormZodSchema>;
 export default function RegisterLicenseForm() {
+	const notify = useNotification();
 	const form = useForm<LicenseActivationSchema>({
 		resolver: zodResolver(licenseFormZodSchema),
 		defaultValues: {
@@ -39,7 +40,7 @@ export default function RegisterLicenseForm() {
 		LicenseActivationSchema
 	>('license/activate');
 	async function onSubmit(data: LicenseActivationSchema) {
-		toast.promise(mutateAsync(data), {
+		notify.promise(mutateAsync(data), {
 			loading: __('Activating License'),
 			success: () => {
 				window.location.reload();

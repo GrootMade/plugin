@@ -105,6 +105,10 @@ class Item extends ApiBase
 				'callback' => [$this, 'install'],
 				'permission_callback' => [$this, 'user_can_install'],
 			],
+			'claim' => [
+				'callback' => [$this, 'claim'],
+				'permission_callback' => [$this, 'user_can_install'],
+			],
 			'download-additional' => [
 				'callback' => [$this, 'download_additional'],
 			],
@@ -135,6 +139,12 @@ class Item extends ApiBase
 			'media_id' => $media_id,
 		]);
 		if (is_wp_error($download_detail)) {
+			return $download_detail;
+		}
+		if (
+			isset($download_detail['type']) &&
+			$download_detail['type'] === 'delay'
+		) {
 			return $download_detail;
 		}
 		if ('template-kit' === $item_detail['type'] || 'download' === $method) {
@@ -181,6 +191,80 @@ class Item extends ApiBase
 		}
 		return ['success' => true];
 	}
+	public function claim(\WP_REST_Request $request)
+	{
+		$delay_token = $request->get_param('delay_token');
+		$method = $request->get_param('method');
+		$item_id = $request->get_param('item_id');
+		$slug = $request->get_param('slug');
+		$media_id = $request->get_param('media_id');
+
+		$claim_detail = Helper::engine_post('item/download/claim', [
+			'delay_token' => $delay_token,
+		]);
+		if (is_wp_error($claim_detail)) {
+			return $claim_detail;
+		}
+
+		if ('download' === $method) {
+			return $claim_detail;
+		}
+
+		$item_detail = Helper::engine_post('item/detail', [
+			'item_id' => $item_id,
+		]);
+		if (is_wp_error($item_detail)) {
+			return $item_detail;
+		}
+
+		if ('template-kit' === $item_detail['type']) {
+			return $claim_detail;
+		}
+
+		$installer = new Installer($item_detail, $claim_detail, $slug);
+		$status = $installer->run();
+
+		if (is_wp_error($status)) {
+			return new \WP_Error(
+				400,
+				__('Error running item installation/update', 'grootmade')
+			);
+		}
+
+		$settings = get_option(
+			Constants::SETTING_KEY,
+			Constants::DEFAULT_SETTINGS
+		);
+		if (
+			$item_detail['type'] === 'plugin' &&
+			isset($settings['autoactivate']) &&
+			$settings['autoactivate']
+		) {
+			try {
+				$installed_items = Helper::get_item_updates();
+				if (
+					!is_wp_error($installed_items) &&
+					isset($installed_items['data'])
+				) {
+					$matched = \array_filter(
+						$installed_items['data'],
+						function ($_item) use ($item_id) {
+							return $_item['id'] == $item_id;
+						}
+					);
+					if (!empty($matched)) {
+						$item = array_shift($matched);
+						\activate_plugin($item['path']);
+					}
+				}
+			} catch (\Exception $e) {
+				error_log($e->getMessage());
+			}
+		}
+
+		return ['success' => true];
+	}
+
 	public function request_update(\WP_REST_Request $request)
 	{
 		$item_id = $request->get_param('item_id');

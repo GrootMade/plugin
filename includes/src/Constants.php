@@ -4,7 +4,7 @@ namespace Grootmade;
 
 class Constants
 {
-	const ACTIVATION_KEY = 'Grootmade_activation';
+	const ACTIVATION_KEY = 'grootmade_activation';
 
 	const ADMIN_MENU_TITLE = 'Grootmade';
 
@@ -22,7 +22,7 @@ class Constants
 
 	const PLUGIN_INFO_URL = 'https://raw.githubusercontent.com/GrootMade/connect/stable/info.json';
 
-	const SETTING_KEY = 'Grootmade_settings';
+	const SETTING_KEY = 'grootmade_settings';
 	const AUTOUPDATE_SETTING_KEY = 'grootmade_autoupdates';
 
 	const SLUG = 'grootmade';

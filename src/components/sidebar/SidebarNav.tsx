@@ -65,7 +65,6 @@ export function SidebarNav() {
 				<div className="flex flex-row gap-2 lg:hidden">
 					<ModeToggle />
 					<BulkAction />
-					<DownloadManager />
 				</div>
 				{memoizedItems.map((nav, index) => (
 					<div key={nav.id}>
@@ -235,7 +234,6 @@ type NavLinkProps = NavItem & {
 
 import { memo } from 'react'; // Add this import at the top
 import BulkAction from '../bulk-action';
-import DownloadManager from '../download-manager';
 import ModeToggle from '../mode-toggle';
 
 function NavLink({

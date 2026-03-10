@@ -1,3 +1,4 @@
+import AdBanner from '@/components/ad-banner';
 import { AppPageShell } from '@/components/body/page-shell';
 import useActivation from '@/hooks/use-activation';
 import { SettingProvider } from '@/hooks/use-setting';
@@ -15,8 +16,10 @@ export default function Component() {
 		>
 			<SettingProvider>
 				<SettingsForm />
+				<AdBanner />
 				<AutoupdateSetting />
 				{data && data.roles && <RolesAccessForm />}
+				<AdBanner />
 			</SettingProvider>
 		</AppPageShell>
 	);

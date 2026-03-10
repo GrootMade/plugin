@@ -1,4 +1,6 @@
+import { claimAfterDelay } from '@/lib/download-delay';
 import { __ } from '@/lib/i18n';
+import { TApiError } from '@/types/api';
 import { EnumItemType } from '@/zod/item';
 import {
 	createContext,
@@ -8,14 +10,45 @@ import {
 	useState
 } from '@wordpress/element';
 import { decodeEntities } from '@wordpress/html-entities';
-import { toast } from 'sonner';
 import { z } from 'zod';
 import useActivation from './use-activation';
 import useApiMutation from './use-api-mutation';
 import useDownload from './use-download';
 import { PluginInstallResponse, PluginInstallSchema } from './use-install';
 import useInstalled from './use-is-installed';
+import useNotification from './use-notification';
 import useTaskQueue from './use-task-queue';
+
+type PackDownloadLink = {
+	item_id: number;
+	title: string;
+	link: string;
+	version: string;
+	slug: string;
+	filename: string;
+};
+
+type PackDownloadError = {
+	item_id: number;
+	title: string;
+	message: string;
+};
+
+type PackDownloadResponse = {
+	result: string;
+	pack: string;
+	total_items: number;
+	downloaded: number;
+	skipped: number;
+	consumed_credit: number;
+	links: PackDownloadLink[];
+	errors: PackDownloadError[];
+};
+
+type PackDownloadRequest = {
+	item_ids: number[];
+	pack_name?: string;
+};
 type BulkProviderProps = {
 	children: React.ReactNode;
 	storageKey?: string;
@@ -55,6 +88,7 @@ export function BulkProvider({
 	...props
 }: BulkProviderProps) {
 	const { addDownloadTask } = useDownload();
+	const notify = useNotification();
 	const [items, setItems] = useState<BulkItemType[]>(() => {
 		const initialState = itemsSchema.safeParse(
 			JSON.parse(localStorage.getItem(storageKey) ?? '[]')
@@ -72,6 +106,10 @@ export function BulkProvider({
 		PluginInstallResponse,
 		PluginInstallSchema
 	>('item/install');
+	const { mutateAsync: packDownloadAsync } = useApiMutation<
+		PackDownloadResponse,
+		PackDownloadRequest
+	>('pack/download');
 	useEffect(() => {
 		const parsed = itemsSchema.safeParse(items);
 		if (parsed.success) {
@@ -80,28 +118,23 @@ export function BulkProvider({
 	}, [items, storageKey]);
 	const addItem = (item: BulkItemType) => {
 		if (!activated) {
-			toast.error(__('License not activated'), {
-				description: decodeEntities(item.title)
-			});
+			notify.error(
+				__('License not activated'),
+				decodeEntities(item.title)
+			);
 			return;
 		}
 		if (!active) {
-			toast.error(__('License suspended'), {
-				description: decodeEntities(item.title)
-			});
+			notify.error(__('License suspended'), decodeEntities(item.title));
 			return;
 		}
-		toast.success(__('Added To Cart'), {
-			description: decodeEntities(item.title)
-		});
+		notify.success(__('Added To Cart'), decodeEntities(item.title));
 		setItems((prev) => [...prev.filter((i) => i.id != item.id), item]);
 	};
 	const removeItem = (item_id: number | string) => {
 		const item = items.find((i) => i.id === Number(item_id));
 		if (item) {
-			toast.info(__('Removed From Cart'), {
-				description: decodeEntities(item.title)
-			});
+			notify.info(__('Removed From Cart'), decodeEntities(item.title));
 			setItems((prev) => prev?.filter((i) => i.id != item.id));
 		}
 	};
@@ -112,51 +145,50 @@ export function BulkProvider({
 		[items]
 	);
 	const clearItems = () => {
-		toast.info(__('Cart Cleared'));
+		notify.info(__('Cart Cleared'));
 		setItems(() => []);
 	};
 
 	const download = () => {
 		if (!can_bulk_download) {
-			toast.error(__('Bulk download not allowed'));
+			notify.error(__('Bulk download not allowed'));
 			return;
 		}
-		items.forEach((item) => {
-			addQueueTask(() => {
-				return new Promise((resolve, reject) => {
-					toast.promise(
-						installAsync({
-							item_id: item.id,
-							method: 'download'
-						}),
-						{
-							description: item.title,
-							loading: __('Fetching Download Link'),
-							success(data) {
-								resolve(data);
-								removeItem(item.id);
-								if (data.link && data.filename) {
-									addDownloadTask(data.link, data.filename);
-									return __('Added to queue');
-								}
-								return __('Something went wrong');
-							},
-							error(err) {
-								reject(err);
-								return err.message ?? __('Error');
-							},
-							finally() {
-								clearCache();
-							}
-						}
-					);
-				});
-			});
+		const item_ids = items.map((item) => item.id);
+		notify.promise(packDownloadAsync({ item_ids }), {
+			loading: __('Downloading Pack'),
+			description: `${items.length} ${__('items')}`,
+			success(data) {
+				for (const link of data.links) {
+					addDownloadTask(link.link, link.filename);
+				}
+				const downloadedIds = new Set(data.links.map((l) => l.item_id));
+				setItems((prev) =>
+					prev.filter((i) => !downloadedIds.has(i.id))
+				);
+				for (const err of data.errors) {
+					notify.error(err.title, err.message);
+				}
+				clearCache();
+				if (data.downloaded > 0 && data.skipped === 0) {
+					return `${data.downloaded} ${__('items added to queue')}`;
+				}
+				if (data.downloaded > 0 && data.skipped > 0) {
+					return `${data.downloaded} ${__('downloaded')}, ${data.skipped} ${__('skipped')}`;
+				}
+				return __('No items could be downloaded');
+			},
+			error(err: TApiError) {
+				return err.message ?? __('Error');
+			},
+			finally() {
+				clearCache();
+			}
 		});
 	};
 	const install = () => {
 		if (!can_bulk_install) {
-			toast.error(__('Bulk install not allowed'));
+			notify.error(__('Bulk install not allowed'));
 			return;
 		}
 		items.forEach((item) => {
@@ -165,10 +197,26 @@ export function BulkProvider({
 					const isInstalled = list?.find(
 						(i) => Number(i.id) === Number(item.id)
 					);
-					toast.promise(
+					const method = isInstalled ? 'update' : 'install';
+					notify.promise(
 						installAsync({
 							item_id: item.id,
-							method: isInstalled ? 'update' : 'install'
+							method
+						}).then(async (data) => {
+							if (
+								data.type === 'delay' &&
+								data.delay_token &&
+								data.delay_seconds
+							) {
+								const claimed = await claimAfterDelay(
+									data.delay_token,
+									data.delay_seconds,
+									method,
+									item.id
+								);
+								return { ...data, ...claimed };
+							}
+							return data;
 						}),
 						{
 							description: item.title,
@@ -180,7 +228,7 @@ export function BulkProvider({
 								removeItem(item.id);
 								return __('Success');
 							},
-							error(err) {
+							error(err: TApiError) {
 								reject(err);
 								return err.message ?? __('Error');
 							},

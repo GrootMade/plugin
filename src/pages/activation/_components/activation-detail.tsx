@@ -19,12 +19,12 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { ActivationStatusToString } from '@/config/activation-status';
 import useApiMutation from '@/hooks/use-api-mutation';
+import useNotification from '@/hooks/use-notification';
 import { __ } from '@/lib/i18n';
 import { TActivationDetail } from '@/types/license';
 import { useQueryClient } from '@tanstack/react-query';
 import { Globe, Loader } from 'lucide-react';
 import moment from 'moment';
-import { toast } from 'sonner';
 
 export type ClientLicenseType = {
 	plan_type: string;
@@ -52,14 +52,15 @@ export function ActivationDetailItemSkeleton() {
 }
 export default function ActivationDetailItem({ detail }: Props) {
 	const queryClient = useQueryClient();
+	const notify = useNotification();
 	const { isPending, mutateAsync } = useApiMutation('license/deactivate');
 	async function onSubmit() {
 		try {
 			await mutateAsync({});
-			toast.success(__('License Deactivated Successfully'));
+			notify.success(__('License Deactivated Successfully'));
 			queryClient.invalidateQueries({ queryKey: ['license/detail'] });
 		} catch (error) {
-			toast.error(
+			notify.error(
 				(error as { message?: string })?.message ??
 					__('Error Deactivating License')
 			);

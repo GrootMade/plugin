@@ -4,10 +4,10 @@ import { AutoupdatePostSchema } from '@/types/update';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from '@wordpress/element';
 import { decodeEntities } from '@wordpress/html-entities';
-import { toast } from 'sonner';
 import useActivation from './use-activation';
 import useApiFetch from './use-api-fetch';
 import useApiMutation from './use-api-mutation';
+import useNotification from './use-notification';
 type SettingType = {
 	themes?: string[];
 	plugins?: string[];
@@ -27,24 +27,27 @@ export default function useAutoUpdate() {
 		});
 	}, [queryClient]);
 	const { activated, active } = useActivation();
+	const notify = useNotification();
 	const { isPending: isPendingUpdate, mutateAsync: autoupdatePromise } =
 		useApiMutation<never, AutoupdatePostSchema>('update/update-autoupdate');
 	const changeStatus = useCallback(
 		(item: TThemePluginItem, enabled: boolean = false) =>
 			new Promise((resolve, reject) => {
 				if (!activated) {
-					toast.error(__('License not activated'), {
-						description: decodeEntities(item.title)
-					});
+					notify.error(
+						__('License not activated'),
+						decodeEntities(item.title)
+					);
 					return;
 				}
 				if (!active) {
-					toast.error(__('License suspended'), {
-						description: decodeEntities(item.title)
-					});
+					notify.error(
+						__('License suspended'),
+						decodeEntities(item.title)
+					);
 					return;
 				}
-				toast.promise(
+				notify.promise(
 					autoupdatePromise({
 						type: item.type,
 						slug: item.slug,
@@ -67,7 +70,7 @@ export default function useAutoUpdate() {
 					}
 				);
 			}),
-		[activated, active, autoupdatePromise, clearCache]
+		[activated, active, autoupdatePromise, clearCache, notify]
 	);
 	return {
 		setting,

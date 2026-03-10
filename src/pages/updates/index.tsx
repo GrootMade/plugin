@@ -1,3 +1,4 @@
+import AdBanner from '@/components/ad-banner';
 import { AppPageShell } from '@/components/body/page-shell';
 import useActivation from '@/hooks/use-activation';
 import useInstalled from '@/hooks/use-is-installed';
@@ -29,6 +30,7 @@ export default function Component() {
 			]}
 		>
 			<PendingInstallsCard />
+			<AdBanner />
 			{list && <UpdatesTable data={list} />}
 		</AppPageShell>
 	);

@@ -1,7 +1,9 @@
+import AdCard from '@/components/ad-card';
 import { AppPageShell } from '@/components/body/page-shell';
 import FilterBar from '@/components/filter/filter-bar';
 import Paging from '@/components/paging';
 import { Card } from '@/components/ui/card';
+import { adsConfig } from '@/config/ads';
 import useApiFetch from '@/hooks/use-api-fetch';
 import useDataCollection, { FilterOption } from '@/hooks/use-data-collection';
 import useGetTerms from '@/hooks/use-get-terms';
@@ -371,7 +373,7 @@ export default function Component() {
 			keyword: dataCollection.search?.keyword,
 			per_page: Number(dataCollection.pagination?.per_page)
 		},
-		!!terms
+		true
 	);
 	useEffect(() => {
 		window.scrollTo({
@@ -384,7 +386,7 @@ export default function Component() {
 			title={item_type?.label}
 			description={item_type?.description}
 			isFetching={isFetching}
-			isLoading={isItemsLoading || !!terms === false}
+			isLoading={isItemsLoading}
 			preloader={
 				<div className="grid grid-cols-1 md:grid-cols-3">
 					<PostGridItemSkeleton />
@@ -421,12 +423,35 @@ export default function Component() {
 						])}
 					>
 						{data.data.length > 0 ? (
-							data.data.map((item) => (
-								<PostGridItem
-									key={item.id}
-									item={item}
-								/>
-							))
+							<>
+								{data.data.map((item, index) => (
+									<PostGridItem
+										key={item.id}
+										item={item}
+										style={{ order: index }}
+									/>
+								))}
+								{adsConfig.enabled &&
+									Array.from(
+										{ length: adsConfig.adsPerPage },
+										(_, i) => {
+											const order = Math.ceil(
+												(data.data.length /
+													adsConfig.adsPerPage) *
+													i +
+													1
+											);
+											if (order > data.data.length)
+												return null;
+											return (
+												<AdCard
+													key={`ad-${i}`}
+													style={{ order }}
+												/>
+											);
+										}
+									)}
+							</>
 						) : (
 							<NoSearchResultFound />
 						)}

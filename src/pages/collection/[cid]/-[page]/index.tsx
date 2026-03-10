@@ -1,3 +1,4 @@
+import AdBanner from '@/components/ad-banner';
 import { AppPageShell } from '@/components/body/page-shell';
 import Paging from '@/components/paging';
 import useApiFetch from '@/hooks/use-api-fetch';
@@ -63,6 +64,7 @@ export default function CollectionDetail() {
 							/>
 						))}
 					</div>
+					<AdBanner />
 					{items.meta && (
 						<Paging
 							totalItems={items.meta?.total}

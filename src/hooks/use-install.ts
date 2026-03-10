@@ -1,21 +1,26 @@
+import { claimAfterDelay } from '@/lib/download-delay';
 import { __ } from '@/lib/i18n';
 import VersionCompare from '@/lib/version_compare';
 import { useNavigate } from '@/router';
+import { TApiError } from '@/types/api';
 import { TPostItem, TPostMedia } from '@/types/item';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from '@wordpress/element';
 import { decodeEntities } from '@wordpress/html-entities';
 import { sprintf } from '@wordpress/i18n';
-import { toast } from 'sonner';
 import useActivation from './use-activation';
 import useApiMutation from './use-api-mutation';
 import useDownload from './use-download';
 import useInstalled from './use-is-installed';
+import useNotification from './use-notification';
 
 export type PluginInstallResponse = {
 	message: string;
 	link?: string;
 	filename?: string;
+	type?: 'download_link' | 'delay';
+	delay_seconds?: number;
+	delay_token?: string;
 };
 export type PluginInstallSchema = {
 	item_id: number | string;
@@ -29,6 +34,7 @@ export default function useInstall() {
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 	const { addDownloadTask } = useDownload();
+	const notify = useNotification();
 
 	const { mutateAsync: installPlugin } = useApiMutation<
 		PluginInstallResponse,
@@ -91,12 +97,12 @@ export default function useInstall() {
 	}, [clearInstalledCache, queryClient]);
 	const checkActivation = useCallback(() => {
 		if (typeof activation?.plan_type == 'undefined') {
-			toast.error(__('License not activated'));
+			notify.error(__('License not activated'));
 			navigate('/activation');
 			return false;
 		}
 		return true;
-	}, [activation, navigate]);
+	}, [activation, navigate, notify]);
 	const installItem = useCallback(
 		(item: TPostItem, media: TPostMedia) =>
 			new Promise<PluginInstallResponse>((resolve, reject) => {
@@ -105,17 +111,38 @@ export default function useInstall() {
 				}
 				if (!can_install) {
 					reject(__('Installation not allowed'));
-					toast.error(__('Installation not allowed'));
+					notify.error(__('Installation not allowed'));
 				}
 				const is_rollback = isRollBack(item, media);
 				const installed = isInstalled(item);
 				const is_new = isNewerVersion(item);
-				toast.promise(
+				const method = installed ? 'update' : 'install';
+				notify.promise(
 					installPlugin({
 						item_id: item.id,
-						method: installed ? 'update' : 'install',
+						method,
 						media_id: media?.id,
 						slug: installed?.slug
+					}).then(async (data) => {
+						if (
+							data.type === 'delay' &&
+							data.delay_token &&
+							data.delay_seconds
+						) {
+							const claimed = await claimAfterDelay(
+								data.delay_token,
+								data.delay_seconds,
+								method,
+								item.id,
+								installed?.slug,
+								media?.id
+							);
+							return {
+								...data,
+								...claimed
+							};
+						}
+						return data;
 					}),
 					{
 						description: decodeEntities(item.title),
@@ -134,7 +161,7 @@ export default function useInstall() {
 							resolve(data);
 							return __('Successful');
 						},
-						error(err) {
+						error(err: TApiError) {
 							reject(err);
 							return err.message;
 						}
@@ -148,24 +175,46 @@ export default function useInstall() {
 			isInstalled,
 			isNewerVersion,
 			installPlugin,
-			clearCache
+			clearCache,
+			notify
 		]
 	);
 	const downloadItem = useCallback(
-		(item: TPostItem, media: TPostMedia) =>
+		(item: TPostItem, media?: TPostMedia) =>
 			new Promise<PluginInstallResponse>((resolve, reject) => {
 				if (!checkActivation()) {
 					reject(__('License not activated'));
 				}
 				if (!can_download) {
 					reject(__('Download not allowed'));
-					toast.error(__('Download not allowed'));
+					notify.error(__('Download not allowed'));
 				}
-				toast.promise(
+				notify.promise(
 					installPlugin({
 						item_id: item.id,
 						method: 'download',
 						media_id: media?.id
+					}).then(async (data) => {
+						if (
+							data.type === 'delay' &&
+							data.delay_token &&
+							data.delay_seconds
+						) {
+							const claimed = await claimAfterDelay(
+								data.delay_token,
+								data.delay_seconds,
+								'download',
+								item.id,
+								undefined,
+								media?.id
+							);
+							return {
+								...data,
+								link: claimed.link,
+								filename: claimed.filename
+							};
+						}
+						return data;
 					}),
 					{
 						description: decodeEntities(item.title),
@@ -179,7 +228,7 @@ export default function useInstall() {
 							}
 							return __('Error Initiating Download');
 						},
-						error(err) {
+						error(err: TApiError) {
 							reject(err);
 							return err.message;
 						}
@@ -191,7 +240,8 @@ export default function useInstall() {
 			can_download,
 			checkActivation,
 			clearCache,
-			installPlugin
+			installPlugin,
+			notify
 		]
 	);
 

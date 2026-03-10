@@ -29,5 +29,7 @@ export type TActivationDetail = {
 	install_allowed: boolean;
 	bulk_download: boolean;
 	bulk_install: boolean;
+	collection_download: boolean;
 	autoupdate: boolean;
+	download_delay_seconds?: number;
 };

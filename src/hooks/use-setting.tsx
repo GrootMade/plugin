@@ -1,4 +1,5 @@
 import { __ } from '@/lib/i18n';
+import { TApiError } from '@/types/api';
 import { useQueryClient } from '@tanstack/react-query';
 import {
 	createContext,
@@ -7,10 +8,10 @@ import {
 	useEffect,
 	useState
 } from '@wordpress/element';
-import { toast } from 'sonner';
 import { z } from 'zod';
 import useApiFetch from './use-api-fetch';
 import useApiMutation from './use-api-mutation';
+import useNotification from './use-notification';
 export const settingSchema = z.object({
 	autoactivate: z.boolean().default(false),
 	clean_on_uninstall: z.boolean().default(false),
@@ -44,6 +45,7 @@ const SettingProviderContext = createContext<SettingState>(null);
 
 export function SettingProvider({ children, ...props }: SettingProviderProps) {
 	const queryClient = useQueryClient();
+	const notify = useNotification();
 	const [settings, setSettings] = useState<TSetting>(null);
 	const {
 		data: setting,
@@ -65,28 +67,29 @@ export function SettingProvider({ children, ...props }: SettingProviderProps) {
 		[setSettings]
 	);
 	const updateSettings = useCallback(() => {
-		toast.promise(
-			() =>
-				new Promise((resolve, reject) => {
-					const parsed = settingSchema.safeParse(settings);
-					if (parsed.success) {
-						updateSettingAsync(parsed.data)
-							.then((data) => resolve(data))
-							.catch((err) => reject(err));
-					} else {
-						reject(parsed.error.issues);
-					}
-				}),
+		notify.promise(
+			new Promise((resolve, reject) => {
+				const parsed = settingSchema.safeParse(settings);
+				if (parsed.success) {
+					updateSettingAsync(parsed.data)
+						.then((data) => resolve(data))
+						.catch((err) => reject(err));
+				} else {
+					reject(parsed.error.issues);
+				}
+			}),
 			{
 				description: __('Updating Settings'),
-				error: (err) => err.message ?? __('Error saving settings'),
+				loading: __('Updating Settings'),
+				error: (err: TApiError) =>
+					err.message ?? __('Error saving settings'),
 				success: __('Settings Saved'),
 				finally: () => {
 					clearCache();
 				}
 			}
 		);
-	}, [settings, updateSettingAsync, clearCache]);
+	}, [settings, updateSettingAsync, clearCache, notify]);
 
 	useEffect(() => {
 		const zParsed = settingSchema.safeParse(setting);

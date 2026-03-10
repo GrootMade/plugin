@@ -2,6 +2,7 @@ import AdditionalDownloadButton from '@/components/additional-download-button';
 import Paging from '@/components/paging';
 import SimpleTable, { SimpleColumnDef } from '@/components/table/simple-table';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import useApiFetch from '@/hooks/use-api-fetch';
 import capitalizeHyphenatedWords from '@/lib/capitalizeHyphenatedWords';
 import { __ } from '@/lib/i18n';
@@ -84,7 +85,7 @@ export default function ItemDemoContents({ item }: Props) {
 		}
 	);
 	return (
-		<div className="flex flex-col gap-5 sm:gap-7">
+		<div className="flex flex-col gap-5 max-md:order-4 sm:gap-7">
 			<Card>
 				<CardHeader className="border-b p-5 sm:p-7">
 					{__('Demo Contents')}
@@ -101,13 +102,23 @@ export default function ItemDemoContents({ item }: Props) {
 									currentPage={page}
 									totalPages={Number(data?.meta?.last_page)}
 									urlGenerator={(_page: number) =>
-										`/item/${params.slug}/detail/${params.id}/${params.tab}?page=${_page}`
+										`/item/${params.slug}/detail/${params.id}?page=${_page}`
 									}
 								/>
 							)}
 						</div>
 					) : isLoading || isFetching ? (
-						<div className="">{__('Loading...')}</div>
+						<div className="space-y-3">
+							{Array.from({ length: 4 }).map((_, i) => (
+								<div
+									key={i}
+									className="flex items-center gap-3"
+								>
+									<Skeleton className="h-4 w-24" />
+									<Skeleton className="h-4 flex-1" />
+								</div>
+							))}
+						</div>
 					) : (
 						<div className="">{__('No Items Found')}</div>
 					)}

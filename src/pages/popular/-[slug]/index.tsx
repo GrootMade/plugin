@@ -1,3 +1,4 @@
+import AdBanner from '@/components/ad-banner';
 import { AppPageShell } from '@/components/body/page-shell';
 import useApiFetch from '@/hooks/use-api-fetch';
 import { _x } from '@/lib/i18n';
@@ -43,6 +44,7 @@ export default function Component() {
 						/>
 					))}
 			</div>
+			<AdBanner />
 		</AppPageShell>
 	);
 }

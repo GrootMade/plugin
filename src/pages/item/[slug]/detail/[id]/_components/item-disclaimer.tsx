@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import useApiFetch from '@/hooks/use-api-fetch';
+import { __ } from '@/lib/i18n';
 import renderHtml from '@/lib/render-html';
 import { DisclaimerType } from '@/types/disclaimer';
 import { TPostItem } from '@/types/item';
-import { __ } from '@wordpress/i18n';
 import Linkify from 'linkify-react';
 
 type Props = {
@@ -16,7 +16,7 @@ export default function ItemDisclaimer({ item }: Props) {
 		!!item.copyright === false
 	);
 	return (
-		<Card>
+		<Card className="max-md:order-5">
 			<CardHeader className="flex flex-row items-center justify-between border-b">
 				{__('Legal Disclaimer')}
 			</CardHeader>

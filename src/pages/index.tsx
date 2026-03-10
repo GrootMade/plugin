@@ -1,3 +1,5 @@
+import AdBanner from '@/components/ad-banner';
+import AdCard from '@/components/ad-card';
 import { AppPageShell } from '@/components/body/page-shell';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { __ } from '@/lib/i18n';
@@ -28,17 +30,23 @@ export default function Component() {
 				</CardContent>
 			</Card>
 
+			<AdBanner />
+
 			{/* License + Installed side by side */}
 			<div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-7">
 				<LicenseStatus />
 				<InstallStats />
 			</div>
 
+			<AdBanner />
+
 			{/* Popular themes + plugins */}
 			<div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-7">
 				<PopularItems type="theme" />
 				<PopularItems type="plugin" />
 			</div>
+
+			<AdCard />
 		</AppPageShell>
 	);
 }

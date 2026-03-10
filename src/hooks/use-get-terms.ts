@@ -28,5 +28,10 @@ export default function useGetTerms(type: TItemTypeEnum) {
 			getData();
 		}
 	}, [getData, hasMore]);
-	return { data: hasMore ? null : termStack, isPending };
+	// Return first page as soon as it's available; keep appending in background
+	return {
+		data: termStack,
+		isPending: isPending && termStack.length === 0,
+		hasMore
+	};
 }

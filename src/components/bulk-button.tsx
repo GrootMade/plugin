@@ -9,7 +9,7 @@ type Props = {
 	item: TPostItem;
 } & ButtonProps;
 
-export default function BulkButton({ item }: Props) {
+export default function BulkButton({ item, variant, size }: Props) {
 	const { addItem, hasItem, removeItem } = useBulk();
 	const { activated, active, can_bulk_download, can_bulk_install } =
 		useActivation();
@@ -17,8 +17,10 @@ export default function BulkButton({ item }: Props) {
 	return (
 		(can_bulk_download || can_bulk_install) && (
 			<Button
-				variant={hasItem(item.id) ? 'secondary' : 'outline'}
-				size="icon"
+				variant={
+					variant ?? (hasItem(item.id) ? 'secondary' : 'outline')
+				}
+				size={size ?? 'icon'}
 				className="flex items-center gap-2"
 				disabled={!activated || !active}
 				title={

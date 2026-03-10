@@ -4,6 +4,7 @@ import {
 	CardFooter,
 	CardHeader
 } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import useApiFetch from '@/hooks/use-api-fetch';
 import { __ } from '@/lib/i18n';
 import renderHtml from '@/lib/render-html';
@@ -20,7 +21,7 @@ export default function ItemComments() {
 		}
 	);
 	return (
-		<div className="flex flex-col gap-5 sm:gap-7">
+		<div className="flex flex-col gap-5 max-md:order-6 sm:gap-7">
 			<Card>
 				<CardHeader className="border-b p-5 sm:p-7">
 					{__('Comments')}
@@ -60,7 +61,24 @@ export default function ItemComments() {
 							))}
 						</div>
 					) : isLoading || isFetching ? (
-						<div className="">{__('Loading...')}</div>
+						<div className="flex flex-col gap-4">
+							{Array.from({ length: 3 }).map((_, i) => (
+								<div
+									key={i}
+									className="flex flex-col gap-3"
+								>
+									<div className="flex items-center gap-2">
+										<Skeleton className="size-8 rounded-full" />
+										<div className="flex flex-col gap-1">
+											<Skeleton className="h-3 w-28" />
+											<Skeleton className="h-2.5 w-20" />
+										</div>
+									</div>
+									<Skeleton className="h-3 w-full" />
+									<Skeleton className="h-3 w-2/3" />
+								</div>
+							))}
+						</div>
 					) : (
 						<div className="">{__('No Items Found')}</div>
 					)}

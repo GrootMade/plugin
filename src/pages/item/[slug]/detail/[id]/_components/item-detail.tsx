@@ -1,104 +1,147 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { __ } from '@/lib/i18n';
 import { TPostItem } from '@/types/item';
 import { useMemo } from '@wordpress/element';
 import { decodeEntities } from '@wordpress/html-entities';
+import {
+	BookOpen,
+	Calendar,
+	CheckCircle,
+	Hash,
+	Key,
+	LayoutGrid,
+	Monitor,
+	Tag,
+	User
+} from 'lucide-react';
 import moment from 'moment';
+import type { ReactNode } from 'react';
+
+function StatRow({
+	icon,
+	label,
+	value
+}: {
+	icon: ReactNode;
+	label: string;
+	value: ReactNode;
+}) {
+	return (
+		<li className="flex items-center gap-3 py-1">
+			<p className="flex min-w-0 items-center gap-1.5 text-muted-foreground [&_svg]:size-[1.1em] [&_svg]:shrink-0 [&_svg]:opacity-75">
+				{icon}
+				<span className="flex-1 truncate">{label}</span>
+			</p>
+			<hr className="min-w-2 flex-1" />
+			<span className="shrink-0 font-medium tabular-nums">{value}</span>
+		</li>
+	);
+}
 
 type Props = {
 	item: TPostItem;
 };
+
 type Row = {
+	icon: ReactNode;
 	label: string;
-	el: () => React.ReactNode | React.ReactElement;
+	value: ReactNode;
 	enabled?: boolean;
 };
+
 export default function ItemDetail({ item }: Props) {
-	const items = useMemo<Row[]>(
+	const rows = useMemo<Row[]>(
 		() => [
 			{
+				icon: <Hash />,
 				label: __('Version'),
-				el: () => item.version,
+				value: item.version,
 				enabled: item.type !== 'request'
 			},
 			{
+				icon: <Tag />,
 				label: __('Slug'),
-				el: () => item.slugs[0],
+				value: item.slugs[0],
 				enabled: item.type !== 'request'
 			},
-			{ label: __('Status'), el: () => 'Functional' },
 			{
+				icon: <CheckCircle />,
+				label: __('Status'),
+				value: 'Functional'
+			},
+			{
+				icon: <Calendar />,
 				label: __('Updated'),
-				el: () => moment.unix(item.updated).format('MMM D, YYYY')
+				value: moment.unix(item.updated).format('MMM D, YYYY')
 			},
 			{
+				icon: <Calendar />,
 				label: __('Published'),
-				el: () => moment.unix(item.created).format('MMM D, YYYY')
+				value: moment.unix(item.created).format('MMM D, YYYY')
 			},
 			{
+				icon: <User />,
 				label: __('Author'),
-				el: () =>
-					item.terms
-						.filter((i) => i.taxonomy === 'fv_item_author')
-						.map((i) => decodeEntities(i.name))
-						.join(', '),
+				value: item.terms
+					.filter((i) => i.taxonomy === 'fv_item_author')
+					.map((i) => decodeEntities(i.name))
+					.join(', '),
 				enabled:
 					item.terms.filter((i) => i.taxonomy === 'fv_item_author')
 						.length > 0
 			},
 			{
+				icon: <BookOpen />,
 				label: __('Documentation'),
-				el: () =>
-					item.terms
-						.filter((i) => i.taxonomy === 'fv_documentation')
-						.map((i) => decodeEntities(i.name))
-						.join(', '),
+				value: item.terms
+					.filter((i) => i.taxonomy === 'fv_documentation')
+					.map((i) => decodeEntities(i.name))
+					.join(', '),
 				enabled:
 					item.terms.filter((i) => i.taxonomy === 'fv_documentation')
 						.length > 0
 			},
 			{
+				icon: <LayoutGrid />,
 				label: __('Gutenberg Optimized'),
-				el: () =>
-					item.terms
-						.filter((i) => i.taxonomy === 'fv_gutenberg_optimized')
-						.map((i) => decodeEntities(i.name))
-						.join(', '),
+				value: item.terms
+					.filter((i) => i.taxonomy === 'fv_gutenberg_optimized')
+					.map((i) => decodeEntities(i.name))
+					.join(', '),
 				enabled:
 					item.terms.filter(
 						(i) => i.taxonomy === 'fv_gutenberg_optimized'
 					).length > 0
 			},
 			{
+				icon: <Monitor />,
 				label: __('High Resolution'),
-				el: () =>
-					item.terms
-						.filter((i) => i.taxonomy === 'fv_high_resolution')
-						.map((i) => decodeEntities(i.name))
-						.join(', '),
+				value: item.terms
+					.filter((i) => i.taxonomy === 'fv_high_resolution')
+					.map((i) => decodeEntities(i.name))
+					.join(', '),
 				enabled:
 					item.terms.filter(
 						(i) => i.taxonomy === 'fv_high_resolution'
 					).length > 0
 			},
 			{
+				icon: <LayoutGrid />,
 				label: __('Widget Ready'),
-				el: () =>
-					item.terms
-						.filter((i) => i.taxonomy === 'fv_widget_ready')
-						.map((i) => decodeEntities(i.name))
-						.join(', '),
+				value: item.terms
+					.filter((i) => i.taxonomy === 'fv_widget_ready')
+					.map((i) => decodeEntities(i.name))
+					.join(', '),
 				enabled:
 					item.terms.filter((i) => i.taxonomy === 'fv_widget_ready')
 						.length > 0
 			},
 			{
+				icon: <Key />,
 				label: __('Access'),
-				el: () =>
-					item.terms
-						.filter((i) => i.taxonomy === 'fv_access_level')
-						.map((i) => decodeEntities(i.name))
-						.join(', '),
+				value: item.terms
+					.filter((i) => i.taxonomy === 'fv_access_level')
+					.map((i) => decodeEntities(i.name))
+					.join(', '),
 				enabled:
 					item.terms.filter((i) => i.taxonomy === 'fv_access_level')
 						.length > 0
@@ -108,28 +151,20 @@ export default function ItemDetail({ item }: Props) {
 	);
 
 	return (
-		<Card>
-			<CardHeader className="flex flex-row items-center justify-between border-b">
-				{__('Details')}
-			</CardHeader>
-			<CardContent className="space-y-3">
-				{items.map(
-					({ label, el: Element, enabled }) =>
+		<div className="rounded-lg border p-5 max-md:order-3">
+			<ul className="w-full text-sm">
+				{rows.map(
+					({ icon, label, value, enabled }) =>
 						enabled !== false && (
-							<div
+							<StatRow
 								key={label}
-								className="flex flex-col gap-1 text-sm font-light"
-							>
-								<div className="text-muted-foreground">
-									{label}
-								</div>
-								<div>
-									<Element />
-								</div>
-							</div>
+								icon={icon}
+								label={label}
+								value={value}
+							/>
 						)
 				)}
-			</CardContent>
-		</Card>
+			</ul>
+		</div>
 	);
 }

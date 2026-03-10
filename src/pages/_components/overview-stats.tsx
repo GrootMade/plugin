@@ -22,15 +22,15 @@ type Props = {
 const chartConfig = {
 	themes: {
 		label: 'Themes',
-		color: 'var(--chart-1)'
+		color: 'hsl(var(--chart-1))'
 	},
 	plugins: {
 		label: 'Plugins',
-		color: 'var(--chart-2)'
+		color: 'hsl(var(--chart-2))'
 	},
 	kits: {
 		label: 'Template Kits',
-		color: 'var(--chart-3)'
+		color: 'hsl(var(--chart-3))'
 	}
 } satisfies ChartConfig;
 
@@ -40,9 +40,21 @@ export default function OverviewStats({ className }: Props) {
 	const chartData = useMemo(() => {
 		if (!data) return [];
 		return [
-			{ name: 'themes', value: data.themes, fill: 'var(--chart-1)' },
-			{ name: 'plugins', value: data.plugins, fill: 'var(--chart-2)' },
-			{ name: 'kits', value: data.kits, fill: 'var(--chart-3)' }
+			{
+				name: 'themes',
+				value: data.themes,
+				fill: 'hsl(var(--chart-1))'
+			},
+			{
+				name: 'plugins',
+				value: data.plugins,
+				fill: 'hsl(var(--chart-2))'
+			},
+			{
+				name: 'kits',
+				value: data.kits,
+				fill: 'hsl(var(--chart-3))'
+			}
 		];
 	}, [data]);
 
@@ -51,19 +63,19 @@ export default function OverviewStats({ className }: Props) {
 			icon: Palette,
 			label: __('Themes'),
 			value: data?.themes ?? 0,
-			color: 'var(--chart-1)'
+			color: 'hsl(var(--chart-1))'
 		},
 		{
 			icon: ToyBrick,
 			label: __('Plugins'),
 			value: data?.plugins ?? 0,
-			color: 'var(--chart-2)'
+			color: 'hsl(var(--chart-2))'
 		},
 		{
 			icon: Puzzle,
 			label: __('Template Kits'),
 			value: data?.kits ?? 0,
-			color: 'var(--chart-3)'
+			color: 'hsl(var(--chart-3))'
 		}
 	];
 

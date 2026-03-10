@@ -10,7 +10,7 @@ type Props = {
 
 export default function ItemTerms({ title, terms }: Props) {
 	return terms.length > 0 ? (
-		<Card>
+		<Card className="max-md:order-5">
 			<CardHeader className="flex flex-row items-center justify-between border-b">
 				{title}
 			</CardHeader>
