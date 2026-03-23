@@ -8,17 +8,27 @@ import { Skeleton } from '@/components/ui/skeleton';
 import useApiFetch from '@/hooks/use-api-fetch';
 import { __ } from '@/lib/i18n';
 import renderHtml from '@/lib/render-html';
-import { useParams } from '@/router';
 import { TCommentResponse } from '@/types/item';
 import moment from 'moment';
 
-export default function ItemComments() {
-	const params = useParams('/item/:slug/detail/:id/:tab?');
+type Props = {
+	itemId: string;
+	topicId: number;
+};
+
+export default function ItemComments({ itemId, topicId }: Props) {
+	const parsedItemId = Number(itemId);
+	const parsedTopicId = Number(topicId);
 	const { data, isLoading, isFetching } = useApiFetch<TCommentResponse>(
 		'item/comments',
 		{
-			item_id: params.id
-		}
+			item_id: parsedItemId,
+			topic_id: parsedTopicId
+		},
+		Number.isFinite(parsedItemId) &&
+			parsedItemId > 0 &&
+			Number.isFinite(parsedTopicId) &&
+			parsedTopicId > 0
 	);
 	return (
 		<div className="flex flex-col gap-5 max-md:order-6 sm:gap-7">

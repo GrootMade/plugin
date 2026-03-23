@@ -94,6 +94,8 @@ export default function ItemRequestUpdate({ item, ...buttonProps }: Props) {
 	const [open, setOpen] = useState(false);
 	const notify = useNotification();
 	const currentVersion = item.version ?? '';
+	const parsedItemId = Number(item.id);
+	const parsedTopicId = Number(item.topic_id ?? 0);
 	const schema = useMemo(
 		() => getUpdateRequestSchema(currentVersion),
 		[currentVersion]
@@ -105,7 +107,11 @@ export default function ItemRequestUpdate({ item, ...buttonProps }: Props) {
 		}
 	});
 	const { isPending, mutateAsync } = useApiMutation('item/request-update');
-	const canRequestUpdate = Boolean(item.topic_id);
+	const canRequestUpdate =
+		Number.isFinite(parsedItemId) &&
+		parsedItemId > 0 &&
+		Number.isFinite(parsedTopicId) &&
+		parsedTopicId > 0;
 
 	async function onSubmit(data: TUpdateRequest) {
 		if (!canRequestUpdate) {
@@ -113,18 +119,25 @@ export default function ItemRequestUpdate({ item, ...buttonProps }: Props) {
 			return;
 		}
 
-		notify.promise(mutateAsync({ ...data, item_id: item.id }), {
-			loading: __('Making Update Request'),
-			success: () => {
-				setOpen(false);
-				return __('Update request sent successfully');
-			},
-			error: (err: TApiError) =>
-				err.message ?? __('Error making request'),
-			finally() {
-				form.reset({ version: currentVersion });
+		notify.promise(
+			mutateAsync({
+				item_id: parsedItemId,
+				topic_id: parsedTopicId,
+				version: data.version.trim()
+			}),
+			{
+				loading: __('Making Update Request'),
+				success: () => {
+					setOpen(false);
+					return __('Update request sent successfully');
+				},
+				error: (err: TApiError) =>
+					err.message ?? __('Error making request'),
+				finally() {
+					form.reset({ version: currentVersion });
+				}
 			}
-		});
+		);
 	}
 
 	return (

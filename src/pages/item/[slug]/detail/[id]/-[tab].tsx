@@ -109,7 +109,12 @@ export default function Component() {
 							data.additional_content_count > 0 && (
 								<ItemDemoContents item={data} />
 							)}
-						{data.topic_id && data.topic_id > 0 && <ItemComments />}
+						{data.topic_id && data.topic_id > 0 && (
+							<ItemComments
+								itemId={data.id}
+								topicId={data.topic_id}
+							/>
+						)}
 
 						{data.support_url && data.support_url.length > 0 && (
 							<a

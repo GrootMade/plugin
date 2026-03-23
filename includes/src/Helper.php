@@ -29,15 +29,38 @@ class Helper
 				'body' => $content_body,
 			]
 		);
-		$body = json_decode(wp_remote_retrieve_body($result), true);
-		if (
-			is_wp_error($result) ||
-			wp_remote_retrieve_response_code($result) !== 200 ||
-			isset($body['error'])
-		) {
+		$status = is_wp_error($result)
+			? 0
+			: (int) wp_remote_retrieve_response_code($result);
+		$raw_body = is_wp_error($result)
+			? ''
+			: wp_remote_retrieve_body($result);
+		$body = is_array($raw_body) ? $raw_body : json_decode($raw_body, true);
+		if (is_wp_error($result) || $status !== 200 || isset($body['error'])) {
+			$message = null;
+			if (is_wp_error($result)) {
+				$message = $result->get_error_message();
+			} elseif (is_array($body)) {
+				if (!empty($body['message']) && is_string($body['message'])) {
+					$message = $body['message'];
+				} elseif (
+					isset($body['error']) &&
+					is_array($body['error']) &&
+					!empty($body['error']['message']) &&
+					is_string($body['error']['message'])
+				) {
+					$message = $body['error']['message'];
+				}
+			}
+			if (empty($message) && is_string($raw_body)) {
+				$trimmed_body = trim($raw_body);
+				if ($trimmed_body !== '') {
+					$message = $trimmed_body;
+				}
+			}
 			return new \WP_Error(
 				400,
-				$body['message'] ?? __('Something went wrong', 'grootmade')
+				$message ?? __('Something went wrong', 'grootmade')
 			);
 		}
 		return $body;

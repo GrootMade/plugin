@@ -53,10 +53,18 @@ class Item extends ApiBase
 	}
 	public function get_comments(\WP_REST_Request $request)
 	{
-		$item_id = $request->get_param('item_id');
+		$item_id = (int) $request->get_param('item_id');
+		$topic_id = (int) $request->get_param('topic_id');
+		if ($item_id <= 0 || $topic_id <= 0) {
+			return new \WP_Error(
+				400,
+				__('Invalid comment request payload', 'grootmade')
+			);
+		}
 
 		return Helper::engine_post('item/comments', [
 			'item_id' => $item_id,
+			'topic_id' => $topic_id,
 		]);
 	}
 	public function download_additional(\WP_REST_Request $request)
@@ -267,10 +275,20 @@ class Item extends ApiBase
 
 	public function request_update(\WP_REST_Request $request)
 	{
-		$item_id = $request->get_param('item_id');
-		$version = $request->get_param('version');
+		$item_id = (int) $request->get_param('item_id');
+		$topic_id = (int) $request->get_param('topic_id');
+		$version = trim((string) $request->get_param('version'));
+
+		if ($item_id <= 0 || $topic_id <= 0 || $version === '') {
+			return new \WP_Error(
+				400,
+				__('Invalid update request payload', 'grootmade')
+			);
+		}
+
 		return Helper::engine_post('update/request', [
 			'item_id' => $item_id,
+			'topic_id' => $topic_id,
 			'version' => $version,
 		]);
 	}
