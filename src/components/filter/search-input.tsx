@@ -16,24 +16,30 @@ export default function Search({ collection }: Props) {
 	}, 500);
 	useEffect(() => {
 		setText(collection.search?.keyword || '');
-	}, [collection]);
+	}, [collection.search?.keyword]);
 	return (
 		<div className="relative w-full sm:w-auto">
 			<Input
-				defaultValue={text}
+				value={text}
 				className={cn(
 					'h-9 w-full pr-7 transition-[width] sm:w-[300px]'
 				)}
 				placeholder={__('Search Title')}
 				onChange={(e) => {
-					debounced(e.target.value);
+					const value = e.target.value;
+					setText(value);
+					debounced(value);
 				}}
 			/>
 			{text.length > 0 && (
 				<X
 					className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer opacity-100 transition-opacity hover:opacity-70"
 					size={14}
-					onClick={() => collection.setSearch('')}
+					onClick={() => {
+						setText('');
+						debounced.cancel();
+						collection.setSearch('');
+					}}
 				/>
 			)}
 		</div>

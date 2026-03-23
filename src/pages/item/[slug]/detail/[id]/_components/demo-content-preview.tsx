@@ -1,3 +1,4 @@
+import ActionLoader from '@/components/ui/action-loader';
 import {
 	Card,
 	CardContent,
@@ -37,7 +38,7 @@ export default function DemoContentPreview({ item }: Props) {
 							/>
 						</div>
 					) : isLoading || isFetching ? (
-						<div className="">{__('Loading...')}</div>
+						<ActionLoader label={__('Loading demo contents')} />
 					) : (
 						<div className="">{__('No Items Found')}</div>
 					)}

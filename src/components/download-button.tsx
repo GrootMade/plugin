@@ -3,7 +3,8 @@ import useInstall from '@/hooks/use-install';
 import { __ } from '@/lib/i18n';
 import { TPostItem } from '@/types/item';
 import { useState } from '@wordpress/element';
-import { Download, Loader } from 'lucide-react';
+import { Download } from 'lucide-react';
+import ActionLoader from './ui/action-loader';
 import { Button, ButtonProps } from './ui/button';
 
 type Props = {
@@ -28,16 +29,10 @@ export default function DownloadButton({ item, variant, size }: Props) {
 			title={__('Download')}
 			onClick={() => {
 				setIsPending(true);
-				downloadItem(item)
-					.then(() => setIsPending(false))
-					.catch(() => setIsPending(false));
+				downloadItem(item).finally(() => setIsPending(false));
 			}}
 		>
-			{isPending ? (
-				<Loader className="h-4 w-4 animate-spin" />
-			) : (
-				<Download width={16} />
-			)}
+			{isPending ? <ActionLoader /> : <Download width={16} />}
 		</Button>
 	);
 }

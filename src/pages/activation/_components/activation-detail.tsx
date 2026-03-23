@@ -1,3 +1,4 @@
+import ActionLoader from '@/components/ui/action-loader';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -23,7 +24,7 @@ import useNotification from '@/hooks/use-notification';
 import { __ } from '@/lib/i18n';
 import { TActivationDetail } from '@/types/license';
 import { useQueryClient } from '@tanstack/react-query';
-import { Globe, Loader } from 'lucide-react';
+import { Globe } from 'lucide-react';
 import moment from 'moment';
 
 export type ClientLicenseType = {
@@ -102,10 +103,11 @@ export default function ActivationDetailItem({ detail }: Props) {
 							disabled={isPending}
 							className="flex-rowgap-2 flex"
 						>
-							{__('Deactivate')}
 							{isPending ? (
-								<Loader className="h-4 w-4 animate-spin" />
-							) : null}
+								<ActionLoader label={__('Deactivating')} />
+							) : (
+								__('Deactivate')
+							)}
 						</Button>
 					</DrawerTrigger>
 					<DrawerContent>
@@ -128,10 +130,13 @@ export default function ActivationDetailItem({ detail }: Props) {
 										disabled={isPending}
 										className="flex flex-row gap-2"
 									>
-										{__('Deactivate')}
 										{isPending ? (
-											<Loader className="h-4 w-4 animate-spin" />
-										) : null}
+											<ActionLoader
+												label={__('Deactivating')}
+											/>
+										) : (
+											__('Deactivate')
+										)}
 									</Button>
 									<DrawerClose asChild>
 										<Button variant="outline">

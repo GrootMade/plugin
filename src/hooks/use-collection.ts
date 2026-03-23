@@ -8,7 +8,7 @@ import {
 	BookmarkPostCollectionSchema
 } from '@/zod/bookmark';
 import { useQueryClient } from '@tanstack/react-query';
-import { useCallback } from '@wordpress/element';
+import { useCallback, useRef, useState } from '@wordpress/element';
 import { decodeEntities } from '@wordpress/html-entities';
 import { z } from 'zod';
 import useActivation from './use-activation';
@@ -25,6 +25,40 @@ export default function useBookmark() {
 	const queryClient = useQueryClient();
 	const { activated } = useActivation();
 	const notify = useNotification();
+	const [pendingCollectionItemIds, setPendingCollectionItemIds] = useState<
+		number[]
+	>([]);
+	const [pendingCollectionSave, setPendingCollectionSave] = useState(false);
+	const [pendingCollectionDeleteIds, setPendingCollectionDeleteIds] =
+		useState<number[]>([]);
+	const pendingCollectionItemRef = useRef<Set<number>>(new Set());
+	const pendingCollectionDeleteRef = useRef<Set<number>>(new Set());
+
+	const addPendingCollectionItem = useCallback((id: number) => {
+		pendingCollectionItemRef.current.add(id);
+		setPendingCollectionItemIds(
+			Array.from(pendingCollectionItemRef.current)
+		);
+	}, []);
+	const removePendingCollectionItem = useCallback((id: number) => {
+		pendingCollectionItemRef.current.delete(id);
+		setPendingCollectionItemIds(
+			Array.from(pendingCollectionItemRef.current)
+		);
+	}, []);
+	const addPendingCollectionDelete = useCallback((id: number) => {
+		pendingCollectionDeleteRef.current.add(id);
+		setPendingCollectionDeleteIds(
+			Array.from(pendingCollectionDeleteRef.current)
+		);
+	}, []);
+	const removePendingCollectionDelete = useCallback((id: number) => {
+		pendingCollectionDeleteRef.current.delete(id);
+		setPendingCollectionDeleteIds(
+			Array.from(pendingCollectionDeleteRef.current)
+		);
+	}, []);
+
 	const clearCache = useCallback(() => {
 		queryClient.invalidateQueries({
 			queryKey: ['collection/list']
@@ -60,6 +94,11 @@ export default function useBookmark() {
 	const addItemToCollection = useCallback(
 		(item: TPostItem, collection: BookmarkCollectionType) =>
 			new Promise((resolve, reject) => {
+				if (pendingCollectionItemRef.current.has(collection.id)) {
+					resolve(null);
+					return;
+				}
+				addPendingCollectionItem(collection.id);
 				const isAdd =
 					item.collections?.includes(collection.id) === false;
 				notify.promise(
@@ -96,11 +135,20 @@ export default function useBookmark() {
 									: __('Removed from collection %s'),
 								collection.title
 							);
+						},
+						finally: () => {
+							removePendingCollectionItem(collection.id);
 						}
 					}
 				);
 			}),
-		[addItemAsync, clearCache, notify]
+		[
+			addItemAsync,
+			addPendingCollectionItem,
+			clearCache,
+			notify,
+			removePendingCollectionItem
+		]
 	);
 	const addNewCollection = useCallback(
 		(
@@ -108,9 +156,14 @@ export default function useBookmark() {
 			update: boolean = false
 		) =>
 			new Promise((resolve, reject) => {
+				if (pendingCollectionSave) {
+					resolve(null);
+					return;
+				}
 				const postData =
 					BookmarkPostCollectionSchema.safeParse(collection);
 				if (postData.success) {
+					setPendingCollectionSave(true);
 					notify.promise(addCollectionAsync(postData.data), {
 						description: update
 							? decodeEntities(collection.title)
@@ -130,18 +183,26 @@ export default function useBookmark() {
 							return update
 								? __('Collection Updated')
 								: __('Collection Added');
+						},
+						finally: () => {
+							setPendingCollectionSave(false);
 						}
 					});
 				}
 			}),
-		[clearCache, addCollectionAsync, notify]
+		[clearCache, addCollectionAsync, notify, pendingCollectionSave]
 	);
 	const removeCollection = useCallback(
 		(collection: z.infer<typeof BookmarkPostCollectionSchema>) =>
 			new Promise((resolve, reject) => {
+				if (pendingCollectionDeleteRef.current.has(collection.id)) {
+					resolve(null);
+					return;
+				}
 				const postData =
 					BookmarkPostCollectionSchema.safeParse(collection);
 				if (postData.success) {
+					addPendingCollectionDelete(collection.id);
 					notify.promise(
 						removeCollectionAsync({ id: collection.id }),
 						{
@@ -155,16 +216,28 @@ export default function useBookmark() {
 								clearCache();
 								resolve(data);
 								return __('Collection Removed');
+							},
+							finally: () => {
+								removePendingCollectionDelete(collection.id);
 							}
 						}
 					);
 				}
 			}),
-		[removeCollectionAsync, clearCache, notify]
+		[
+			addPendingCollectionDelete,
+			clearCache,
+			notify,
+			removeCollectionAsync,
+			removePendingCollectionDelete
+		]
 	);
 
 	return {
 		collections,
+		pendingCollectionItemIds,
+		pendingCollectionSave,
+		pendingCollectionDeleteIds,
 		addItemToCollection,
 		addNewCollection,
 		removeCollection

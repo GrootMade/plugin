@@ -1,3 +1,4 @@
+import ActionLoader from '@/components/ui/action-loader';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -19,7 +20,6 @@ import useNotification from '@/hooks/use-notification';
 import { __ } from '@/lib/i18n';
 import { licenseFormZodSchema } from '@/zod/license';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -86,10 +86,13 @@ export default function RegisterLicenseForm() {
 							disabled={isPending}
 							className="gap-2"
 						>
-							<span>{__('Activate License')}</span>
 							{isPending ? (
-								<Loader className="h-4 w-4 animate-spin" />
-							) : null}
+								<ActionLoader
+									label={__('Activating License')}
+								/>
+							) : (
+								<span>{__('Activate License')}</span>
+							)}
 						</Button>
 					</CardFooter>
 				</Card>

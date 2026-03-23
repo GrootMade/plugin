@@ -1,3 +1,4 @@
+import ActionLoader from '@/components/ui/action-loader';
 import { Button, ButtonProps } from '@/components/ui/button';
 import {
 	Dialog,
@@ -21,7 +22,6 @@ import {
 	CloudDownload,
 	Download,
 	DownloadCloud,
-	Loader,
 	RefreshCw
 } from 'lucide-react';
 
@@ -56,13 +56,9 @@ export default function InstallButton({ item, media, size, variant }: Props) {
 	function install(is_download?: boolean) {
 		setIsPending(true);
 		if (is_download) {
-			downloadItem(item, media)
-				.then(() => setIsPending(false))
-				.catch(() => setIsPending(false));
+			downloadItem(item, media).finally(() => setIsPending(false));
 		} else {
-			installItem(item, media)
-				.then(() => setIsPending(false))
-				.catch(() => setIsPending(false));
+			installItem(item, media).finally(() => setIsPending(false));
 		}
 	}
 	if (item.type === 'request') {
@@ -84,7 +80,7 @@ export default function InstallButton({ item, media, size, variant }: Props) {
 					}
 				>
 					{isPending ? (
-						<Loader className="h-4 w-4 animate-spin" />
+						<ActionLoader />
 					) : (
 						<CloudDownload width={16} />
 					)}

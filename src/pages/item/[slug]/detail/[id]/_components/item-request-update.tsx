@@ -1,3 +1,4 @@
+import ActionLoader from '@/components/ui/action-loader';
 import { Button, ButtonProps } from '@/components/ui/button';
 import {
 	Dialog,
@@ -22,8 +23,8 @@ import { __ } from '@/lib/i18n';
 import { TApiError } from '@/types/api';
 import { TPostItem } from '@/types/item';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from '@wordpress/element';
-import { Loader, RefreshCw } from 'lucide-react';
+import { useMemo, useState } from '@wordpress/element';
+import { RefreshCw } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -31,27 +32,87 @@ type Props = {
 	item: TPostItem;
 } & ButtonProps;
 
-export const updateRequestSchema = z.object({
-	version: z
-		.string({ required_error: __('Version number cannot be empty') })
-		.regex(/^(?![0.]+$)[A-Z\d]+(?:\.[A-Z\d]+){1,5}$/i, {
-			message: 'Invalid version number'
-		})
-});
-type TUpdateRequest = z.infer<typeof updateRequestSchema>;
+const VERSION_PATTERN = /^(?![0.]+$)[A-Z\d]+(?:\.[A-Z\d]+){1,5}$/i;
+
+const compareVersionSegments = (left: string, right: string) => {
+	const leftIsNumber = /^\d+$/.test(left);
+	const rightIsNumber = /^\d+$/.test(right);
+
+	if (leftIsNumber && rightIsNumber) {
+		const leftNumber = Number(left);
+		const rightNumber = Number(right);
+		if (leftNumber > rightNumber) return 1;
+		if (leftNumber < rightNumber) return -1;
+		return 0;
+	}
+
+	const normalizedLeft = left.toLowerCase();
+	const normalizedRight = right.toLowerCase();
+	if (normalizedLeft > normalizedRight) return 1;
+	if (normalizedLeft < normalizedRight) return -1;
+	return 0;
+};
+
+const isVersionGreaterThan = (requested: string, current: string) => {
+	const requestedParts = requested.split('.');
+	const currentParts = current.split('.');
+	const max = Math.max(requestedParts.length, currentParts.length);
+
+	for (let index = 0; index < max; index++) {
+		const requestedPart = requestedParts[index] ?? '0';
+		const currentPart = currentParts[index] ?? '0';
+		const compare = compareVersionSegments(requestedPart, currentPart);
+		if (compare !== 0) {
+			return compare > 0;
+		}
+	}
+
+	return false;
+};
+
+const getUpdateRequestSchema = (currentVersion: string) =>
+	z.object({
+		version: z
+			.string({ required_error: __('Version number cannot be empty') })
+			.regex(VERSION_PATTERN, {
+				message: __('Invalid version number')
+			})
+			.refine(
+				(value) =>
+					isVersionGreaterThan(value.trim(), currentVersion.trim()),
+				{
+					message: __(
+						'Requested version must be newer than current version'
+					)
+				}
+			)
+	});
+
+type TUpdateRequest = z.infer<ReturnType<typeof getUpdateRequestSchema>>;
 
 export default function ItemRequestUpdate({ item, ...buttonProps }: Props) {
 	const [open, setOpen] = useState(false);
 	const notify = useNotification();
+	const currentVersion = item.version ?? '';
+	const schema = useMemo(
+		() => getUpdateRequestSchema(currentVersion),
+		[currentVersion]
+	);
 	const form = useForm<TUpdateRequest>({
-		resolver: zodResolver(updateRequestSchema),
+		resolver: zodResolver(schema),
 		defaultValues: {
-			version: ''
+			version: currentVersion
 		}
 	});
 	const { isPending, mutateAsync } = useApiMutation('item/request-update');
+	const canRequestUpdate = Boolean(item.topic_id);
 
 	async function onSubmit(data: TUpdateRequest) {
+		if (!canRequestUpdate) {
+			notify.error(__('Associated support thread not found'));
+			return;
+		}
+
 		notify.promise(mutateAsync({ ...data, item_id: item.id }), {
 			loading: __('Making Update Request'),
 			success: () => {
@@ -61,7 +122,7 @@ export default function ItemRequestUpdate({ item, ...buttonProps }: Props) {
 			error: (err: TApiError) =>
 				err.message ?? __('Error making request'),
 			finally() {
-				form.reset();
+				form.reset({ version: currentVersion });
 			}
 		});
 	}
@@ -69,14 +130,31 @@ export default function ItemRequestUpdate({ item, ...buttonProps }: Props) {
 	return (
 		<Dialog
 			open={open}
-			onOpenChange={setOpen}
+			onOpenChange={(isOpen) => {
+				if (isPending) {
+					return;
+				}
+				setOpen(isOpen);
+				if (isOpen) {
+					form.reset({ version: currentVersion });
+				}
+			}}
 		>
 			<DialogTrigger asChild>
 				<Button
-					title={__('Request Update')}
+					title={
+						canRequestUpdate
+							? __('Request Update')
+							: __('Support thread unavailable')
+					}
+					disabled={isPending || !canRequestUpdate}
 					{...buttonProps}
 				>
-					<RefreshCw className="h-4 w-4" />
+					{isPending ? (
+						<ActionLoader />
+					) : (
+						<RefreshCw className="h-4 w-4" />
+					)}
 				</Button>
 			</DialogTrigger>
 			<DialogContent>
@@ -115,9 +193,12 @@ export default function ItemRequestUpdate({ item, ...buttonProps }: Props) {
 								disabled={isPending}
 								className="gap-2"
 							>
-								<span>{__('Request Update')}</span>
-								{isPending && (
-									<Loader className="h-4 w-4 animate-spin" />
+								{isPending ? (
+									<ActionLoader
+										label={__('Requesting Update')}
+									/>
+								) : (
+									<span>{__('Request Update')}</span>
 								)}
 							</Button>
 						</DialogFooter>

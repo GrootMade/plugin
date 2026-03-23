@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import useApiFetch from '@/hooks/use-api-fetch';
 import { __ } from '@/lib/i18n';
-import placeholder from '@/lib/placeholder';
 import { TypeToItemType } from '@/lib/type-to-slug';
 import { cn } from '@/lib/utils';
 import { Link } from '@/router';
@@ -44,9 +43,8 @@ export default function PopularItems({ type, className }: Props) {
 						{Array.from({ length: 5 }).map((_, i) => (
 							<div
 								key={i}
-								className="flex items-center gap-3 px-4 py-3"
+								className="flex items-center px-4 py-3"
 							>
-								<div className="h-10 w-10 animate-pulse rounded-md bg-muted" />
 								<div className="flex-1 space-y-1.5">
 									<div className="h-3.5 w-3/4 animate-pulse rounded bg-muted" />
 									<div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
@@ -64,17 +62,8 @@ export default function PopularItems({ type, className }: Props) {
 									id: item.id,
 									slug: itemType?.slug ?? type
 								}}
-								className="flex items-center gap-3 px-4 py-3 text-card-foreground no-underline transition-colors hover:bg-muted/50"
+								className="flex items-center px-4 py-3 text-card-foreground no-underline transition-colors hover:bg-muted/50"
 							>
-								<img
-									src={
-										item.thumbnail ??
-										item.image ??
-										placeholder(item.title)
-									}
-									alt={decodeEntities(item.title)}
-									className="h-10 w-10 rounded-md object-cover"
-								/>
 								<div className="min-w-0 flex-1">
 									<div className="truncate text-sm font-medium">
 										{decodeEntities(item.title)}

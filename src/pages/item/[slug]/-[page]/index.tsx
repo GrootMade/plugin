@@ -2,6 +2,7 @@ import AdCard from '@/components/ad-card';
 import { AppPageShell } from '@/components/body/page-shell';
 import FilterBar from '@/components/filter/filter-bar';
 import Paging from '@/components/paging';
+import ActionLoader from '@/components/ui/action-loader';
 import { Card } from '@/components/ui/card';
 import { adsConfig } from '@/config/ads';
 import useApiFetch from '@/hooks/use-api-fetch';
@@ -23,12 +24,12 @@ import { z } from 'zod';
 
 const sort_items: ReturnType<typeof useDataCollection>['sort'] = [
 	{
-		label: __('Updated'),
-		value: 'updated'
-	},
-	{
 		label: __('Popularity'),
 		value: 'popularity'
+	},
+	{
+		label: __('Updated'),
+		value: 'updated'
 	},
 	{
 		label: __('Views'),
@@ -386,8 +387,34 @@ export default function Component() {
 			description={item_type?.description}
 			isFetching={isFetching}
 			isLoading={isItemsLoading}
-			filterBar={<FilterBar collection={dataCollection} />}
-			onSearchQueryChange={(query) => dataCollection.setSearch(query)}
+			filterBar={
+				<FilterBar
+					collection={dataCollection}
+					meta={
+						<>
+							{isFetching && (
+								<ActionLoader
+									showPulse={false}
+									className="shrink-0"
+									iconClassName="text-muted-foreground"
+								/>
+							)}
+							{data?.meta != null && data.meta.total >= 0 ? (
+								<span className="whitespace-nowrap text-sm tabular-nums text-muted-foreground">
+									{sprintf(
+										_n(
+											'%s result',
+											'%s results',
+											data.meta.total
+										),
+										data.meta.total.toLocaleString()
+									)}
+								</span>
+							) : null}
+						</>
+					}
+				/>
+			}
 			preloader={
 				<div className="grid grid-cols-1 md:grid-cols-3">
 					<PostGridItemSkeleton />
@@ -405,18 +432,6 @@ export default function Component() {
 		>
 			{data && (
 				<>
-					{data.meta && data.meta?.total > 0 && (
-						<div className="text-center text-muted-foreground">
-							{sprintf(
-								_n(
-									'%s item found',
-									'%s items found',
-									data.meta?.total
-								),
-								data.meta?.total?.toLocaleString()
-							)}
-						</div>
-					)}
 					<div
 						className={cn([
 							'grid grid-cols-1 gap-5 md:grid-cols-3 lg:gap-7'
@@ -456,18 +471,6 @@ export default function Component() {
 							<NoSearchResultFound />
 						)}
 					</div>
-					{data.meta && data.meta?.total > 0 && (
-						<div className="text-center text-muted-foreground">
-							{sprintf(
-								_n(
-									'%s item found',
-									'%s items found',
-									data.meta?.total
-								),
-								data.meta?.total?.toLocaleString()
-							)}
-						</div>
-					)}
 					{data.meta && (
 						<Paging
 							currentPage={Number(page)}

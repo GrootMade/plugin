@@ -13,6 +13,7 @@ import { BookmarkPostCollectionSchema } from '@/zod/bookmark';
 import { useCallback, useMemo, useState } from '@wordpress/element';
 import { z, ZodFormattedError } from 'zod';
 import Errors from './Error';
+import ActionLoader from './ui/action-loader';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -28,7 +29,7 @@ export default function AddCollectionButton({
 	collection,
 	update = false
 }: Props) {
-	const { addNewCollection } = useBookmark();
+	const { addNewCollection, pendingCollectionSave } = useBookmark();
 	const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 	const [title, setTitle] = useState<string>(
 		collection ? collection.title : ''
@@ -48,6 +49,9 @@ export default function AddCollectionButton({
 		>(null);
 	const id = useMemo<number>(() => collection?.id ?? 0, [collection]);
 	const addList = useCallback(() => {
+		if (pendingCollectionSave) {
+			return;
+		}
 		const postData = BookmarkPostCollectionSchema.safeParse({
 			id,
 			title,
@@ -62,11 +66,24 @@ export default function AddCollectionButton({
 		if (postData.error) {
 			setError(postData.error.format());
 		}
-	}, [id, title, summary, isPublic, addNewCollection, update]);
+	}, [
+		pendingCollectionSave,
+		id,
+		title,
+		summary,
+		isPublic,
+		addNewCollection,
+		update
+	]);
 	return (
 		<Dialog
 			open={dialogOpen}
-			onOpenChange={setDialogOpen}
+			onOpenChange={(isOpen) => {
+				if (pendingCollectionSave) {
+					return;
+				}
+				setDialogOpen(isOpen);
+			}}
 		>
 			<DialogTrigger
 				asChild
@@ -95,6 +112,7 @@ export default function AddCollectionButton({
 						<Input
 							placeholder={__('List Title')}
 							value={title}
+							disabled={pendingCollectionSave}
 							onChange={(e) => setTitle(() => e.target.value)}
 						/>
 						<Errors errors={errors?.title?._errors} />
@@ -104,6 +122,7 @@ export default function AddCollectionButton({
 							placeholder={__('List Description')}
 							value={summary}
 							className="h-16 max-h-16 resize-none"
+							disabled={pendingCollectionSave}
 							onChange={(e) => setSummary(() => e.target.value)}
 						/>
 						<Errors errors={errors?.summary?._errors} />
@@ -112,16 +131,31 @@ export default function AddCollectionButton({
 						<Switch
 							id="is-public"
 							checked={isPublic}
+							disabled={pendingCollectionSave}
 							onCheckedChange={setIsPublic}
 						/>
 						<Label htmlFor="is-public">{__('Public')}</Label>
 					</div>
 				</div>
 				<DialogFooter>
-					<Button onClick={addList}>
-						{update
-							? __('Update Collection')
-							: __('Add New Collection')}
+					<Button
+						onClick={addList}
+						disabled={pendingCollectionSave}
+						className="gap-2"
+					>
+						{pendingCollectionSave ? (
+							<ActionLoader
+								label={
+									update
+										? __('Updating Collection')
+										: __('Creating Collection')
+								}
+							/>
+						) : update ? (
+							__('Update Collection')
+						) : (
+							__('Add New Collection')
+						)}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

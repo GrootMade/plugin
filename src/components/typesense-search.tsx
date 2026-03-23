@@ -1,21 +1,17 @@
 import { __ } from '@/lib/i18n';
-import placeholder from '@/lib/placeholder';
 import { cn } from '@/lib/utils';
 import { Link } from '@/router';
 import { TPostItem } from '@/types/item';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { decodeEntities } from '@wordpress/html-entities';
-import { Loader, Search, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { Hits, useSearchBox } from 'react-instantsearch';
+import ActionLoader from './ui/action-loader';
 import { Input } from './ui/input';
 
 function Hit({ hit }: { hit: TPostItem }) {
 	return (
-		<div className="group/hit relative flex items-center gap-3 rounded-md p-2 transition-colors hover:bg-accent">
-			<img
-				src={hit.image ?? placeholder(hit.title)}
-				className="size-10 shrink-0 rounded-md border object-cover"
-			/>
+		<div className="group/hit relative flex items-center rounded-md p-2 transition-colors hover:bg-accent">
 			<div className="flex min-w-0 flex-1 flex-col">
 				<span className="truncate text-sm font-medium">
 					{decodeEntities(hit.title)}
@@ -70,7 +66,11 @@ export default function TypeSenseSearch({
 		>
 			<div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50">
 				{isSearchStalled ? (
-					<Loader className="size-4 animate-spin" />
+					<ActionLoader
+						showPulse={false}
+						className="text-muted-foreground/50"
+						iconClassName="text-muted-foreground/60"
+					/>
 				) : (
 					<Search className="size-4" />
 				)}

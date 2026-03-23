@@ -14,17 +14,23 @@ import {
 	ChevronUp,
 	CrownIcon,
 	Info,
-	Loader2,
 	X,
 	XCircle
 } from 'lucide-react';
+import ActionLoader from './ui/action-loader';
 import { Button } from './ui/button';
 
 function NotificationItemRow({ item }: { item: NotificationItem }) {
 	const { remove } = useNotification();
+	const isLoading = item.status === 'loading';
 
 	return (
-		<div className="flex items-center gap-3 px-3 py-2">
+		<div
+			className={cn(
+				'relative flex items-center gap-3 px-3 py-2',
+				isLoading && 'bg-primary/5'
+			)}
+		>
 			<div className="shrink-0">
 				{item.status === 'success' && (
 					<CheckCircle className="size-4 text-green-500" />
@@ -32,9 +38,7 @@ function NotificationItemRow({ item }: { item: NotificationItem }) {
 				{item.status === 'error' && (
 					<XCircle className="size-4 text-destructive" />
 				)}
-				{item.status === 'loading' && (
-					<Loader2 className="size-4 animate-spin text-primary" />
-				)}
+				{item.status === 'loading' && <ActionLoader showPulse={true} />}
 				{item.status === 'info' && (
 					<Info className="size-4 text-blue-500" />
 				)}
@@ -57,6 +61,11 @@ function NotificationItemRow({ item }: { item: NotificationItem }) {
 			>
 				<X className="size-3.5" />
 			</Button>
+			{isLoading && (
+				<div className="pointer-events-none absolute inset-x-0 bottom-0 h-0.5 overflow-hidden bg-primary/10">
+					<div className="h-full w-1/3 animate-[pulse_1.2s_ease-in-out_infinite] bg-primary/60" />
+				</div>
+			)}
 		</div>
 	);
 }

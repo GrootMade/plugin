@@ -1,5 +1,6 @@
 import InstallButton from '@/components/install-button';
 import SimpleTable, { SimpleColumnDef } from '@/components/table/simple-table';
+import ActionLoader from '@/components/ui/action-loader';
 import {
 	Card,
 	CardContent,
@@ -72,7 +73,7 @@ export default function ChangelogPreview({ item }: Props) {
 							/>
 						</div>
 					) : isLoading || isFetching ? (
-						<div className="">{__('Loading...')}</div>
+						<ActionLoader label={__('Loading changelog')} />
 					) : (
 						<div className="">{__('No Items Found')}</div>
 					)}

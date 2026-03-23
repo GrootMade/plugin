@@ -1,4 +1,5 @@
 import AddCollectionButton from '@/components/add-collection-dialog';
+import ActionLoader from '@/components/ui/action-loader';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,7 +20,8 @@ type Props = {
 };
 
 export default function Collection({ collection }: Props) {
-	const { removeCollection } = useBookmark();
+	const { removeCollection, pendingCollectionDeleteIds } = useBookmark();
+	const isDeletePending = pendingCollectionDeleteIds.includes(collection.id);
 	return (
 		<div>
 			<Card>
@@ -68,6 +70,7 @@ export default function Collection({ collection }: Props) {
 					<div className="flex flex-row gap-2">
 						<Button
 							variant="secondary"
+							disabled={isDeletePending}
 							onClick={() => {
 								if (
 									confirm(
@@ -80,8 +83,13 @@ export default function Collection({ collection }: Props) {
 								}
 							}}
 							size="sm"
+							className="gap-2"
 						>
-							{__('Delete')}
+							{isDeletePending ? (
+								<ActionLoader label={__('Deleting')} />
+							) : (
+								__('Delete')
+							)}
 						</Button>
 						<AddCollectionButton
 							collection={collection}

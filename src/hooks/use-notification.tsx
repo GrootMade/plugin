@@ -50,6 +50,7 @@ const NotificationContext = createContext<NotificationContextType | undefined>(
 );
 
 const AUTO_DISMISS_MS = 5000;
+const shouldAutoDismiss = (status: NotificationStatus) => status !== 'loading';
 
 type NotificationProviderProps = {
 	children: React.ReactNode;
@@ -85,7 +86,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 			]);
 			setOpen(true);
 
-			if (status === 'success' || status === 'info') {
+			if (shouldAutoDismiss(status)) {
 				scheduleAutoDismiss(uid);
 			}
 
@@ -100,7 +101,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 				prev.map((n) => (n.uid === uid ? { ...n, ...updates } : n))
 			);
 
-			if (updates.status === 'success' || updates.status === 'info') {
+			if (updates.status && shouldAutoDismiss(updates.status)) {
 				const existingTimer = timers.current.get(uid);
 				if (existingTimer) clearTimeout(existingTimer);
 				scheduleAutoDismiss(uid);

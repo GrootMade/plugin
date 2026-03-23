@@ -88,7 +88,6 @@ export function AppPageShell({
 				title={title}
 				showTitle={showTitle}
 				description={description}
-				filterBar={filterBar}
 				onSearchQueryChange={onSearchQueryChange}
 			/>
 			<Container
@@ -134,6 +133,11 @@ export function AppPageShell({
 					</div>
 				)}
 				<Notices />
+				{filterBar && (
+					<div className="border-b border-border pb-4 sm:pb-5">
+						{filterBar}
+					</div>
+				)}
 				<Out />
 				{(isFetching || isLoading) && (
 					<div className="absolute left-0 top-0 h-full w-full cursor-progress"></div>
@@ -147,7 +151,6 @@ type PageHeaderProps = {
 	title: string;
 	showTitle: boolean;
 	description?: string;
-	filterBar?: React.ReactNode;
 	onSearchQueryChange?: (query: string) => void;
 };
 
@@ -155,7 +158,6 @@ function PageHeader({
 	title,
 	showTitle,
 	description,
-	filterBar,
 	onSearchQueryChange
 }: PageHeaderProps) {
 	useEffect(() => {
@@ -163,17 +165,19 @@ function PageHeader({
 	}, [title]);
 	return (
 		<>
-			<header className="flex flex-col gap-4 border-b border-border py-6">
-				{/* Row 1: Full-width search + actions */}
-				<div className="flex flex-row items-center gap-2">
-					<div className="flex-1">
+			<header className="flex flex-col gap-4 border-b border-border py-6 lg:pt-4">
+				{/* Top bar: Typesense search + global actions */}
+				<div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2">
+					<div className="w-full min-w-0 flex-1 sm:max-w-xl">
 						<TypeSenseSearch onQueryChange={onSearchQueryChange} />
 					</div>
-					<LanguageSelector />
-					<BulkAction />
-					<ModeToggle />
+					<div className="flex w-full shrink-0 flex-wrap items-center gap-2 sm:ml-auto sm:w-auto">
+						<LanguageSelector />
+						<BulkAction />
+						<ModeToggle />
+					</div>
 				</div>
-				{/* Row 2: Page title + Ad banner */}
+				{/* Page title + Ad banner */}
 				{showTitle && (
 					<div className="flex flex-col gap-1">
 						<h1 className="font-heading text-2xl font-bold">
@@ -187,8 +191,6 @@ function PageHeader({
 					</div>
 				)}
 				<AdBanner />
-				{/* Row 3: Filter bar (only on listing pages) */}
-				{filterBar && <div className="border-t pt-4">{filterBar}</div>}
 			</header>
 		</>
 	);

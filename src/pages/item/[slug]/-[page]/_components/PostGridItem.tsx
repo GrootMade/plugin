@@ -193,12 +193,10 @@ export default function PostGridItem({ item, style }: Props) {
 				)}
 				<BulkButton
 					item={item}
-					variant="secondary"
 					size="sm"
 				/>
 				<CollectionButton
 					item={item}
-					variant="secondary"
 					size="sm"
 				/>
 			</ButtonGroup>

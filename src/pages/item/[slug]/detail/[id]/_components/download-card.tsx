@@ -26,12 +26,14 @@ export default function DownloadCard({ item }: Props) {
 		<Card className="max-md:order-3">
 			<CardHeader className="flex flex-row items-center justify-between border-b">
 				<span className="font-semibold">{__('Download')}</span>
-				<Badge
-					variant="outline"
-					className="text-muted-foreground"
-				>
-					{__('Download Now')}
-				</Badge>
+				<div className="flex flex-wrap items-center justify-end gap-1">
+					<Badge
+						variant="outline"
+						className="text-muted-foreground"
+					>
+						{__('Download Now')}
+					</Badge>
+				</div>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-4">
 				<ButtonGroup className="w-full">
@@ -47,12 +49,10 @@ export default function DownloadCard({ item }: Props) {
 					/>
 					<BulkButton
 						item={item}
-						variant="secondary"
 						size="icon"
 					/>
 					<CollectionButton
 						item={item}
-						variant="secondary"
 						size="icon"
 					/>
 					{item.product_url && item.product_url.length > 0 && (

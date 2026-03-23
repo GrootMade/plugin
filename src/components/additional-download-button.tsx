@@ -1,3 +1,4 @@
+import ActionLoader from '@/components/ui/action-loader';
 import { Button, ButtonProps } from '@/components/ui/button';
 import {
 	Dialog,
@@ -19,8 +20,9 @@ import { __, sprintf } from '@/lib/i18n';
 import { useNavigate } from '@/router';
 import { TApiError } from '@/types/api';
 import { TDemoContent, TPostItem } from '@/types/item';
+import { useState } from '@wordpress/element';
 import { decodeEntities } from '@wordpress/html-entities';
-import { CloudDownload, Download, Loader } from 'lucide-react';
+import { CloudDownload, Download } from 'lucide-react';
 type AdditionalContentDownloadSchema = {
 	item_id: number | string;
 	media_id?: number;
@@ -36,6 +38,7 @@ export default function AdditionalDownloadButton({
 	size,
 	variant
 }: Props) {
+	const [open, setOpen] = useState(false);
 	const navigate = useNavigate();
 	const notify = useNotification();
 	const { data: activation, active, activated } = useActivation();
@@ -100,6 +103,7 @@ export default function AdditionalDownloadButton({
 			if (result.link) {
 				window.open(result.link, '_blank');
 			}
+			setOpen(false);
 			notify.update(uid, {
 				title: __('Successful'),
 				status: 'success'
@@ -114,7 +118,14 @@ export default function AdditionalDownloadButton({
 		}
 	}
 	return (
-		<Dialog>
+		<Dialog
+			open={open}
+			onOpenChange={(isOpen) => {
+				if (!isInstallPending) {
+					setOpen(isOpen);
+				}
+			}}
+		>
 			<DialogTrigger asChild>
 				<Button
 					variant={variant}
@@ -123,7 +134,7 @@ export default function AdditionalDownloadButton({
 					disabled={isInstallPending || !activated || !active}
 				>
 					{isInstallPending ? (
-						<Loader className="h-4 w-4 animate-spin" />
+						<ActionLoader />
 					) : (
 						<CloudDownload width={16} />
 					)}
@@ -182,18 +193,28 @@ export default function AdditionalDownloadButton({
 				</DialogHeader>
 				<DialogFooter>
 					<div className="flex flex-col justify-center gap-4 sm:flex-row">
-						<DialogClose asChild>
-							<Button
-								onClick={() => download()}
-								className="gap-2"
-							>
-								<Download size={16} />
-								<span>{__('Download')}</span>
-							</Button>
-						</DialogClose>
+						<Button
+							onClick={() => download()}
+							disabled={isInstallPending}
+							className="gap-2"
+						>
+							{isInstallPending ? (
+								<ActionLoader label={__('Downloading')} />
+							) : (
+								<>
+									<Download size={16} />
+									<span>{__('Download')}</span>
+								</>
+							)}
+						</Button>
 
 						<DialogClose asChild>
-							<Button variant="outline">{__('Cancel')}</Button>
+							<Button
+								variant="outline"
+								disabled={isInstallPending}
+							>
+								{__('Cancel')}
+							</Button>
 						</DialogClose>
 					</div>
 				</DialogFooter>

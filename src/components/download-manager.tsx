@@ -7,10 +7,10 @@ import {
 	ChevronDown,
 	ChevronUp,
 	Download,
-	Loader2,
 	X,
 	XCircle
 } from 'lucide-react';
+import ActionLoader from './ui/action-loader';
 import { Button } from './ui/button';
 
 function DownloadItemRow({ item }: { item: DownloadItem }) {
@@ -26,9 +26,7 @@ function DownloadItemRow({ item }: { item: DownloadItem }) {
 					<XCircle className="size-4 text-destructive" />
 				)}
 				{(item.status === 'downloading' ||
-					item.status === 'pending') && (
-					<Loader2 className="size-4 animate-spin text-primary" />
-				)}
+					item.status === 'pending') && <ActionLoader />}
 			</div>
 
 			<div className="min-w-0 flex-1">
