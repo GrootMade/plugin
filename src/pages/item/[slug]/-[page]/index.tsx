@@ -204,7 +204,7 @@ export default function Component() {
 			]}
 		>
 			{data && (
-				<div className="gm-reveal-stagger flex flex-col gap-5 sm:gap-6">
+				<div className="flex flex-col gap-5 sm:gap-6">
 					<div
 						className={cn(
 							mode === 'list'
