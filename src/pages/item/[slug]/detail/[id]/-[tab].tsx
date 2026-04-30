@@ -7,7 +7,7 @@ import { useParams } from '@/router';
 import { TPostItem } from '@/types/item';
 import { decodeEntities } from '@wordpress/html-entities';
 import { ExternalLink } from 'lucide-react';
-import React from 'react';
+import type React from 'react';
 import ItemDetailHeader, {
 	ItemDetailHeaderSkeleton
 } from './_components/detail-header';

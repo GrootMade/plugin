@@ -25,7 +25,7 @@ import {
 	Sparkles,
 	ToyBrick
 } from 'lucide-react';
-import React from 'react';
+import type React from 'react';
 import useActivation from './use-activation';
 
 type IconProps = React.HTMLAttributes<SVGElement>;
