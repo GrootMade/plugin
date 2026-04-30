@@ -2,6 +2,7 @@
 	"exclude": ["node_modules", "src/vite/**"],
 	"include": ["src/**/*"],
 	"compilerOptions": {
+		"baseUrl": ".",
 		"moduleResolution": "Node10",
 		"ignoreDeprecations": "6.0",
 		"resolveJsonModule": true,
@@ -14,7 +15,8 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@wordpress/element": ["./src/shims/wordpress-element.ts"]
 		}
 	}
 }

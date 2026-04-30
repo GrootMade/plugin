@@ -26,7 +26,6 @@ export const WP_PACKAGES: Record<string, string> = Object.fromEntries(
 		'edit-site',
 		'edit-widgets',
 		'editor',
-		'element',
 		'escape-html',
 		'format-library',
 		'hooks',

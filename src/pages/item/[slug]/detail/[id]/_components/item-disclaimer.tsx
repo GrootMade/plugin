@@ -29,7 +29,7 @@ export default function ItemDisclaimer({ item }: Props) {
 						className: 'underline'
 					}}
 				>
-					{renderHtml(item.copyright ?? data?.content)}
+					{renderHtml(item.copyright ?? data?.content ?? '')}
 				</Linkify>
 			</CardContent>
 		</Card>

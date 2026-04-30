@@ -12,7 +12,10 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			'@': path.resolve(__dirname, './src'),
-			'@wordpress/element': 'react'
+			'@wordpress/element': path.resolve(
+				__dirname,
+				'./src/shims/wordpress-element.ts'
+			)
 		}
 	},
 	build: {

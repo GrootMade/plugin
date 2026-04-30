@@ -1,6 +1,6 @@
 import '@/styles/custom.css';
 import '@/styles/globals.css';
-import { createRoot } from 'react-dom/client';
+import { createRoot } from '@wordpress/element';
 import App from './App';
 const container_id = 'app';
 const el = document.getElementById(container_id);
