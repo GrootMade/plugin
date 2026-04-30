@@ -142,7 +142,7 @@ export default function AdCard({ style, className }: AdCardProps) {
 			rel="noopener noreferrer"
 			className={cn(
 				cardClass,
-				'no-underline hover:border-ring hover:bg-accent',
+				'hover:border-ring hover:bg-accent no-underline',
 				className
 			)}
 			style={style}
@@ -150,16 +150,16 @@ export default function AdCard({ style, className }: AdCardProps) {
 			{/* Hero banner — matches thumbnail area */}
 			<div
 				className={cn(
-					'-mx-5 -mt-5 flex aspect-[16/9] w-[calc(100%+2.5rem)] items-center justify-center rounded-t-lg',
+					'flex h-24 w-full items-center justify-center rounded-md',
 					isThankYou
-						? 'bg-gradient-to-br from-emerald-500/20 via-emerald-500/10 to-transparent'
-						: 'bg-gradient-to-br from-primary/15 via-primary/5 to-transparent'
+						? 'bg-linear-to-br from-emerald-500/20 via-emerald-500/10 to-transparent'
+						: 'from-primary/15 via-primary/5 bg-linear-to-br to-transparent'
 				)}
 			>
 				{isThankYou ? (
 					<SparklesIcon className="size-10 text-emerald-500 opacity-60" />
 				) : (
-					<CrownIcon className="size-10 text-amber-500 opacity-60" />
+					<CrownIcon className="text-warning size-10 opacity-60" />
 				)}
 			</div>
 
@@ -179,7 +179,7 @@ export default function AdCard({ style, className }: AdCardProps) {
 					<h3 className="truncate text-base font-semibold tracking-tight">
 						{content.title}
 					</h3>
-					<span className="text-xs text-muted-foreground">
+					<span className="text-muted-foreground text-xs">
 						{siteConfig.name}
 					</span>
 				</div>
@@ -193,7 +193,7 @@ export default function AdCard({ style, className }: AdCardProps) {
 							key={label}
 							className="flex items-center gap-3 py-1"
 						>
-							<p className="flex min-w-0 items-center gap-1.5 text-muted-foreground">
+							<p className="text-muted-foreground flex min-w-0 items-center gap-1.5">
 								<span className="h-[1.1em] w-[1.1em] shrink-0 opacity-75 [&>svg]:h-full [&>svg]:w-full">
 									{icon}
 								</span>
@@ -227,17 +227,17 @@ export default function AdCard({ style, className }: AdCardProps) {
 export function AdCardSkeleton({ style, className }: AdCardProps) {
 	return (
 		<div
-			className={cn(cardClass, 'select-none items-stretch', className)}
+			className={cn(cardClass, 'items-stretch select-none', className)}
 			style={style}
 		>
-			<Skeleton className="-mx-5 -mt-5 aspect-[16/9] w-[calc(100%+2.5rem)] rounded-t-lg" />
+			<Skeleton className="h-24 w-full rounded-md" />
 			<div className="flex w-full flex-row flex-wrap items-center gap-x-3 gap-y-2">
 				<Skeleton className="h-8 w-8 shrink-0 rounded-md" />
 				<div className="w-2/3">
-					<Skeleton className="h-5">&nbsp;</Skeleton>
+					<Skeleton className="h-5 w-full" />
 				</div>
 			</div>
-			<ul className="mt-auto w-full animate-pulse text-xs">
+			<ul className="mt-auto w-full text-xs">
 				<li className="flex items-center gap-3 py-1">
 					<Skeleton className="h-4 w-16" />
 					<hr className="min-w-2 flex-1" />
@@ -254,7 +254,7 @@ export function AdCardSkeleton({ style, className }: AdCardProps) {
 					<Skeleton className="h-4 w-20" />
 				</li>
 			</ul>
-			<Skeleton className="h-8 w-full rounded-md">&nbsp;</Skeleton>
+			<Skeleton className="h-8 w-full rounded-md" />
 		</div>
 	);
 }

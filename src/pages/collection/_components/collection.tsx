@@ -23,7 +23,7 @@ export default function Collection({ collection }: Props) {
 	const isDeletePending = pendingCollectionDeleteIds.includes(collection.id);
 	return (
 		<Card className="flex flex-col overflow-hidden transition-shadow hover:shadow-md">
-			<CardHeader className="border-b border-border/80 bg-muted/30">
+			<CardHeader className="border-border/80 bg-muted/30 border-b">
 				<div className="flex flex-row items-start justify-between gap-2">
 					<Link
 						to="/collection/:cid/:page?"
@@ -31,7 +31,7 @@ export default function Collection({ collection }: Props) {
 						className="flex min-w-0 flex-1 items-start gap-2 text-left"
 					>
 						<span
-							className="mt-0.5 shrink-0 text-muted-foreground"
+							className="text-muted-foreground mt-0.5 shrink-0"
 							title={
 								collection.public ? __('Public') : __('Private')
 							}
@@ -48,13 +48,13 @@ export default function Collection({ collection }: Props) {
 								/>
 							)}
 						</span>
-						<span className="line-clamp-2 font-heading text-base font-semibold leading-snug">
+						<span className="font-heading line-clamp-2 text-base leading-snug font-semibold">
 							{decodeEntities(collection.title)}
 						</span>
 					</Link>
 				</div>
 			</CardHeader>
-			<CardContent className="flex flex-1 flex-col gap-3 pt-4 text-sm text-muted-foreground">
+			<CardContent className="text-muted-foreground flex flex-1 flex-col gap-3 pt-4 text-sm">
 				{collection.summary && collection.summary.length > 0 ? (
 					<p className="line-clamp-2">
 						{decodeEntities(collection.summary)}
@@ -62,7 +62,7 @@ export default function Collection({ collection }: Props) {
 				) : (
 					<p className="text-xs italic">{__('No Description')}</p>
 				)}
-				<div className="mt-auto flex items-center gap-1.5 text-xs text-muted-foreground">
+				<div className="text-muted-foreground mt-auto flex items-center gap-1.5 text-xs">
 					<Layers className="size-3.5" />
 					<span>
 						{sprintf(__('%d items'), collection.count ?? 0)}
@@ -99,7 +99,7 @@ export default function Collection({ collection }: Props) {
 							}
 						}}
 						size="sm"
-						className="gap-1.5 text-destructive hover:bg-destructive/10 hover:text-destructive"
+						className="text-destructive hover:bg-destructive/10 hover:text-destructive gap-1.5"
 					>
 						{isDeletePending ? (
 							<ActionLoader label={__('Deleting')} />

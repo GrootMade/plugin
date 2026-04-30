@@ -65,10 +65,10 @@ class PendingInstall extends ApiBase
 	{
 		$last_check = get_option(
 			Constants::SLUG . '_pending_installs_last_check',
-			null
+			null,
 		);
 		$next_scheduled = wp_next_scheduled(
-			Constants::SLUG . '/pending-installs'
+			Constants::SLUG . '/pending-installs',
 		);
 
 		return [

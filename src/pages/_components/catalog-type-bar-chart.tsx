@@ -58,7 +58,7 @@ export default function CatalogTypeBarChart() {
 
 	if (!data || rows.every((r) => r.count === 0)) {
 		return (
-			<div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
+			<div className="text-muted-foreground flex h-50 items-center justify-center text-sm">
 				{__('No catalog data yet.')}
 			</div>
 		);
@@ -69,7 +69,7 @@ export default function CatalogTypeBarChart() {
 	return (
 		<ChartContainer
 			config={chartConfig}
-			className="aspect-auto h-[200px] w-full sm:h-[220px]"
+			className="aspect-auto h-50 w-full sm:h-55"
 		>
 			<BarChart
 				accessibilityLayer

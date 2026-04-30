@@ -42,7 +42,7 @@ export default function HistoryItems({ data }: Props) {
 						<Link
 							to="/item/:slug/detail/:id/:tab?"
 							params={{ id: row.item.id, slug: row.item?.type }}
-							className="flex items-center gap-3 font-medium text-foreground hover:text-primary hover:underline"
+							className="text-foreground hover:text-primary flex items-center gap-3 font-medium hover:underline"
 						>
 							<Avatar className="size-8 shrink-0 rounded-md">
 								<AvatarImage
@@ -59,7 +59,7 @@ export default function HistoryItems({ data }: Props) {
 								<span>{decodeEntities(row?.item?.title)}</span>
 								{row.type === 'download_additional' &&
 									row.media?.title && (
-										<span className="text-xs font-normal text-muted-foreground">
+										<span className="text-muted-foreground text-xs font-normal">
 											{row.media.title}
 										</span>
 									)}
@@ -115,7 +115,7 @@ export default function HistoryItems({ data }: Props) {
 	const hasRows = rows.length > 0;
 
 	return (
-		<Card className="overflow-hidden border-border/80 shadow-card">
+		<Card className="border-border/80 shadow-card overflow-hidden">
 			<CardContent className="p-0 sm:p-0">
 				<div className="flex flex-col gap-6 p-4 sm:p-6">
 					{hasRows ? (

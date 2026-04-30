@@ -45,7 +45,7 @@ class License extends ApiBase
 
 		return new \WP_Error(
 			400,
-			__('Error deactivating license', 'grootmade')
+			__('Error deactivating license', 'grootmade'),
 		);
 	}
 

@@ -27,7 +27,7 @@ class Setting extends ApiBase
 						'validate_callback' => function (
 							$param,
 							$request,
-							$key
+							$key,
 						) {
 							return is_bool($param);
 						},
@@ -37,7 +37,7 @@ class Setting extends ApiBase
 						'validate_callback' => function (
 							$param,
 							$request,
-							$key
+							$key,
 						) {
 							return is_array($param);
 						},
@@ -47,7 +47,7 @@ class Setting extends ApiBase
 						'validate_callback' => function (
 							$param,
 							$request,
-							$key
+							$key,
 						) {
 							return is_numeric($param) &&
 								($param >= 0) & ($param <= 23);
@@ -58,7 +58,7 @@ class Setting extends ApiBase
 						'validate_callback' => function (
 							$param,
 							$request,
-							$key
+							$key,
 						) {
 							return is_numeric($param) &&
 								($param >= 0) & ($param <= 59);
@@ -69,7 +69,7 @@ class Setting extends ApiBase
 						'validate_callback' => function (
 							$param,
 							$request,
-							$key
+							$key,
 						) {
 							return is_bool($param);
 						},
@@ -80,7 +80,7 @@ class Setting extends ApiBase
 						'validate_callback' => function (
 							$param,
 							$request,
-							$key
+							$key,
 						) {
 							return is_array($param);
 						},
@@ -107,7 +107,7 @@ class Setting extends ApiBase
 						'validate_callback' => function (
 							$param,
 							$request,
-							$key
+							$key,
 						) {
 							return is_bool($param);
 						},
@@ -117,7 +117,7 @@ class Setting extends ApiBase
 						'validate_callback' => function (
 							$param,
 							$request,
-							$key
+							$key,
 						) {
 							return is_array($param);
 						},
@@ -127,7 +127,7 @@ class Setting extends ApiBase
 						'validate_callback' => function (
 							$param,
 							$request,
-							$key
+							$key,
 						) {
 							return is_numeric($param) &&
 								($param >= 0) & ($param <= 23);
@@ -138,7 +138,7 @@ class Setting extends ApiBase
 						'validate_callback' => function (
 							$param,
 							$request,
-							$key
+							$key,
 						) {
 							return is_numeric($param) &&
 								($param >= 0) & ($param <= 59);
@@ -149,7 +149,7 @@ class Setting extends ApiBase
 						'validate_callback' => function (
 							$param,
 							$request,
-							$key
+							$key,
 						) {
 							return is_bool($param);
 						},
@@ -160,7 +160,7 @@ class Setting extends ApiBase
 						'validate_callback' => function (
 							$param,
 							$request,
-							$key
+							$key,
 						) {
 							return is_array($param);
 						},
@@ -206,7 +206,7 @@ class Setting extends ApiBase
 		\update_user_meta(
 			get_current_user_id(),
 			Constants::SLUG . '_lang',
-			$language
+			$language,
 		);
 
 		return [];

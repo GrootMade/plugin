@@ -32,13 +32,13 @@ export function EmptyState({
 	return (
 		<Card
 			className={cn(
-				'border-dashed border-border/80 bg-muted/20 shadow-none',
+				'border-border/80 bg-muted/20 border-dashed shadow-none',
 				className
 			)}
 		>
 			<CardContent className="flex flex-col items-center justify-center gap-4 px-6 py-12 text-center sm:px-10 sm:py-14">
 				{Icon ? (
-					<div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted/80 text-muted-foreground">
+					<div className="bg-muted/80 text-muted-foreground flex h-14 w-14 items-center justify-center rounded-2xl">
 						<Icon
 							className="h-7 w-7"
 							strokeWidth={1.5}
@@ -46,11 +46,11 @@ export function EmptyState({
 					</div>
 				) : null}
 				<div className="max-w-md space-y-2">
-					<h2 className="font-heading text-lg font-semibold text-foreground">
+					<h2 className="font-heading text-foreground text-lg font-semibold">
 						{title}
 					</h2>
 					{description ? (
-						<p className="text-sm leading-relaxed text-muted-foreground">
+						<p className="text-muted-foreground text-sm leading-relaxed">
 							{description}
 						</p>
 					) : null}

@@ -109,7 +109,7 @@ class Upgrade
 						'Accept' => 'application/json',
 						'Accept-encoding' => 'deflate',
 					],
-				]
+				],
 			);
 
 			if (
@@ -141,7 +141,7 @@ class Upgrade
 			];
 			$response->download_link = add_query_arg(
 				['time' => time()],
-				Constants::PLUGIN_DOWNLOAD_URL
+				Constants::PLUGIN_DOWNLOAD_URL,
 			);
 			$response->plugin = plugin_basename(self::$file);
 			$this->setup_plugin_data();
@@ -151,7 +151,7 @@ class Upgrade
 			set_transient(
 				$this->upgrade_info_cache_key,
 				$response,
-				20 * MINUTE_IN_SECONDS
+				20 * MINUTE_IN_SECONDS,
 			);
 		}
 		return $response;

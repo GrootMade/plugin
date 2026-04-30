@@ -21,7 +21,7 @@ export default function ItemDisclaimer({ item }: Props) {
 			<CardHeader className="flex flex-row items-center justify-between border-b">
 				{__('Legal Disclaimer')}
 			</CardHeader>
-			<CardContent className="break-words text-sm">
+			<CardContent className="text-sm wrap-break-word">
 				<Linkify
 					options={{
 						target: '_blank',

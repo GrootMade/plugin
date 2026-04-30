@@ -8,7 +8,6 @@ import {
 	PaginationPrevious
 } from '@/components/ui/pagination';
 import generatePaginationArray from '@/lib/generatePaginationArray';
-import { _n, sprintf } from '@/lib/i18n';
 import { useMemo } from '@wordpress/element';
 type PagingProps = {
 	totalPages: number;
@@ -34,7 +33,14 @@ export default function Paging({
 
 	return (
 		<div className="flex flex-col gap-2">
-			<Pagination className={className}>
+			<Pagination
+				className={className}
+				aria-label={
+					totalItems > 0
+						? `Pagination (${totalItems} items)`
+						: 'Pagination'
+				}
+			>
 				<PaginationContent className="flex-wrap">
 					{currentPage > 1 && (
 						<PaginationItem>
@@ -66,12 +72,6 @@ export default function Paging({
 					)}
 				</PaginationContent>
 			</Pagination>
-			<div className="text-center text-muted-foreground">
-				{sprintf(
-					_n('%s item found', '%s items found', totalItems),
-					totalItems?.toLocaleString()
-				)}
-			</div>
 		</div>
 	);
 }

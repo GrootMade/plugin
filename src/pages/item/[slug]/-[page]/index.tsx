@@ -139,7 +139,7 @@ export default function Component() {
 								/>
 							)}
 							{data?.meta != null && data.meta.total >= 0 ? (
-								<span className="whitespace-nowrap text-xs tabular-nums text-muted-foreground sm:text-sm">
+								<span className="text-muted-foreground text-xs whitespace-nowrap tabular-nums sm:text-sm">
 									{sprintf(
 										_n(
 											'%s result',

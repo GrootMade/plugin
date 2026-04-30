@@ -50,7 +50,7 @@ export function DataTable<TData, TValue>({
 				searchableColumns={searchableColumns}
 				bulkActions={bulkActions}
 			/>
-			<div className="flex-shrink rounded-md border border-border bg-background">
+			<div className="border-border bg-background flex-shrink rounded-md border">
 				<Table>
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (

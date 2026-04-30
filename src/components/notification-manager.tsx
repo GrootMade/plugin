@@ -36,7 +36,7 @@ function NotificationItemRow({ item }: { item: NotificationItem }) {
 					<CheckCircle className="size-4 text-green-500" />
 				)}
 				{item.status === 'error' && (
-					<XCircle className="size-4 text-destructive" />
+					<XCircle className="text-destructive size-4" />
 				)}
 				{item.status === 'loading' && <ActionLoader showPulse={true} />}
 				{item.status === 'info' && (
@@ -47,7 +47,7 @@ function NotificationItemRow({ item }: { item: NotificationItem }) {
 			<div className="min-w-0 flex-1">
 				<p className="truncate text-sm font-medium">{item.title}</p>
 				{item.description && (
-					<p className="truncate text-xs text-muted-foreground">
+					<p className="text-muted-foreground truncate text-xs">
 						{item.description}
 					</p>
 				)}
@@ -56,14 +56,14 @@ function NotificationItemRow({ item }: { item: NotificationItem }) {
 			<Button
 				size="sm"
 				variant="ghost"
-				className="h-auto shrink-0 p-1 text-muted-foreground hover:text-foreground"
+				className="text-muted-foreground hover:text-foreground h-auto shrink-0 p-1"
 				onClick={() => remove(item.uid)}
 			>
 				<X className="size-3.5" />
 			</Button>
 			{isLoading && (
-				<div className="pointer-events-none absolute inset-x-0 bottom-0 h-0.5 overflow-hidden bg-primary/10">
-					<div className="h-full w-1/3 animate-[pulse_1.2s_ease-in-out_infinite] bg-primary/60" />
+				<div className="bg-primary/10 pointer-events-none absolute inset-x-0 bottom-0 h-0.5 overflow-hidden">
+					<div className="bg-primary/60 h-full w-1/3 animate-[pulse_1.2s_ease-in-out_infinite]" />
 				</div>
 			)}
 		</div>
@@ -81,17 +81,17 @@ function NotificationUpgradeBanner() {
 			href={`${siteConfig.provider}/pricing`}
 			target="_blank"
 			rel="noopener noreferrer"
-			className="flex items-center gap-2 border-b bg-amber-500/10 px-3 py-2 no-underline transition-colors hover:bg-amber-500/15"
+			className="bg-warning/10 hover:bg-warning/15 flex items-center gap-2 border-b px-3 py-2 no-underline transition-colors"
 		>
-			<CrownIcon className="size-3.5 shrink-0 text-amber-500" />
-			<span className="flex-1 text-xs text-muted-foreground">
-				<strong className="font-medium text-foreground">
+			<CrownIcon className="text-warning size-3.5 shrink-0" />
+			<span className="text-muted-foreground flex-1 text-xs">
+				<strong className="text-foreground font-medium">
 					{__('Skip the wait')}
 				</strong>
 				{' — '}
 				{__('Upgrade to remove download delays.')}
 			</span>
-			<ArrowUpRight className="size-3 shrink-0 text-muted-foreground" />
+			<ArrowUpRight className="text-muted-foreground size-3 shrink-0" />
 		</a>
 	);
 }
@@ -114,12 +114,12 @@ export default function NotificationManager() {
 	return (
 		<div
 			className={cn(
-				'fixed bottom-4 right-4 z-50 w-80 overflow-hidden rounded-lg border bg-background shadow-lg',
+				'bg-background fixed right-4 bottom-4 z-50 w-80 overflow-hidden rounded-lg border shadow-lg',
 				'animate-in slide-in-from-bottom-4 fade-in duration-300'
 			)}
 		>
 			{/* Header */}
-			<div className="flex items-center justify-between border-b bg-muted/50 px-3 py-2">
+			<div className="bg-muted/50 flex items-center justify-between border-b px-3 py-2">
 				<div className="flex items-center gap-2">
 					<Bell className="size-4" />
 					<span className="text-sm font-medium">
@@ -156,7 +156,7 @@ export default function NotificationManager() {
 			{!collapsed && (
 				<>
 					{hasActive && <NotificationUpgradeBanner />}
-					<div className="max-h-72 divide-y divide-border overflow-y-auto">
+					<div className="divide-border max-h-72 divide-y overflow-y-auto">
 						{notifications.map((item) => (
 							<NotificationItemRow
 								key={item.uid}
@@ -166,11 +166,11 @@ export default function NotificationManager() {
 					</div>
 
 					{completedItems.length > 0 && (
-						<div className="border-t border-border px-3 py-2">
+						<div className="border-border border-t px-3 py-2">
 							<Button
 								size="sm"
 								variant="ghost"
-								className="text-xs text-muted-foreground"
+								className="text-muted-foreground text-xs"
 								onClick={clearCompleted}
 							>
 								{__('Clear completed')}

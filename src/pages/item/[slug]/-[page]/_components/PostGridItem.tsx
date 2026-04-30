@@ -15,46 +15,29 @@ import {
 	Download,
 	EyeIcon,
 	GitFork,
-	LayoutTemplateIcon,
 	PackageIcon,
-	PaintbrushIcon,
-	PlugIcon,
-	TagIcon,
 	UserIcon
 } from 'lucide-react';
 import millify from 'millify';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 
-function TypeIcon({ type }: { type: string }) {
-	switch (type) {
-		case 'plugin':
-			return <PlugIcon />;
-		case 'theme':
-			return <PaintbrushIcon />;
-		case 'template-kit':
-			return <LayoutTemplateIcon />;
-		default:
-			return <TagIcon />;
-	}
-}
-
 const cardClass =
-	'group relative flex flex-col items-start gap-4 w-full border bg-card p-5 rounded-lg text-card-foreground transition duration-100 ease-out transform-gpu hover:border-ring after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:border-4 after:border-background';
+	'group relative flex w-full flex-col gap-4 rounded-xl border border-border/80 bg-background p-4 text-foreground shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-ring/70 hover:shadow-md sm:p-5';
 
 export function PostGridItemSkeleton() {
 	return (
-		<div className={`${cardClass} select-none items-stretch`}>
-			<div className="-mx-5 -mt-5 mb-0 w-[calc(100%+2.5rem)] overflow-hidden rounded-t-lg">
-				<Skeleton className="aspect-[16/9] w-full rounded-none" />
+		<div className={`${cardClass} items-stretch select-none`}>
+			<div className="-mx-4 -mt-4 mb-0 w-[calc(100%+2rem)] overflow-hidden rounded-t-xl sm:-mx-5 sm:-mt-5 sm:w-[calc(100%+2.5rem)]">
+				<Skeleton className="aspect-video w-full rounded-none" />
 			</div>
 			<div className="flex w-full flex-row flex-wrap items-center gap-x-3 gap-y-2">
 				<Skeleton className="h-8 w-8 shrink-0 rounded-md" />
 				<div className="w-2/3 text-base font-semibold">
-					<Skeleton>&nbsp;</Skeleton>
+					<Skeleton className="h-5 w-full" />
 				</div>
 			</div>
-			<ul className="mt-auto w-full animate-pulse text-xs">
+			<ul className="mt-auto w-full text-xs">
 				<li className="flex items-center gap-3 py-1">
 					<Skeleton className="h-4 w-16" />
 					<hr className="min-w-2 flex-1" />
@@ -83,9 +66,15 @@ type Props = {
 export default function PostGridItem({ item, style }: Props) {
 	const item_type = TypeToItemType(item.type);
 	const detailUrl = `/item/${item_type?.slug}/detail/${item.id}`;
-	const author = item.terms?.find(
-		(t) => t.taxonomy === 'original_author_tax'
-	);
+	const authorTerm =
+		item.terms?.find((t) => t.taxonomy === 'fv_item_author') ||
+		item.terms?.find((t) => t.taxonomy === 'original_author_tax') ||
+		null;
+	const authorName = authorTerm?.name
+		? decodeEntities(authorTerm.name)
+		: item.author
+			? decodeEntities(item.author)
+			: __('Unknown author');
 
 	const updatedAt = item.updated ? moment.unix(item.updated).fromNow() : '—';
 
@@ -99,7 +88,7 @@ export default function PostGridItem({ item, style }: Props) {
 		},
 		{
 			label: __('Author'),
-			value: author ? decodeEntities(author.name) : '—',
+			value: authorName,
 			icon: <UserIcon />
 		},
 		{ label: __('Updated'), value: updatedAt, icon: <CalendarIcon /> },
@@ -116,33 +105,29 @@ export default function PostGridItem({ item, style }: Props) {
 
 	return (
 		<div
-			className={`${cardClass} hover:bg-accent`}
+			className={cardClass}
 			style={style}
 		>
 			<Link
 				to={detailUrl}
-				className="contents text-card-foreground no-underline"
+				className="text-card-foreground contents no-underline"
 			>
-				<div className="-mx-5 -mt-5 mb-0 w-[calc(100%+2.5rem)] overflow-hidden rounded-t-lg">
+				<div className="-mx-4 -mt-4 mb-0 w-[calc(100%+2rem)] overflow-hidden rounded-t-xl sm:-mx-5 sm:-mt-5 sm:w-[calc(100%+2.5rem)]">
 					<img
 						src={coverSrc}
 						alt={decodeEntities(item.title)}
-						className="aspect-[16/9] w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+						className="aspect-video w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
 						loading="lazy"
 					/>
 				</div>
 				<div className="flex w-full flex-row flex-wrap items-center gap-x-3 gap-y-2">
-					<div className="flex size-8 shrink-0 items-center justify-center rounded-md border bg-accent p-1.5 text-muted-foreground">
-						<TypeIcon type={item.type} />
-					</div>
-
 					<div className="min-w-0 flex-1">
 						<h3 className="truncate text-base font-semibold tracking-tight">
-							{item.title}
+							{decodeEntities(item.title)}
 						</h3>
 						{item.original_title &&
 							item.original_title !== item.title && (
-								<span className="flex items-center gap-1 text-xs text-muted-foreground">
+								<span className="text-muted-foreground flex items-center gap-1 text-xs">
 									<GitFork className="h-3 w-3 shrink-0" />
 									<span className="truncate">
 										{item.original_title}
@@ -153,13 +138,13 @@ export default function PostGridItem({ item, style }: Props) {
 				</div>
 
 				<div className="flex w-full flex-1 flex-col">
-					<ul className="mt-auto w-full text-xs">
+					<ul className="border-border/60 mt-auto w-full rounded-md border p-2 text-xs sm:p-2.5">
 						{insights.map(({ label, value, icon }) => (
 							<li
 								key={label}
 								className="flex items-center gap-3 py-1"
 							>
-								<p className="flex min-w-0 items-center gap-1.5 text-muted-foreground">
+								<p className="text-muted-foreground flex min-w-0 items-center gap-1.5">
 									<span className="h-[1.1em] w-[1.1em] shrink-0 opacity-75 [&>svg]:h-full [&>svg]:w-full">
 										{icon}
 									</span>
@@ -177,7 +162,7 @@ export default function PostGridItem({ item, style }: Props) {
 				</div>
 			</Link>
 
-			<ButtonGroup className="mt-auto w-full text-foreground">
+			<ButtonGroup className="border-border/60 text-foreground mt-auto w-full border-t pt-3">
 				<InstallButton
 					item={item}
 					variant="secondary"

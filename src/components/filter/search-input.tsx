@@ -30,7 +30,7 @@ export default function Search({ collection, compact = false }: Props) {
 				value={text}
 				className={cn(
 					'w-full pr-7 transition-[width]',
-					compact ? 'h-8 sm:max-w-[280px]' : 'h-9 sm:w-[300px]'
+					compact ? 'h-8 sm:max-w-70' : 'h-9 sm:w-75'
 				)}
 				placeholder={__('Search Title')}
 				onChange={(e) => {
@@ -41,7 +41,7 @@ export default function Search({ collection, compact = false }: Props) {
 			/>
 			{text.length > 0 && (
 				<X
-					className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer opacity-100 transition-opacity hover:opacity-70"
+					className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer opacity-100 transition-opacity hover:opacity-70"
 					size={14}
 					onClick={() => {
 						setText('');

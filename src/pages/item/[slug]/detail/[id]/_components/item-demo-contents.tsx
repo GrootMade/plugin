@@ -89,7 +89,7 @@ export default function ItemDemoContents({ item }: Props) {
 		<div className="flex flex-col gap-5 max-md:order-4 sm:gap-7">
 			<Card>
 				<CardHeader className="border-b p-5 sm:p-7">
-					{__('Demo Contents')}
+					{__('Package Contents')}
 				</CardHeader>
 				<CardContent className="p-5 text-sm sm:p-7">
 					{data?.data ? (
@@ -113,15 +113,20 @@ export default function ItemDemoContents({ item }: Props) {
 							{Array.from({ length: 4 }).map((_, i) => (
 								<div
 									key={i}
-									className="flex items-center gap-3"
+									className="flex items-center gap-3 rounded-md border px-3 py-2"
 								>
-									<Skeleton className="h-4 w-24" />
+									<Skeleton className="h-4 w-20" />
 									<Skeleton className="h-4 flex-1" />
+									<Skeleton className="h-8 w-10" />
 								</div>
 							))}
 						</div>
 					) : (
-						<div className="">{__('No Items Found')}</div>
+						<div className="text-muted-foreground">
+							{__(
+								'Package contents information is not available yet.'
+							)}
+						</div>
 					)}
 				</CardContent>
 			</Card>

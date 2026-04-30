@@ -1,90 +1,69 @@
-/**
- * Color scheme aligned with Once UI Core defaults (@once-ui-system/core v1.6.4):
- * neutral slate scale, brand blue, semantic green / yellow / red from dist/css/tokens.css.
- * Reference: https://once-ui.com/brand/color
- *
- * HSL values approximate the hex scales: scheme-slate-*, scheme-blue-*, scheme-green-*,
- * scheme-yellow-*, scheme-red-* as used for [data-theme=light|dark] + slate + blue.
- */
 @layer base {
 	:root {
-		/* page ≈ neutral-background-weak (white), text ≈ neutral-on-background-strong (slate-100) */
+		/* Neutral achromatic light mode — mirrors grootmade.com's neutral palette */
 		--background: 0 0% 100%;
-		--foreground: 240 33% 5%;
-		/* surface ≈ neutral-background-medium (slate-1000 #ecedfc) */
-		--card: 236 67% 96%;
-		--card-foreground: 240 33% 5%;
+		--foreground: 0 0% 4%;
+		--card: 0 0% 98%;
+		--card-foreground: 0 0% 4%;
 		--popover: 0 0% 100%;
-		--popover-foreground: 240 33% 5%;
-		/* primary ≈ brand-solid-strong light / scheme-blue-600 #5A93FC */
-		--primary: 217 96% 67%;
+		--popover-foreground: 0 0% 4%;
+		--primary: 234 98% 61%;
 		--primary-foreground: 0 0% 100%;
-		/* secondary / muted ≈ slate-1100 #f3f4ff */
-		--secondary: 236 67% 97%;
-		--secondary-foreground: 240 33% 5%;
-		--muted: 236 67% 97%;
-		--muted-foreground: 231 11% 49%;
-		--accent: 236 67% 97%;
-		--accent-foreground: 240 33% 5%;
-		/* danger ≈ scheme-red-600 #FF5F53 */
-		--destructive: 4 100% 66%;
+		--secondary: 0 0% 95%;
+		--secondary-foreground: 0 0% 45%;
+		--muted: 0 0% 96%;
+		--muted-foreground: 0 0% 45%;
+		--accent: 0 0% 96%;
+		--accent-foreground: 0 0% 15%;
+		--destructive: 0 84% 60%;
 		--destructive-foreground: 0 0% 100%;
-		/* success ≈ scheme-green-600 #08AC3A */
-		--success: 145 93% 36%;
+		--success: 142 71% 45%;
 		--success-foreground: 0 0% 100%;
-		/* warning ≈ scheme-yellow-700 #FE9C0B */
-		--warning: 38 99% 52%;
-		--warning-foreground: 240 33% 5%;
-		/* borders ≈ neutral-border-medium → slate-900 #dfe0ef */
-		--border: 231 33% 90%;
-		--input: 231 33% 90%;
-		--ring: 217 96% 67%;
-		/* charts ≈ Once light data accent stops (blue, green, violet, orange, cyan) */
-		--chart-1: 221 99% 49%;
-		--chart-2: 145 79% 22%;
-		--chart-3: 271 97% 45%;
-		--chart-4: 11 99% 34%;
-		--chart-5: 203 95% 31%;
-		/* radius-m from Once UI playful / default feel */
-		--radius: 0.75rem;
-		/* --shadow-xs from Once UI tokens.css */
-		--shadow-card: 0px 0px 1px rgba(0, 0, 0, 0.12),
-			0px 1px 2px rgba(0, 0, 0, 0.08), 0px 2px 4px rgba(0, 0, 0, 0.08);
+		--warning: 38 92% 50%;
+		--warning-foreground: 30 60% 10%;
+		--border: 0 0% 90%;
+		--input: 0 0% 90%;
+		--ring: 234 98% 61%;
+		--chart-1: 234 98% 61%;
+		--chart-2: 142 71% 45%;
+		--chart-3: 199 89% 48%;
+		--chart-4: 27 96% 61%;
+		--chart-5: 340 75% 55%;
+		--radius: 0.625rem;
+		--shadow-card: 0px 0px 0px 1px rgba(0, 0, 0, 0.06),
+			0px 1px 2px rgba(0, 0, 0, 0.06), 0px 2px 8px rgba(0, 0, 0, 0.04);
 	}
 	.dark {
-		/* page ≈ neutral-background-weak → slate-100 */
-		--background: 240 33% 5%;
-		--foreground: 0 0% 100%;
-		/* card ≈ neutral-background-medium → slate-200 #15151f */
-		--card: 235 24% 10%;
-		--card-foreground: 0 0% 100%;
-		--popover: 235 24% 10%;
-		--popover-foreground: 0 0% 100%;
-		/* primary ≈ brand-solid-strong dark / scheme-blue-500 #2D69FA */
-		--primary: 221 95% 58%;
-		--primary-foreground: 0 0% 100%;
-		--secondary: 235 18% 14%;
-		--secondary-foreground: 0 0% 100%;
-		--muted: 235 18% 14%;
-		--muted-foreground: 231 11% 71%;
-		--accent: 235 18% 14%;
-		--accent-foreground: 0 0% 100%;
-		--destructive: 4 100% 66%;
-		--destructive-foreground: 0 0% 100%;
-		--success: 145 93% 45%;
+		/* Matches grootmade.com dark theme — pure achromatic near-black */
+		--background: 0 0% 5%;
+		--foreground: 0 0% 90%;
+		--card: 0 0% 8%;
+		--card-foreground: 0 0% 90%;
+		--popover: 0 0% 5%;
+		--popover-foreground: 0 0% 90%;
+		--primary: 234 98% 61%;
+		--primary-foreground: 0 0% 98%;
+		--secondary: 0 0% 10%;
+		--secondary-foreground: 0 0% 70%;
+		--muted: 0 0% 10%;
+		--muted-foreground: 0 0% 60%;
+		--accent: 0 0% 10%;
+		--accent-foreground: 0 0% 90%;
+		--destructive: 0 69% 30%;
+		--destructive-foreground: 0 0% 98%;
+		--success: 142 71% 45%;
 		--success-foreground: 0 0% 100%;
-		--warning: 38 99% 52%;
-		--warning-foreground: 240 33% 5%;
-		--border: 235 16% 26%;
-		--input: 235 16% 26%;
-		--ring: 221 95% 58%;
-		--chart-1: 221 95% 58%;
-		--chart-2: 145 70% 48%;
-		--chart-3: 271 85% 62%;
-		--chart-4: 11 90% 55%;
-		--chart-5: 203 90% 48%;
-		/* subtle lift + hairline (Once-style dark surfaces) */
-		--shadow-card: 0px 0px 2px rgba(0, 0, 0, 0.24),
-			0px 1px 4px rgba(0, 0, 0, 0.16), 0px 0px 0px 1px rgba(255, 255, 255, 0.06);
+		--warning: 38 92% 50%;
+		--warning-foreground: 30 60% 10%;
+		--border: 0 0% 15%;
+		--input: 0 0% 15%;
+		--ring: 0 0% 20%;
+		--chart-1: 234 98% 61%;
+		--chart-2: 142 60% 50%;
+		--chart-3: 199 89% 55%;
+		--chart-4: 27 96% 61%;
+		--chart-5: 340 75% 60%;
+		--shadow-card: 0px 0px 0px 1px rgba(255, 255, 255, 0.05),
+			0px 1px 4px rgba(0, 0, 0, 0.3), 0px 4px 16px rgba(0, 0, 0, 0.2);
 	}
 }

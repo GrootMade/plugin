@@ -51,13 +51,13 @@ export default function Component() {
 			]}
 		>
 			<div className="flex flex-col gap-3">
-				<div className="rounded-lg border border-border/80 bg-card p-3 shadow-sm sm:p-4">
+				<div className="border-border/80 bg-card rounded-lg border p-3 shadow-sm sm:p-4">
 					<div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
 						<div className="min-w-0 flex-1">
-							<h1 className="font-heading text-lg font-semibold tracking-tight text-foreground sm:text-xl">
+							<h1 className="font-heading text-foreground text-lg font-semibold tracking-tight sm:text-xl">
 								{title}
 							</h1>
-							<p className="mt-0.5 text-xs leading-snug text-muted-foreground sm:text-sm">
+							<p className="text-muted-foreground mt-0.5 text-xs leading-snug sm:text-sm">
 								{pageDescription}
 							</p>
 						</div>

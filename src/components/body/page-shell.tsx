@@ -6,14 +6,6 @@ import type { ElementType, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import BulkAction from '../bulk-action';
 import TypeSenseSearch from '../typesense-search';
-import {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbLink,
-	BreadcrumbList,
-	BreadcrumbPage,
-	BreadcrumbSeparator
-} from '../ui/breadcrumb';
 import { Card, CardContent } from '../ui/card';
 import { Skeleton } from '../ui/skeleton';
 import Notices from './notices';
@@ -38,6 +30,8 @@ type Props = {
 	onSearchQueryChange?: (query: string) => void;
 	/** Tighter global header + toolbar; use with FilterBar variant compact on listing pages */
 	compactListing?: boolean;
+	/** When true the content fills the full available width; default is constrained to max-w-5xl */
+	fullWidth?: boolean;
 };
 
 export function AppPageShell({
@@ -54,21 +48,25 @@ export function AppPageShell({
 	filterBar,
 	headerActions,
 	onSearchQueryChange,
-	compactListing = false
+	compactListing = false,
+	fullWidth = false
 }: Props) {
 	const Container = as ?? 'main';
 	if (!PreloaderComponent) {
 		PreloaderComponent = (
-			<div className="space-y-2">
-				<Skeleton className="h-4 w-[250px]" />
-				<Skeleton className="h-4 w-[200px]" />
+			<div className="bg-card rounded-lg border p-5 sm:p-7">
+				<div className="space-y-3">
+					<Skeleton className="h-5 w-56 max-w-[80%]" />
+					<Skeleton className="h-4 w-full" />
+					<Skeleton className="h-4 w-5/6" />
+				</div>
 			</div>
 		);
 	}
 	if (!ErrorComponent) {
 		ErrorComponent = (
 			<Card>
-				<CardContent className="p-5 text-center text-muted-foreground sm:p-7">
+				<CardContent className="text-muted-foreground p-5 text-center sm:p-7">
 					{__('Invalid Request')}
 				</CardContent>
 			</Card>
@@ -84,7 +82,7 @@ export function AppPageShell({
 		);
 	}
 	return (
-		<div className="w-full space-y-8">
+		<div className="w-full space-y-7">
 			<PageHeader
 				title={title}
 				showTitle={showTitle}
@@ -92,57 +90,23 @@ export function AppPageShell({
 				headerActions={headerActions}
 				onSearchQueryChange={onSearchQueryChange}
 				compactTop={compactListing}
+				breadcrump={breadcrump}
 			/>
 			<Container
 				className={cn(
 					'relative flex flex-col pb-8',
 					compactListing ? 'gap-3 sm:gap-4' : 'gap-5 sm:gap-7',
+					!fullWidth && 'mx-auto max-w-5xl',
 					// Blur only while showing the preloader; refetch would flicker if we blurred on every isFetching
 					isLoading && 'blur-sm'
 				)}
 			>
-				{breadcrump && (
-					<div className={cn(compactListing && 'text-xs')}>
-						<Breadcrumb>
-							<BreadcrumbList>
-								{[
-									{
-										label: (
-											<span className="flex flex-row items-center gap-2">
-												<Home size={16} /> {__('Home')}
-											</span>
-										),
-										href: '/'
-									},
-									...breadcrump
-								].map((item, index) => (
-									<Fragment key={index}>
-										{index > 0 && <BreadcrumbSeparator />}
-										<BreadcrumbItem>
-											{item.href ? (
-												<BreadcrumbLink asChild>
-													<Link to={item.href}>
-														{item.label}
-													</Link>
-												</BreadcrumbLink>
-											) : (
-												<BreadcrumbPage>
-													{item.label}
-												</BreadcrumbPage>
-											)}
-										</BreadcrumbItem>
-									</Fragment>
-								))}
-							</BreadcrumbList>
-						</Breadcrumb>
-					</div>
-				)}
 				<Notices />
 				{filterBar && (
 					<div
 						className={cn(
 							!compactListing &&
-								'border-b border-border pb-4 sm:pb-5'
+								'border-border border-b pb-4 sm:pb-5'
 						)}
 					>
 						{filterBar}
@@ -150,7 +114,7 @@ export function AppPageShell({
 				)}
 				<Out />
 				{isLoading && (
-					<div className="absolute left-0 top-0 h-full w-full cursor-progress" />
+					<div className="absolute top-0 left-0 h-full w-full cursor-progress" />
 				)}
 			</Container>
 		</div>
@@ -164,15 +128,16 @@ type PageHeaderProps = {
 	headerActions?: ReactNode;
 	onSearchQueryChange?: (query: string) => void;
 	compactTop?: boolean;
+	breadcrump?: BreadCrumbType[];
 };
 
 function PageHeader({
 	title,
 	showTitle,
-	description,
 	headerActions,
 	onSearchQueryChange,
-	compactTop = false
+	compactTop = false,
+	breadcrump
 }: PageHeaderProps) {
 	useEffect(() => {
 		document.title = title;
@@ -181,18 +146,13 @@ function PageHeader({
 		<>
 			<header
 				className={cn(
-					'flex flex-col border-b border-border',
+					'border-border flex flex-col border-b',
 					compactTop
-						? 'gap-2 pb-2 pt-0 lg:gap-2 lg:pb-3'
-						: 'gap-4 pb-4 lg:gap-5 lg:pb-6 lg:pt-1'
+						? 'gap-3 pt-0 pb-3'
+						: 'gap-4 pb-5 lg:pt-2 lg:pb-6'
 				)}
 			>
-				<div
-					className={cn(
-						'flex items-center gap-2',
-						!compactTop && 'gap-3'
-					)}
-				>
+				<div className="flex items-center gap-2">
 					<div className="min-w-0 flex-1">
 						<TypeSenseSearch onQueryChange={onSearchQueryChange} />
 					</div>
@@ -200,34 +160,60 @@ function PageHeader({
 						<BulkAction />
 					</div>
 				</div>
-				{showTitle && (
-					<div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-						<div className="min-w-0 flex-1 space-y-1.5">
-							<h1
-								className={cn(
-									'font-heading font-bold tracking-tight text-foreground',
-									compactTop
-										? 'text-lg sm:text-xl'
-										: 'text-2xl sm:text-3xl'
-								)}
-							>
-								{title}
-							</h1>
-							{description && (
-								<p
+				{(showTitle || breadcrump) && (
+					<div className="flex items-center justify-between gap-4">
+						<div className="flex min-w-0 flex-1 flex-col gap-1">
+							{breadcrump && (
+								<nav
+									aria-label="breadcrumb"
+									className="text-muted-foreground flex items-center gap-1 text-xs"
+								>
+									<Link
+										to="/"
+										className="hover:text-foreground flex items-center gap-1 transition-colors"
+									>
+										<Home
+											size={11}
+											className="shrink-0"
+										/>
+										{__('Home')}
+									</Link>
+									{breadcrump.map((item, index) => (
+										<Fragment key={index}>
+											<span className="text-muted-foreground/40 select-none">
+												/
+											</span>
+											{item.href ? (
+												<Link
+													to={item.href}
+													className="hover:text-foreground truncate transition-colors"
+												>
+													{item.label}
+												</Link>
+											) : (
+												<span className="text-foreground/70 truncate">
+													{item.label}
+												</span>
+											)}
+										</Fragment>
+									))}
+								</nav>
+							)}
+							{showTitle && (
+								<h1
 									className={cn(
-										'max-w-2xl text-muted-foreground',
+										'font-heading text-foreground leading-tight font-bold tracking-tight',
 										compactTop
-											? 'text-xs leading-snug sm:text-sm'
-											: 'text-sm leading-relaxed'
+											? 'text-base sm:text-lg'
+											: 'text-xl sm:text-2xl'
 									)}
 								>
-									{description}
-								</p>
+									{title}
+								</h1>
 							)}
 						</div>
 						{headerActions ? (
-							<div className="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">
+							<div className="flex shrink-0 flex-wrap items-center gap-2">
 								{headerActions}
 							</div>
 						) : null}

@@ -26,7 +26,7 @@ export function DataTablePagination<TData>({
 }: DataTablePaginationProps<TData>) {
 	return (
 		<div className="flex w-full flex-col items-center justify-between gap-4 overflow-auto px-2 py-1 sm:flex-row sm:gap-8">
-			<p className="flex-1 text-sm text-muted-foreground">
+			<p className="text-muted-foreground flex-1 text-sm">
 				{sprintf(
 					_n(
 						'%d result found',
@@ -38,7 +38,7 @@ export function DataTablePagination<TData>({
 			</p>
 			<div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
 				<div className="flex items-center space-x-2">
-					<p className="whitespace-nowrap text-sm font-medium">
+					<p className="text-sm font-medium whitespace-nowrap">
 						{__('Items per page')}
 					</p>
 					<Select

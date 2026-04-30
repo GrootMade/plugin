@@ -59,14 +59,14 @@ export default function AdBanner() {
 			className={cn(
 				'flex flex-row items-center gap-3 rounded-lg border px-3 py-2.5 no-underline transition-colors md:px-4',
 				isThankYou
-					? 'border-emerald-500/35 bg-gradient-to-r from-emerald-500/[0.12] via-emerald-500/[0.06] to-transparent hover:from-emerald-500/[0.18] hover:via-emerald-500/[0.08]'
-					: 'border-l-2 border-l-primary/60 bg-card hover:bg-accent'
+					? 'border-emerald-500/35 bg-linear-to-r from-emerald-500/12 via-emerald-500/6 to-transparent hover:from-emerald-500/18 hover:via-emerald-500/8'
+					: 'border-l-primary/60 bg-card hover:bg-accent border-l-2'
 			)}
 		>
 			<CrownIcon
 				className={cn(
 					'size-3.5 shrink-0 sm:size-4',
-					isThankYou ? 'text-emerald-500' : 'text-amber-500'
+					isThankYou ? 'text-emerald-500' : 'text-warning'
 				)}
 			/>
 

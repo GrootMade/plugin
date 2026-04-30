@@ -143,81 +143,75 @@ export default function AdditionalDownloadButton({
 				</Button>
 			</DialogTrigger>
 			<DialogContent>
-				<DialogHeader className="text-center">
-					<DialogTitle className="text-center leading-normal">
+				<DialogHeader>
+					<DialogTitle className="leading-normal">
 						{decodeEntities(media.title)}
 					</DialogTitle>
-					<DialogDescription
-						className="flex flex-col gap-2 text-center"
-						asChild
-					>
-						<div>
-							<div>
-								{sprintf(
-									__('Download demo content %s of %s'),
-									decodeEntities(media.title),
-									decodeEntities(item.title)
-								)}
-							</div>
-							<div>
-								{sprintf(
-									__(
-										'%d download credit would be consumed from your account.'
-									),
-									1
-								)}
-							</div>
-							<div className="flex flex-row justify-center divide-x">
-								<div className="px-4">
-									{sprintf(
-										__('Daily Limit: %s'),
-										activation?.today_limit?.toLocaleString()
-									)}
-								</div>
-								<div className="px-4">
-									{sprintf(
-										__('Used Limit: %s'),
-										activation?.today_limit_used?.toLocaleString()
-									)}
-								</div>
-								{activation?.plan_title === 'recurring' && (
-									<div className="p-4">
-										{sprintf(
-											__('Total Limit: %s'),
-											activation?.total_limit?.toLocaleString()
-										)}
-									</div>
-								)}
-							</div>
-						</div>
+					<DialogDescription>
+						{sprintf(
+							__('Download demo content %s of %s'),
+							decodeEntities(media.title),
+							decodeEntities(item.title)
+						)}
 					</DialogDescription>
 				</DialogHeader>
-				<DialogFooter>
-					<div className="flex flex-col justify-center gap-4 sm:flex-row">
-						<Button
-							onClick={() => download()}
-							disabled={isInstallPending}
-							className="gap-2"
-						>
-							{isInstallPending ? (
-								<ActionLoader label={__('Downloading')} />
-							) : (
-								<>
-									<Download size={16} />
-									<span>{__('Download')}</span>
-								</>
-							)}
-						</Button>
 
-						<DialogClose asChild>
-							<Button
-								variant="outline"
-								disabled={isInstallPending}
-							>
-								{__('Cancel')}
-							</Button>
-						</DialogClose>
+				<div className="bg-muted/40 rounded-md border px-4 py-3 text-sm">
+					<p className="text-muted-foreground mb-2">
+						{sprintf(
+							__(
+								'%d download credit will be consumed from your account.'
+							),
+							1
+						)}
+					</p>
+					<div className="text-muted-foreground flex flex-wrap gap-x-6 gap-y-1">
+						<span>
+							{sprintf(
+								__('Daily Limit: %s'),
+								activation?.today_limit?.toLocaleString()
+							)}
+						</span>
+						<span>
+							{sprintf(
+								__('Used Today: %s'),
+								activation?.today_limit_used?.toLocaleString()
+							)}
+						</span>
+						{activation?.plan_title === 'recurring' && (
+							<span>
+								{sprintf(
+									__('Total Limit: %s'),
+									activation?.total_limit?.toLocaleString()
+								)}
+							</span>
+						)}
 					</div>
+				</div>
+
+				<DialogFooter className="sm:justify-between">
+					<DialogClose asChild>
+						<Button
+							variant="outline"
+							disabled={isInstallPending}
+						>
+							{__('Cancel')}
+						</Button>
+					</DialogClose>
+					<Button
+						onClick={() => download()}
+						disabled={isInstallPending}
+						className="gap-2"
+					>
+						{isInstallPending ? (
+							<ActionLoader label={__('Downloading')} />
+						) : (
+							<>
+								<Download size={16} />
+								<span>{__('Download')}</span>
+							</>
+						)}
+					</Button>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>

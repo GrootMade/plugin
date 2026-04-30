@@ -63,9 +63,6 @@ export const NON_WP_PACKAGES: Record<string, string> = {
 	jquery: 'jQuery',
 	tinymce: 'tinymce',
 	moment: 'moment',
-	react: 'React',
-	'react-dom': 'ReactDOM',
-	'react-dom/client': 'ReactDOM',
 	backbone: 'Backbone',
 	lodash: 'lodash',
 	'lodash-es': 'lodash'

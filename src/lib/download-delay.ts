@@ -1,4 +1,4 @@
-import { siteConfig } from '@/config/site';
+import { buildApiUrl } from '@/lib/api-route';
 import { __ } from '@/lib/i18n';
 import apiFetch from '@wordpress/api-fetch';
 
@@ -40,7 +40,7 @@ async function claimDownload(
 					message?: string;
 				}
 			>({
-				path: `/${siteConfig.slug}/v1/item/claim`,
+				url: buildApiUrl('item/claim'),
 				method: 'POST',
 				data: {
 					delay_token: delayToken,

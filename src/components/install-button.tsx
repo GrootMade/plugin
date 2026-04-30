@@ -175,7 +175,7 @@ export default function InstallButton({ item, media, size, variant }: Props) {
 									)}
 								</div>
 								{activation?.plan_type === 'onetime' && (
-									<div className="px-4 ">
+									<div className="px-4">
 										{sprintf(
 											_x(
 												'Total Limit: %s',

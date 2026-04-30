@@ -20,10 +20,10 @@ function DownloadItemRow({ item }: { item: DownloadItem }) {
 		<div className="flex items-center gap-3 px-3 py-2">
 			<div className="shrink-0">
 				{item.status === 'completed' && (
-					<CheckCircle className="size-4 text-green-500" />
+					<CheckCircle className="text-success size-4" />
 				)}
 				{item.status === 'error' && (
-					<XCircle className="size-4 text-destructive" />
+					<XCircle className="text-destructive size-4" />
 				)}
 				{(item.status === 'downloading' ||
 					item.status === 'pending') && <ActionLoader />}
@@ -35,22 +35,22 @@ function DownloadItemRow({ item }: { item: DownloadItem }) {
 				{(item.status === 'downloading' ||
 					item.status === 'pending') && (
 					<div className="mt-1 flex items-center gap-2">
-						<div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
+						<div className="bg-muted h-1.5 flex-1 overflow-hidden rounded-full">
 							<div
-								className="h-full rounded-full bg-primary transition-all duration-300 ease-out"
+								className="bg-primary h-full rounded-full transition-all duration-300 ease-out"
 								style={{
 									width: `${item.percentage}%`
 								}}
 							/>
 						</div>
-						<span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+						<span className="text-muted-foreground shrink-0 text-xs tabular-nums">
 							{item.percentage}%
 						</span>
 					</div>
 				)}
 
 				{item.status === 'error' && (
-					<p className="text-xs text-destructive">
+					<p className="text-destructive text-xs">
 						{item.error || __('Download failed')}
 					</p>
 				)}
@@ -59,7 +59,7 @@ function DownloadItemRow({ item }: { item: DownloadItem }) {
 			<Button
 				size="sm"
 				variant="ghost"
-				className="h-auto shrink-0 p-1 text-muted-foreground hover:text-foreground"
+				className="text-muted-foreground hover:text-foreground h-auto shrink-0 p-1"
 				onClick={() => removeDownload(item.uid)}
 			>
 				<X className="size-3.5" />
@@ -86,12 +86,12 @@ export default function DownloadManager() {
 	return (
 		<div
 			className={cn(
-				'fixed bottom-4 right-4 z-50 w-80 overflow-hidden rounded-lg border bg-background shadow-lg',
+				'bg-background fixed right-4 bottom-4 z-50 w-80 overflow-hidden rounded-lg border shadow-lg',
 				'animate-in slide-in-from-bottom-4 fade-in duration-300'
 			)}
 		>
 			{/* Header */}
-			<div className="flex items-center justify-between border-b bg-muted/50 px-3 py-2">
+			<div className="bg-muted/50 flex items-center justify-between border-b px-3 py-2">
 				<div className="flex items-center gap-2">
 					<Download className="size-4" />
 					<span className="text-sm font-medium">
@@ -127,7 +127,7 @@ export default function DownloadManager() {
 			{/* Items */}
 			{!collapsed && (
 				<>
-					<div className="max-h-72 divide-y divide-border overflow-y-auto">
+					<div className="divide-border max-h-72 divide-y overflow-y-auto">
 						{downloads.map((item) => (
 							<DownloadItemRow
 								key={item.uid}
@@ -137,11 +137,11 @@ export default function DownloadManager() {
 					</div>
 
 					{completedItems.length > 0 && (
-						<div className="border-t border-border px-3 py-2">
+						<div className="border-border border-t px-3 py-2">
 							<Button
 								size="sm"
 								variant="ghost"
-								className="text-xs text-muted-foreground"
+								className="text-muted-foreground text-xs"
 								onClick={clearCompleted}
 							>
 								{__('Clear completed')}

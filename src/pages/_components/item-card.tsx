@@ -39,7 +39,7 @@ export default function ItemCard({
 								formattingFn={(num) => millify(num)}
 							/>
 						</div>
-						<div className="text-sm text-muted-foreground">
+						<div className="text-muted-foreground text-sm">
 							{title}
 						</div>
 					</div>

@@ -84,7 +84,7 @@ export default function DownloadCard({ item }: Props) {
 					)}
 				</ButtonGroup>
 				{item.updated > 0 && (
-					<p className="text-center text-xs text-muted-foreground">
+					<p className="text-muted-foreground text-center text-xs">
 						{sprintf(
 							__('Last updated %s'),
 							moment.unix(item.updated).fromNow()

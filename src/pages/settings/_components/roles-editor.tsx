@@ -25,7 +25,7 @@ export default function RolesAccessForm() {
 	return (
 		!!settings && (
 			<Card className="overflow-hidden">
-				<CardHeader className="border-b border-border/80 bg-muted/30">
+				<CardHeader className="border-border/80 bg-muted/30 border-b">
 					<CardTitle className="text-base font-semibold">
 						{__('Role Access')}
 					</CardTitle>

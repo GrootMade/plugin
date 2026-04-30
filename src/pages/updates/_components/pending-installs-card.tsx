@@ -64,7 +64,7 @@ export default function PendingInstallsCard() {
 			<AlertTitle>{__('Remote Installs')}</AlertTitle>
 			<AlertDescription>
 				<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-					<div className="text-sm text-muted-foreground">
+					<div className="text-muted-foreground text-sm">
 						{status?.last_check
 							? `${__('Last checked')}: ${formatTimestamp(status.last_check.time)} · ${status.last_check.count} ${__('items found')}`
 							: __(

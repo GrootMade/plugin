@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import useApiFetch from '@/hooks/use-api-fetch';
 import { API } from '@/lib/api-endpoints';
 import { archiveItemCoverSrc } from '@/lib/archive-item-cover';
@@ -36,7 +37,7 @@ export default function PopularItems({ type, className }: Props) {
 				<Link
 					to="/popular/:slug?"
 					params={{ slug: type }}
-					className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+					className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-sm transition-colors"
 				>
 					{__('View all')}
 					<ArrowRight className="h-3.5 w-3.5" />
@@ -48,12 +49,17 @@ export default function PopularItems({ type, className }: Props) {
 						{Array.from({ length: 5 }).map((_, i) => (
 							<div
 								key={i}
-								className="flex items-center px-4 py-3"
+								className="flex items-center gap-3 px-4 py-3"
 							>
-								<div className="flex-1 space-y-1.5">
-									<div className="h-3.5 w-3/4 animate-pulse rounded bg-muted" />
-									<div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
+								<Skeleton className="h-9 w-9 shrink-0 rounded-md" />
+								<div className="flex-1 space-y-2">
+									<div className="flex items-center gap-2">
+										<Skeleton className="h-3.5 w-32 max-w-[60%]" />
+										<Skeleton className="h-4 w-12 rounded-full" />
+									</div>
+									<Skeleton className="h-3 w-1/2" />
 								</div>
+								<Skeleton className="h-3 w-10" />
 							</div>
 						))}
 					</div>
@@ -67,7 +73,7 @@ export default function PopularItems({ type, className }: Props) {
 									id: item.id,
 									slug: itemType?.slug ?? type
 								}}
-								className="flex items-center gap-3 px-4 py-3 text-card-foreground no-underline transition-colors hover:bg-muted/50"
+								className="text-card-foreground hover:bg-muted/50 flex items-center gap-3 px-4 py-3 no-underline transition-colors"
 							>
 								<Avatar className="h-9 w-9 rounded-md">
 									<AvatarImage
@@ -92,7 +98,7 @@ export default function PopularItems({ type, className }: Props) {
 											{badgeLabel}
 										</Badge>
 									</div>
-									<div className="flex items-center gap-3 text-xs text-muted-foreground">
+									<div className="text-muted-foreground flex items-center gap-3 text-xs">
 										{item.version && (
 											<span>v{item.version}</span>
 										)}
@@ -107,7 +113,7 @@ export default function PopularItems({ type, className }: Props) {
 								</div>
 								{item.download_count != null &&
 									item.download_count > 0 && (
-										<div className="flex items-center gap-1 text-xs text-muted-foreground">
+										<div className="text-muted-foreground flex items-center gap-1 text-xs">
 											<Download className="h-3 w-3" />
 											<span>
 												{millify(item.download_count)}

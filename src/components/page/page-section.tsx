@@ -26,12 +26,12 @@ export function PageSection({
 				<div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
 					<div className="min-w-0 space-y-1">
 						{title != null ? (
-							<h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
+							<h2 className="font-heading text-foreground text-lg font-semibold tracking-tight">
 								{title}
 							</h2>
 						) : null}
 						{description != null ? (
-							<div className="text-sm text-muted-foreground">
+							<div className="text-muted-foreground text-sm">
 								{description}
 							</div>
 						) : null}

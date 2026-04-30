@@ -17,7 +17,7 @@ export default function PageTitle({ title }: Props) {
 					'flex w-full flex-row items-center justify-between gap-3'
 				)}
 			>
-				<h2 className={cn('text-xl font-semibold text-black')}>
+				<h2 className={cn('text-foreground text-xl font-semibold')}>
 					{title}
 				</h2>
 			</div>

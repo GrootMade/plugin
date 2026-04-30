@@ -11,7 +11,8 @@ const rand = randomString();
 export default defineConfig({
 	resolve: {
 		alias: {
-			'@': path.resolve(__dirname, './src')
+			'@': path.resolve(__dirname, './src'),
+			'@wordpress/element': 'react'
 		}
 	},
 	build: {
@@ -25,7 +26,9 @@ export default defineConfig({
 		}
 	},
 	plugins: [
-		generouted(),
+		generouted({
+			format: false
+		}),
 		viteWpReact({
 			input: { main: 'src/index.tsx' },
 			outDir: 'build',

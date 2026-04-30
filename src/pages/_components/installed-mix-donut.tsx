@@ -43,7 +43,7 @@ export default function InstalledMixDonut() {
 
 	if (!chartData.length) {
 		return (
-			<div className="flex h-[180px] items-center justify-center text-center text-sm text-muted-foreground">
+			<div className="text-muted-foreground flex h-45 items-center justify-center text-center text-sm">
 				{__('No installed items yet.')}
 			</div>
 		);
@@ -53,7 +53,7 @@ export default function InstalledMixDonut() {
 		<div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-6">
 			<ChartContainer
 				config={chartConfig}
-				className="mx-auto aspect-square h-[160px] w-[160px] sm:h-[180px] sm:w-[180px]"
+				className="mx-auto aspect-square h-40 w-40 sm:h-45 sm:w-45"
 			>
 				<PieChart>
 					<ChartTooltip
@@ -83,7 +83,7 @@ export default function InstalledMixDonut() {
 					</Pie>
 				</PieChart>
 			</ChartContainer>
-			<ul className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground sm:flex-col sm:justify-center sm:text-sm">
+			<ul className="text-muted-foreground flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs sm:flex-col sm:justify-center sm:text-sm">
 				{chartData.map((d) => (
 					<li
 						key={d.name}
@@ -93,7 +93,7 @@ export default function InstalledMixDonut() {
 							className="h-2.5 w-2.5 shrink-0 rounded-full"
 							style={{ backgroundColor: d.fill }}
 						/>
-						<span className="font-medium text-foreground">
+						<span className="text-foreground font-medium">
 							{d.value.toLocaleString()}
 						</span>
 						<span>

@@ -13,15 +13,15 @@ export const Grid = ({
 		[Math.floor(Math.random() * 4) + 2, Math.floor(Math.random() * 6) + 1]
 	];
 	return (
-		<div className="pointer-events-none absolute left-0 top-0 h-full w-full [mask-image:linear-gradient(white,transparent)]">
-			<div className="absolute inset-0 bg-gradient-to-r  from-zinc-100/30 to-zinc-300/30 opacity-100 [mask-image:radial-gradient(farthest-side_at_top,white,transparent)] dark:from-zinc-900/30 dark:to-zinc-900/30">
+		<div className="pointer-events-none absolute top-0 left-0 h-full w-full [mask-image:linear-gradient(white,transparent)]">
+			<div className="absolute inset-0 bg-gradient-to-r from-zinc-100/30 to-zinc-300/30 [mask-image:radial-gradient(farthest-side_at_top,white,transparent)] opacity-100 dark:from-zinc-900/30 dark:to-zinc-900/30">
 				<GridPattern
 					width={size ?? 20}
 					height={size ?? 20}
 					x="0"
 					y="0"
 					squares={p}
-					className="absolute inset-0 h-full w-full  fill-black/10 stroke-black/10 mix-blend-overlay dark:fill-white/10 dark:stroke-white/10"
+					className="absolute inset-0 h-full w-full fill-black/10 stroke-black/10 mix-blend-overlay dark:fill-white/10 dark:stroke-white/10"
 				/>
 			</div>
 		</div>

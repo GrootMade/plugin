@@ -66,7 +66,7 @@ class ViteAssets
 	public function __construct(
 		string $assets_path,
 		string $assets_url,
-		array $config = []
+		array $config = [],
 	) {
 		$this->assets_path = untrailingslashit($assets_path);
 		$this->assets_url = untrailingslashit($assets_url);
@@ -183,7 +183,7 @@ class ViteAssets
 				$url = sprintf(
 					'%s/%s',
 					$this->assets_url,
-					$manifest[$import]['file']
+					$manifest[$import]['file'],
 				);
 
 				$imports[] = [
@@ -254,7 +254,7 @@ class ViteAssets
 		$entry_dependencies = $this->dependencies[$entry] ?? [];
 		$options['script-dependencies'] = array_merge(
 			$entry_dependencies,
-			$options['script-dependencies']
+			$options['script-dependencies'],
 		);
 		$data = $this->is_dev()
 			? $this->register_for_dev($entry, $options)
@@ -302,7 +302,7 @@ class ViteAssets
 		wp_add_inline_script($handle, $data, 'after');
 
 		add_filter('wp_inline_script_attributes', function (
-			array $attributes
+			array $attributes,
 		) use ($handle): array {
 			if (
 				isset($attributes['id']) &&
@@ -342,7 +342,7 @@ class ViteAssets
 		// Ensure that we don't have double slashes in the path.
 		$path = trim(
 			preg_replace('#[/]{2,}#', '/', "{$manifest['base']}/{$entry}"),
-			'/'
+			'/',
 		);
 
 		// Append path to the server origin.
@@ -384,7 +384,7 @@ class ViteAssets
 	protected function init_dependencies()
 	{
 		$this->dependencies = $this->read_json_file(
-			$this->config['dependencies']
+			$this->config['dependencies'],
 		);
 	}
 
@@ -397,12 +397,12 @@ class ViteAssets
 	protected function init_manifest(): void
 	{
 		$this->dev_manifest = $this->read_json_file(
-			$this->config['dev-manifest']
+			$this->config['dev-manifest'],
 		);
 
 		if (!$this->dev_manifest) {
 			$this->prod_manifest = $this->read_json_file(
-				$this->config['prod-manifest']
+				$this->config['prod-manifest'],
 			);
 		}
 
@@ -411,9 +411,9 @@ class ViteAssets
 				esc_html(
 					sprintf(
 						'[ViteWPReactAssets] Manifest file not found or is not readable in %s.',
-						$this->assets_path
-					)
-				)
+						$this->assets_path,
+					),
+				),
 			);
 		}
 	}
@@ -502,8 +502,8 @@ class ViteAssets
 			'dependencies/' . $options['handle'],
 			array_merge(
 				[$this->get_dev_client_handle()],
-				$options['script-dependencies']
-			)
+				$options['script-dependencies'],
+			),
 		);
 
 		$url = $this->get_dev_asset_url($entry);
@@ -516,7 +516,7 @@ class ViteAssets
 				$url,
 				$dependencies,
 				null,
-				$options['script-args']
+				$options['script-args'],
 			)
 		) {
 			return null;
@@ -533,7 +533,7 @@ class ViteAssets
 			$data,
 			$entry,
 			$options,
-			$this
+			$this,
 		);
 	}
 
@@ -553,8 +553,8 @@ class ViteAssets
 			$this->die_if_debug(
 				sprintf(
 					'[ViteWPReactAssets] Entry "%s" does not exist.',
-					$entry
-				)
+					$entry,
+				),
 			);
 
 			return null;
@@ -573,7 +573,7 @@ class ViteAssets
 			$this->load_script_as_module($options['handle']);
 			$dependencies = apply_filters(
 				'dependencies/' . $options['handle'],
-				$options['script-dependencies']
+				$options['script-dependencies'],
 			);
 
 			// Don't worry about browser caching as the version is embedded in the file name.
@@ -582,7 +582,7 @@ class ViteAssets
 				$src,
 				$dependencies,
 				null,
-				$options['script-args']
+				$options['script-args'],
 			);
 
 			if ($result) {
@@ -598,7 +598,7 @@ class ViteAssets
 				foreach ($this->get_import_chunks($entry) as $import) {
 					$css = array_merge(
 						$css,
-						$manifest[$import['entry']]['css'] ?? []
+						$manifest[$import['entry']]['css'] ?? [],
 					);
 				}
 			}
@@ -612,7 +612,7 @@ class ViteAssets
 					"{$this->assets_url}/{$css_path}",
 					$options['style-dependencies'],
 					null,
-					$options['style-media']
+					$options['style-media'],
 				);
 
 				if ($result) {
@@ -626,7 +626,7 @@ class ViteAssets
 			$data,
 			$entry,
 			$options,
-			$this
+			$this,
 		);
 	}
 
@@ -640,7 +640,7 @@ class ViteAssets
 	private function load_script_as_module(string $handle): void
 	{
 		add_filter('wp_script_attributes', function (array $attributes) use (
-			$handle
+			$handle,
 		): array {
 			if (
 				isset($attributes['id']) &&

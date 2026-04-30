@@ -30,7 +30,7 @@ function StatBox({
 	return (
 		<div
 			className={cn(
-				'rounded-sm border border-dashed border-muted-foreground',
+				'border-muted-foreground rounded-sm border border-dashed',
 				compact ? 'p-2.5' : 'p-4'
 			)}
 		>
@@ -96,7 +96,7 @@ export default function LicenseStatus({
 					<Link
 						to="/activation"
 						className={cn(
-							'inline-flex items-center rounded-md border font-medium no-underline transition-colors hover:bg-muted',
+							'hover:bg-muted inline-flex items-center rounded-md border font-medium no-underline transition-colors',
 							compact
 								? 'px-3 py-2 text-xs sm:text-sm'
 								: 'px-4 py-2 text-sm'
@@ -109,6 +109,20 @@ export default function LicenseStatus({
 		);
 	}
 
+	const todayLimit = Number(data?.today_limit ?? 0);
+	const todayUsed = Number(data?.today_limit_used ?? 0);
+	const remainingCredits = Math.max(todayLimit - todayUsed, 0);
+	const usagePercent =
+		todayLimit > 0
+			? Math.min(100, Math.max(0, (todayUsed / todayLimit) * 100))
+			: 0;
+	const usageToneClass =
+		usagePercent >= 90
+			? 'text-destructive'
+			: usagePercent >= 70
+				? 'text-warning'
+				: 'text-success';
+
 	return (
 		<Card
 			className={cn(
@@ -117,35 +131,48 @@ export default function LicenseStatus({
 				className
 			)}
 		>
-			<div className="space-y-1">
-				<h2
-					className={cn(
-						'flex flex-wrap items-center gap-2 font-semibold',
-						compact ? 'text-lg' : 'text-3xl'
-					)}
-				>
-					<span className="break-words">{data?.plan_title}</span>
-					<Badge
-						variant="outline"
-						className="border-green-600 bg-green-600/10 text-green-600"
-					>
-						{data?.expires > 0
-							? data?.plan_type === 'recurring'
-								? __('Monthly Plan')
-								: __('One-Time Plan')
-							: __('Lifetime Plan')}
-					</Badge>
-				</h2>
-				{data?.plan_detail ? (
-					<div
+			<div className="flex flex-wrap items-start justify-between gap-2">
+				<div className="min-w-0 space-y-1">
+					<h2
 						className={cn(
-							'text-muted-foreground',
-							compact ? 'line-clamp-2 text-xs sm:text-sm' : ''
+							'flex flex-wrap items-center gap-2 font-semibold',
+							compact ? 'text-lg' : 'text-3xl'
 						)}
 					>
-						{decodeEntities(data.plan_detail)}
-					</div>
-				) : null}
+						<span className="wrap-break-word">
+							{data?.plan_title}
+						</span>
+						<Badge
+							variant="outline"
+							className="border-success bg-success/10 text-success"
+						>
+							{data?.expires > 0
+								? data?.plan_type === 'recurring'
+									? __('Monthly Plan')
+									: __('One-Time Plan')
+								: __('Lifetime Plan')}
+						</Badge>
+					</h2>
+					{data?.plan_detail ? (
+						<div
+							className={cn(
+								'text-muted-foreground',
+								compact ? 'line-clamp-2 text-xs sm:text-sm' : ''
+							)}
+						>
+							{decodeEntities(data.plan_detail)}
+						</div>
+					) : null}
+				</div>
+				<Link
+					to="/activation"
+					className={cn(
+						'border-border text-muted-foreground hover:bg-muted hover:text-foreground inline-flex shrink-0 items-center rounded-md border no-underline transition-colors',
+						compact ? 'px-2.5 py-1.5 text-xs' : 'px-3 py-2 text-sm'
+					)}
+				>
+					{__('Manage plan')}
+				</Link>
 			</div>
 			<div
 				className={cn(
@@ -162,10 +189,16 @@ export default function LicenseStatus({
 					{ActivationStatusToString[data?.status]}
 				</StatBox>
 				<StatBox
-					label={__('Daily Today')}
+					label={__('Daily Limit')}
 					compact={compact}
 				>
 					{data?.today_limit?.toLocaleString()}
+				</StatBox>
+				<StatBox
+					label={__('Remaining Today')}
+					compact={compact}
+				>
+					{remainingCredits.toLocaleString()}
 				</StatBox>
 				{data?.plan_type === 'onetime' && (
 					<StatBox
@@ -189,6 +222,14 @@ export default function LicenseStatus({
 						? moment.unix(data?.expires).format('D MMM, YYYY')
 						: __('Never')}
 				</StatBox>
+				<StatBox
+					label={__('Usage')}
+					compact={compact}
+				>
+					<span className={cn('tabular-nums', usageToneClass)}>
+						{usagePercent.toFixed(0)}%
+					</span>
+				</StatBox>
 			</div>
 			<div
 				className={cn(
@@ -202,24 +243,26 @@ export default function LicenseStatus({
 						<span className="text-muted-foreground">
 							{__('Credits used:')}
 						</span>
-						<span>
+						<span className="font-medium tabular-nums">
 							{sprintf(
 								__('%s of %s'),
-								data?.today_limit_used?.toLocaleString() ?? 0,
-								data?.today_limit?.toLocaleString() ?? 0
+								todayUsed.toLocaleString(),
+								todayLimit.toLocaleString()
 							)}
+						</span>
+						<span
+							className={cn(
+								'text-xs font-medium',
+								usageToneClass
+							)}
+						>
+							({usagePercent.toFixed(0)}%)
 						</span>
 					</div>
 					{data && (
 						<Progress
 							className={compact ? 'h-1.5' : undefined}
-							value={
-								data.today_limit > 0
-									? 100 *
-										(data.today_limit_used /
-											data.today_limit)
-									: 0
-							}
+							value={usagePercent}
 						/>
 					)}
 				</div>

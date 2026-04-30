@@ -33,7 +33,7 @@ function ScanRow({
 			target="_blank"
 			rel="noopener noreferrer"
 			className={cn(
-				'shrink-0 font-medium underline decoration-border hover:decoration-foreground',
+				'decoration-border hover:decoration-foreground shrink-0 font-medium underline',
 				valueClassName
 			)}
 		>
@@ -49,7 +49,7 @@ function ScanRow({
 
 	return (
 		<li className="flex items-center gap-3 py-1">
-			<p className="flex min-w-0 items-center gap-1.5 text-muted-foreground [&_svg]:size-[1.1em] [&_svg]:shrink-0 [&_svg]:opacity-75">
+			<p className="text-muted-foreground flex min-w-0 items-center gap-1.5 [&_svg]:size-[1.1em] [&_svg]:shrink-0 [&_svg]:opacity-75">
 				{icon}
 				<span className="flex-1 truncate">{label}</span>
 			</p>
@@ -85,12 +85,12 @@ function ScanContent({
 		? 'text-primary'
 		: isDangerous
 			? 'text-destructive'
-			: 'text-amber-600';
+			: 'text-warning';
 	const barColor = isClean
 		? 'bg-primary'
 		: isDangerous
 			? 'bg-destructive'
-			: 'bg-amber-500';
+			: 'bg-warning';
 
 	const reportUrl = `https://www.virustotal.com/gui/file/${virusTotal.hash}`;
 	const lastScanned = new Date(virusTotal.updated * 1000).toLocaleDateString(
@@ -105,7 +105,7 @@ function ScanContent({
 	return (
 		<>
 			<div className="space-y-1.5">
-				<div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+				<div className="bg-muted h-2 w-full overflow-hidden rounded-full">
 					<div
 						className={cn(
 							'h-full rounded-full transition-all',
@@ -169,8 +169,8 @@ function ScanFallback() {
 	return (
 		<>
 			<div className="space-y-1.5">
-				<div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-					<div className="h-full w-full rounded-full bg-primary" />
+				<div className="bg-muted h-2 w-full overflow-hidden rounded-full">
+					<div className="bg-primary h-full w-full rounded-full" />
 				</div>
 			</div>
 

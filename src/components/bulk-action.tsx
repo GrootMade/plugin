@@ -45,7 +45,7 @@ export default memo(function BulkAction() {
 					</Button>
 				</DialogTrigger>
 				<DialogContent className="flex max-h-[80vh] flex-col gap-0 p-0">
-					<DialogHeader className="px-6 pb-4 pt-6">
+					<DialogHeader className="px-6 pt-6 pb-4">
 						<div className="flex items-center justify-between">
 							<div>
 								<DialogTitle className="flex items-center gap-2">
@@ -92,7 +92,7 @@ export default memo(function BulkAction() {
 												<p className="truncate text-sm font-medium">
 													{decodeEntities(item.title)}
 												</p>
-												<p className="text-xs text-muted-foreground">
+												<p className="text-muted-foreground text-xs">
 													{sprintf(
 														__('v%s · %s'),
 														item.version,
@@ -103,7 +103,7 @@ export default memo(function BulkAction() {
 											<Button
 												variant="ghost"
 												size="icon"
-												className="size-8 shrink-0 text-muted-foreground hover:text-destructive"
+												className="text-muted-foreground hover:text-destructive size-8 shrink-0"
 												onClick={() =>
 													removeItem(item.id)
 												}
@@ -121,7 +121,7 @@ export default memo(function BulkAction() {
 								<Button
 									variant="ghost"
 									size="sm"
-									className="gap-1.5 text-muted-foreground"
+									className="text-muted-foreground gap-1.5"
 									onClick={clearItems}
 								>
 									<Trash2 className="size-3.5" />
@@ -160,14 +160,14 @@ export default memo(function BulkAction() {
 						</>
 					) : (
 						<div className="flex flex-col items-center justify-center gap-3 px-6 py-12 text-center">
-							<div className="rounded-full bg-muted p-3">
-								<Package className="size-6 text-muted-foreground" />
+							<div className="bg-muted rounded-full p-3">
+								<Package className="text-muted-foreground size-6" />
 							</div>
 							<div>
 								<p className="text-sm font-medium">
 									{__('Your cart is empty')}
 								</p>
-								<p className="text-xs text-muted-foreground">
+								<p className="text-muted-foreground text-xs">
 									{__(
 										'Browse items and add them to your cart'
 									)}

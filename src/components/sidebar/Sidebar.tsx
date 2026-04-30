@@ -26,10 +26,10 @@ export function Sidebar({
 			{showLogo && (
 				<div
 					className={cn(
-						'items-center border-b border-border/60 lg:border-0',
+						'border-border/60 items-center border-b lg:border-0',
 						collapsed
 							? 'flex justify-center py-3'
-							: 'justify-between py-5 lg:pb-4 lg:pt-2'
+							: 'justify-between py-5 lg:pt-2 lg:pb-4'
 					)}
 				>
 					<Link
@@ -50,7 +50,7 @@ export function Sidebar({
 									)}
 								/>
 								{!collapsed && (
-									<span className="font-heading text-xl font-semibold text-foreground">
+									<span className="font-heading text-foreground text-xl font-semibold">
 										{siteConfig.name}
 									</span>
 								)}
@@ -74,18 +74,23 @@ export function Sidebar({
 			)}
 
 			<ScrollArea className="flex-1">
-				<div className="h-full w-full py-2">
+				<div
+					className={cn(
+						'h-full w-full py-3',
+						collapsed ? 'px-2' : 'px-3'
+					)}
+				>
 					<SidebarNav isCollapsed={collapsed} />
-					<ScrollBar orientation="vertical" />
 				</div>
+				<ScrollBar orientation="vertical" />
 			</ScrollArea>
 
 			<div
 				className={cn(
-					'flex border-t border-border/60 py-3',
+					'border-border/60 flex border-t py-3',
 					collapsed
-						? 'flex-col items-center gap-2'
-						: 'items-center gap-2 px-2'
+						? 'flex-col items-center gap-2 px-2'
+						: 'items-center gap-2 px-3'
 				)}
 			>
 				{!collapsed && <LanguageSelector />}
@@ -95,7 +100,7 @@ export function Sidebar({
 			{onToggleCollapse && (
 				<button
 					onClick={onToggleCollapse}
-					className="hidden items-center justify-center border-t border-border/60 py-3 text-muted-foreground transition-colors hover:text-foreground lg:flex"
+					className="border-border/60 text-muted-foreground hover:text-foreground hidden items-center justify-center border-t py-3 transition-colors lg:flex"
 				>
 					{collapsed ? (
 						<ChevronsRight className="h-4 w-4" />

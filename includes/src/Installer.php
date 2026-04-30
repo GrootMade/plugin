@@ -74,7 +74,7 @@ class Installer
 				error_log($installed->get_error_message());
 				return new \WP_Error(
 					400,
-					__('Error while Installing', 'grootmade')
+					__('Error while Installing', 'grootmade'),
 				);
 			}
 			return $installed;

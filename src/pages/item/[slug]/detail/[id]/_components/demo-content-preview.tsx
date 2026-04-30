@@ -1,10 +1,10 @@
-import ActionLoader from '@/components/ui/action-loader';
 import {
 	Card,
 	CardContent,
 	CardFooter,
 	CardHeader
 } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import useApiFetch from '@/hooks/use-api-fetch';
 import { API } from '@/lib/api-endpoints';
 import { __ } from '@/lib/i18n';
@@ -39,16 +39,27 @@ export default function DemoContentPreview({ item }: Props) {
 							/>
 						</div>
 					) : isLoading || isFetching ? (
-						<ActionLoader label={__('Loading demo contents')} />
+						<div className="space-y-3">
+							{Array.from({ length: 3 }).map((_, i) => (
+								<div
+									key={i}
+									className="flex items-center gap-3 rounded-md border px-3 py-2"
+								>
+									<Skeleton className="h-4 w-20" />
+									<Skeleton className="h-4 flex-1" />
+									<Skeleton className="h-8 w-10" />
+								</div>
+							))}
+						</div>
 					) : (
 						<div className="">{__('No Items Found')}</div>
 					)}
 				</CardContent>
-				<CardFooter className="justify-center border-t border-border text-center">
+				<CardFooter className="border-border justify-center border-t text-center">
 					<Link
 						to="/item/:slug/detail/:id/:tab?"
 						params={{ ...params, tab: 'demo-contents' }}
-						className="border-b border-dashed border-primary text-sm text-primary"
+						className="border-primary text-primary border-b border-dashed text-sm"
 					>
 						{__('View More')}
 					</Link>

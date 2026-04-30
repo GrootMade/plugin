@@ -58,14 +58,44 @@ class Item extends ApiBase
 		if ($item_id <= 0 || $topic_id <= 0) {
 			return new \WP_Error(
 				400,
-				__('Invalid comment request payload', 'grootmade')
+				__('Invalid comment request payload', 'grootmade'),
 			);
 		}
 
-		return Helper::engine_post('item/comments', [
-			'item_id' => $item_id,
-			'topic_id' => $topic_id,
-		]);
+		$discourse_response = wp_remote_get(
+			'https://meta.grootmade.com/t/' . $topic_id . '.json',
+			[
+				'timeout' => 15,
+				'headers' => ['Accept' => 'application/json'],
+			],
+		);
+
+		if (
+			is_wp_error($discourse_response) ||
+			(int) wp_remote_retrieve_response_code($discourse_response) !== 200
+		) {
+			return new \WP_Error(
+				400,
+				__('Error fetching comments', 'grootmade'),
+			);
+		}
+
+		$body = json_decode(wp_remote_retrieve_body($discourse_response), true);
+		if (!is_array($body)) {
+			return new \WP_Error(
+				400,
+				__('Invalid comments response', 'grootmade'),
+			);
+		}
+
+		// Attach canonical topic URL so the frontend can resolve relative avatar paths.
+		$body['url'] =
+			'https://meta.grootmade.com/t/' .
+			($body['slug'] ?? $topic_id) .
+			'/' .
+			$topic_id;
+
+		return $body;
 	}
 	public function download_additional(\WP_REST_Request $request)
 	{
@@ -77,7 +107,7 @@ class Item extends ApiBase
 		if (is_wp_error($item_detail)) {
 			return new \WP_Error(
 				400,
-				__('Error getting Item detail', 'grootmade')
+				__('Error getting Item detail', 'grootmade'),
 			);
 		}
 		return Helper::engine_post('item/download-additional', [
@@ -181,12 +211,12 @@ class Item extends ApiBase
 		if (is_wp_error($status)) {
 			return new \WP_Error(
 				400,
-				__('Error running item installation/update', 'grootmade')
+				__('Error running item installation/update', 'grootmade'),
 			);
 		}
 		$settings = get_option(
 			Constants::SETTING_KEY,
-			Constants::DEFAULT_SETTINGS
+			Constants::DEFAULT_SETTINGS,
 		);
 		if (
 			$item_detail['type'] === 'plugin' &&
@@ -203,7 +233,7 @@ class Item extends ApiBase
 						$installed_items['data'],
 						function ($_item) use ($item_id) {
 							return $_item['id'] == $item_id;
-						}
+						},
 					);
 					if (!empty($matched)) {
 						$item = array_shift($matched);
@@ -252,13 +282,13 @@ class Item extends ApiBase
 		if (is_wp_error($status)) {
 			return new \WP_Error(
 				400,
-				__('Error running item installation/update', 'grootmade')
+				__('Error running item installation/update', 'grootmade'),
 			);
 		}
 
 		$settings = get_option(
 			Constants::SETTING_KEY,
-			Constants::DEFAULT_SETTINGS
+			Constants::DEFAULT_SETTINGS,
 		);
 		if (
 			$item_detail['type'] === 'plugin' &&
@@ -275,7 +305,7 @@ class Item extends ApiBase
 						$installed_items['data'],
 						function ($_item) use ($item_id) {
 							return $_item['id'] == $item_id;
-						}
+						},
 					);
 					if (!empty($matched)) {
 						$item = array_shift($matched);
@@ -299,7 +329,7 @@ class Item extends ApiBase
 		if ($item_id <= 0 || $topic_id <= 0 || $version === '') {
 			return new \WP_Error(
 				400,
-				__('Invalid update request payload', 'grootmade')
+				__('Invalid update request payload', 'grootmade'),
 			);
 		}
 
@@ -370,7 +400,7 @@ class Item extends ApiBase
 			array_merge($base, [
 				'type' => 'theme',
 				'page' => 1,
-			])
+			]),
 		);
 		if (is_wp_error($tr)) {
 			return $tr;
@@ -380,7 +410,7 @@ class Item extends ApiBase
 			array_merge($base, [
 				'type' => 'plugin',
 				'page' => 1,
-			])
+			]),
 		);
 		if (is_wp_error($pr)) {
 			return $pr;
@@ -419,7 +449,7 @@ class Item extends ApiBase
 		$out = [];
 		$max_steps = min(
 			50000,
-			$offset + $per_page + $batch * ($t_last + $p_last + 4)
+			$offset + $per_page + $batch * ($t_last + $p_last + 4),
 		);
 
 		for ($step = 0; $step < $max_steps; $step++) {
@@ -444,7 +474,7 @@ class Item extends ApiBase
 						array_merge($base, [
 							'type' => 'theme',
 							'page' => $t_next,
-						])
+						]),
 					);
 					if (is_wp_error($tn)) {
 						return $tn;
@@ -455,7 +485,7 @@ class Item extends ApiBase
 							: [];
 					$t_last = max(
 						$t_last,
-						(int) ($tn['meta']['last_page'] ?? $t_last)
+						(int) ($tn['meta']['last_page'] ?? $t_last),
 					);
 					$t_next++;
 					if ($t_queue === [] && $t_next > $t_last) {
@@ -473,7 +503,7 @@ class Item extends ApiBase
 						array_merge($base, [
 							'type' => 'plugin',
 							'page' => $p_next,
-						])
+						]),
 					);
 					if (is_wp_error($pn)) {
 						return $pn;
@@ -484,7 +514,7 @@ class Item extends ApiBase
 							: [];
 					$p_last = max(
 						$p_last,
-						(int) ($pn['meta']['last_page'] ?? $p_last)
+						(int) ($pn['meta']['last_page'] ?? $p_last),
 					);
 					$p_next++;
 					if ($p_queue === [] && $p_next > $p_last) {
@@ -559,7 +589,7 @@ class Item extends ApiBase
 			case 'title':
 				$cmp = strcasecmp(
 					(string) ($a['title'] ?? ''),
-					(string) ($b['title'] ?? '')
+					(string) ($b['title'] ?? ''),
 				);
 				break;
 			case 'updated':

@@ -3,13 +3,12 @@ import { AppPageShell } from '@/components/body/page-shell';
 import { MarketingSlot } from '@/components/page/marketing-slot';
 import { PageSection } from '@/components/page/page-section';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { __ } from '@/lib/i18n';
 import { Link } from '@/router';
 import Announcements from './_components/announcements';
-import CatalogTypeBarChart from './_components/catalog-type-bar-chart';
 import KpiBar from './_components/kpi-bar';
 import LicenseStatus from './_components/license-status';
+import PopularItems from './_components/popular-items';
 import QuickActions from './_components/quick-actions';
 
 export default function Component() {
@@ -37,18 +36,18 @@ export default function Component() {
 				</Button>
 			}
 		>
-			<div className="gm-reveal-stagger flex flex-col gap-5 sm:gap-6">
+			<div className="gm-reveal-stagger mx-auto flex w-full max-w-6xl flex-col gap-5 sm:gap-6">
 				<KpiBar compact />
 
 				<div className="flex flex-col gap-2">
 					<div className="flex flex-wrap items-center justify-between gap-2">
-						<p className="text-xs font-medium text-muted-foreground">
+						<p className="text-muted-foreground text-xs font-medium">
 							{__('Shortcuts')}
 						</p>
 						<Link
 							to="/popular/:slug?"
 							params={{ slug: 'theme' }}
-							className="text-xs font-medium text-primary no-underline underline-offset-4 hover:underline sm:text-sm"
+							className="text-primary text-xs font-medium no-underline underline-offset-4 hover:underline sm:text-sm"
 						>
 							{__('Browse catalog')}
 						</Link>
@@ -62,24 +61,25 @@ export default function Component() {
 
 				<PageSection title={__('Overview')}>
 					<div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-5">
-						<div className="min-w-0 lg:col-span-7">
+						<div className="min-w-0 lg:col-span-6">
 							<LicenseStatus variant="compact" />
 						</div>
-						<Card className="min-w-0 overflow-hidden lg:col-span-5">
-							<CardHeader className="border-b border-border/80 bg-muted/30 py-3">
-								<CardTitle className="font-heading text-sm font-semibold sm:text-base">
-									{__('Catalog by type')}
-								</CardTitle>
-							</CardHeader>
-							<CardContent className="pt-4">
-								<CatalogTypeBarChart />
-							</CardContent>
-						</Card>
+						<div className="min-w-0 lg:col-span-6">
+							<Announcements variant="compact" />
+						</div>
 					</div>
 				</PageSection>
 
-				<PageSection title={__('News')}>
-					<Announcements variant="compact" />
+				<PageSection title={__('Discover')}>
+					<div className="grid grid-cols-1 gap-4 xl:grid-cols-2 xl:gap-5">
+						<div className="min-w-0">
+							<PopularItems type="theme" />
+						</div>
+
+						<div className="min-w-0">
+							<PopularItems type="plugin" />
+						</div>
+					</div>
 				</PageSection>
 			</div>
 		</AppPageShell>

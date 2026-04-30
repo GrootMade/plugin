@@ -75,7 +75,7 @@ export const columns: ColumnDef<TThemePluginItem>[] = [
 							</Link>
 						</div>
 						{row.original.original_title && (
-							<div className="line-clamp-1 text-xs text-muted-foreground">
+							<div className="text-muted-foreground line-clamp-1 text-xs">
 								{sprintf(
 									__('Forked From: %s'),
 									decodeEntities(row.original.original_title)
@@ -123,7 +123,7 @@ export const columns: ColumnDef<TThemePluginItem>[] = [
 					>
 						{row.original.installed_version}
 					</Badge>
-					<ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground" />
+					<ArrowRight className="text-muted-foreground h-3 w-3 shrink-0" />
 					<Badge
 						variant={isNew ? 'success' : 'secondary'}
 						className="font-mono capitalize"

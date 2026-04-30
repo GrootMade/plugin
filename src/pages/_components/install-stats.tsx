@@ -54,7 +54,7 @@ export default function InstallStats({
 		<Card className={cn('aspect-auto justify-between', className)}>
 			<CardHeader
 				className={cn(
-					'border-b border-border',
+					'border-border border-b',
 					compact &&
 						'flex flex-row flex-wrap items-center justify-between gap-2 py-3'
 				)}
@@ -70,7 +70,7 @@ export default function InstallStats({
 				{compact ? (
 					<Link
 						to="/updates"
-						className="text-xs font-medium text-primary no-underline underline-offset-4 hover:underline sm:text-sm"
+						className="text-primary text-xs font-medium no-underline underline-offset-4 hover:underline sm:text-sm"
 					>
 						{__('Open updates')}
 					</Link>

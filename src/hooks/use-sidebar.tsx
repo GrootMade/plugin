@@ -1,3 +1,4 @@
+import { DiscordIcon } from '@/components/icons/discord';
 import { Badge } from '@/components/ui/badge';
 import useApiFetch from '@/hooks/use-api-fetch';
 import useInstalled from '@/hooks/use-is-installed';
@@ -6,6 +7,7 @@ import { __ } from '@/lib/i18n';
 import { ItemStatsResponse } from '@/types/item';
 import {
 	ArrowLeft,
+	BookOpen,
 	Clock,
 	Drum,
 	Flame,
@@ -14,7 +16,9 @@ import {
 	Layers,
 	Library,
 	List,
+	MessageCircle,
 	Palette,
+	PlayCircle,
 	Repeat,
 	Settings,
 	ShieldCheck,
@@ -194,6 +198,42 @@ export default function useSidebar() {
 					label: __('Plugin settings'),
 					icon: Settings,
 					href: '/settings'
+				}
+			]
+		},
+		{
+			id: 'resources',
+			label: __('Resources'),
+			showLabel: true,
+			items: [
+				{
+					label: __('AI Assistant'),
+					icon: Sparkles,
+					href: '/ai'
+				},
+				{
+					label: __('Videos'),
+					icon: PlayCircle,
+					href: '/videos'
+				},
+				{
+					label: __('Documentation'),
+					icon: BookOpen,
+					href: '/docs'
+				},
+				{
+					label: __('Community'),
+					icon: MessageCircle,
+					href: 'https://meta.grootmade.com/',
+					as: 'a',
+					external: true
+				},
+				{
+					label: __('Discord'),
+					icon: DiscordIcon,
+					href: 'https://discord.gg/grootmade',
+					as: 'a',
+					external: true
 				}
 			]
 		}

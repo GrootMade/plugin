@@ -25,7 +25,7 @@ export default function PerPage({ collection }: Props) {
 			</SelectTrigger>
 			<SelectContent>
 				<SelectGroup>
-					<SelectLabel className="p-2 text-sm text-muted-foreground">
+					<SelectLabel className="text-muted-foreground p-2 text-sm">
 						{__('Per Page')}
 					</SelectLabel>
 					{[30, 60, 90].map((val) => (

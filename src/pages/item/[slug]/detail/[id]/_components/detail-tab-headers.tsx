@@ -21,7 +21,7 @@ export default function DetailTabHeaders({ item, tabs }: Props) {
 	const active =
 		tabs.find((tab) => tab.id === params.tab)?.id ?? 'description';
 	return (
-		<div className="flex flex-col justify-between border-b-2 border-b-card sm:flex-row-reverse sm:items-center">
+		<div className="border-b-card flex flex-col justify-between border-b-2 sm:flex-row-reverse sm:items-center">
 			<div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
 				<div className="flex flex-col gap-4 sm:flex-row">
 					<InstallButton item={item} />
@@ -80,7 +80,7 @@ export default function DetailTabHeaders({ item, tabs }: Props) {
 					<Slot
 						key={id}
 						className={cn(
-							'rounded-none border-b-2 border-transparent px-6 py-4 text-sm transition-colors hover:border-b-primary',
+							'hover:border-b-primary rounded-none border-b-2 border-transparent px-6 py-4 text-sm transition-colors',
 							id === active && 'border-b-primary'
 						)}
 					>

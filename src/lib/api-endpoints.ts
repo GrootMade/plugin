@@ -10,6 +10,10 @@ export const API = {
 		readDetail: 'collection/read/detail',
 		readItems: 'collection/read/items'
 	},
+	documentation: {
+		read: 'documentation/read',
+		readTopic: 'documentation/read/topic'
+	},
 	disclaimer: {
 		read: 'disclaimer/read'
 	},
@@ -57,6 +61,9 @@ export const API = {
 		read: 'update/read',
 		readSettings: 'update/read/settings',
 		update: 'update/update'
+	},
+	videos: {
+		read: 'videos/read'
 	}
 } as const;
 

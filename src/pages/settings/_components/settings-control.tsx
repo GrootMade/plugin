@@ -30,7 +30,7 @@ export default function SettingControl({
 				>
 					{label}
 				</Label>
-				<p className="text-[13px] text-muted-foreground">
+				<p className="text-muted-foreground text-[13px]">
 					{description}
 				</p>
 			</div>

@@ -10,10 +10,7 @@ type Props = {
 export function MarketingSlot({ children, className }: Props) {
 	return (
 		<div
-			className={cn(
-				'py-1 first:pt-0 last:pb-0 [&>*]:rounded-lg',
-				className
-			)}
+			className={cn('py-1 *:rounded-lg first:pt-0 last:pb-0', className)}
 		>
 			{children}
 		</div>

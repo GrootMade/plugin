@@ -1,3 +1,4 @@
+import { siteConfig } from '@/config/site';
 import { API, type ApiPath } from './api-endpoints';
 
 const routeAliases: Record<string, ApiPath> = {
@@ -29,4 +30,15 @@ const routeAliases: Record<string, ApiPath> = {
 
 export function normalizeApiPath(path: string) {
 	return routeAliases[path] ?? path;
+}
+
+export function buildApiUrl(path: string) {
+	const normalizedPath = normalizeApiPath(path);
+	const restPath = `/wp-json/${siteConfig.slug}/v1/${normalizedPath}`;
+
+	if (typeof window === 'undefined') {
+		return restPath;
+	}
+
+	return new URL(restPath, window.location.origin).toString();
 }

@@ -71,8 +71,25 @@ type UpdateTableProps = {
 export function UpdatesTableSkeleton() {
 	return (
 		<div className="space-y-4">
-			<Skeleton className="h-8 w-[150px] lg:w-[250px]" />
-			<Skeleton className="h-64 w-full" />
+			<div className="flex flex-wrap items-center gap-3">
+				<Skeleton className="h-9 w-56" />
+				<Skeleton className="h-9 w-40" />
+			</div>
+			<div className="rounded-lg border">
+				<div className="space-y-3 p-4 sm:p-5">
+					{Array.from({ length: 6 }).map((_, i) => (
+						<div
+							key={i}
+							className="flex items-center gap-3"
+						>
+							<Skeleton className="h-4 w-6" />
+							<Skeleton className="h-4 w-1/3" />
+							<Skeleton className="h-4 flex-1" />
+							<Skeleton className="h-8 w-24" />
+						</div>
+					))}
+				</div>
+			</div>
 		</div>
 	);
 }
@@ -257,7 +274,7 @@ export default function UpdatesTable({ data }: UpdateTableProps) {
 				searchableColumns={searchableColumns}
 				bulkActions={bulkActions}
 			/>
-			<div className="flex-shrink overflow-hidden rounded-lg border border-border/80 bg-card shadow-card">
+			<div className="border-border/80 bg-card shadow-card shrink overflow-hidden rounded-lg border">
 				<Table>
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
@@ -301,7 +318,7 @@ export default function UpdatesTable({ data }: UpdateTableProps) {
 							<TableRow>
 								<TableCell
 									colSpan={columns.length}
-									className="h-32 px-6 text-center text-sm text-muted-foreground"
+									className="text-muted-foreground h-32 px-6 text-center text-sm"
 								>
 									{__(
 										'No rows match your filters. Try adjusting search or filters.'

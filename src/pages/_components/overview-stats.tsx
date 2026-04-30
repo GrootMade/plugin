@@ -7,11 +7,11 @@ import {
 import useApiFetch from '@/hooks/use-api-fetch';
 import { API } from '@/lib/api-endpoints';
 import { __ } from '@/lib/i18n';
+import { formatCompactNumber } from '@/lib/number-format';
 import { cn } from '@/lib/utils';
 import { ItemStatsResponse } from '@/types/item';
 import { useMemo } from '@wordpress/element';
 import { Palette, Puzzle, ToyBrick } from 'lucide-react';
-import millify from 'millify';
 import CountUp from 'react-countup';
 import { Cell, Pie, PieChart } from 'recharts';
 import { ClassNameValue } from 'tailwind-merge';
@@ -107,10 +107,10 @@ export default function OverviewStats({
 							start={0}
 							end={data?.total ?? 0}
 							duration={2}
-							formattingFn={(num) => millify(num)}
+							formattingFn={(num) => formatCompactNumber(num)}
 						/>
 					</div>
-					<div className="text-sm text-muted-foreground">
+					<div className="text-muted-foreground text-sm">
 						{__('Total Products Available')}
 					</div>
 				</div>
@@ -151,9 +151,7 @@ export default function OverviewStats({
 			<div className="flex items-center justify-center">
 				<ChartContainer
 					config={chartConfig}
-					className={cn(
-						compact ? 'h-[150px] w-[150px]' : 'h-[180px] w-[180px]'
-					)}
+					className={cn(compact ? 'h-37.5 w-37.5' : 'h-45 w-45')}
 				>
 					<PieChart>
 						<ChartTooltip

@@ -11,9 +11,6 @@ class Admin
 	/**
 	 * @var mixed
 	 */
-	/**
-	 * @param array $dependencies
-	 */
 	private $page = null;
 
 	/**
@@ -35,7 +32,7 @@ class Admin
 		add_filter(
 			'plugin_action_links_' .
 				plugin_basename(Plugin::p_dir('plugin.php')),
-			[$this, 'plugin_action_links']
+			[$this, 'plugin_action_links'],
 		);
 		add_action('wp_ajax_' . Constants::SLUG . '_check_updates', [
 			$this,
@@ -96,7 +93,7 @@ class Admin
 				\set_transient(
 					$key,
 					$this->update_details,
-					15 * \MINUTE_IN_SECONDS
+					15 * \MINUTE_IN_SECONDS,
 				);
 			} else {
 				$this->update_details = null;
@@ -118,7 +115,7 @@ class Admin
 			Constants::ADMIN_PAGE_ID,
 			[$this, 'render_page'],
 			'dashicons-smiley',
-			80
+			80,
 		);
 		\add_submenu_page(
 			Constants::ADMIN_PAGE_ID,
@@ -126,7 +123,7 @@ class Admin
 			__('Dashboard', 'grootmade'),
 			'access_' . Constants::ADMIN_PAGE_ID,
 			Constants::ADMIN_PAGE_ID . '#/',
-			[$this, 'render_page']
+			[$this, 'render_page'],
 		);
 		\add_submenu_page(
 			Constants::ADMIN_PAGE_ID,
@@ -134,7 +131,7 @@ class Admin
 			__('Themes', 'grootmade'),
 			'access_' . Constants::ADMIN_PAGE_ID,
 			Constants::ADMIN_PAGE_ID . '#/item/theme',
-			[$this, 'render_page']
+			[$this, 'render_page'],
 		);
 		\add_submenu_page(
 			Constants::ADMIN_PAGE_ID,
@@ -142,7 +139,7 @@ class Admin
 			__('Plugins', 'grootmade'),
 			'access_' . Constants::ADMIN_PAGE_ID,
 			Constants::ADMIN_PAGE_ID . '#/item/plugin',
-			[$this, 'render_page']
+			[$this, 'render_page'],
 		);
 		\add_submenu_page(
 			Constants::ADMIN_PAGE_ID,
@@ -150,7 +147,7 @@ class Admin
 			__('Template Kits', 'grootmade'),
 			'access_' . Constants::ADMIN_PAGE_ID,
 			Constants::ADMIN_PAGE_ID . '#/item/template-kit',
-			[$this, 'render_page']
+			[$this, 'render_page'],
 		);
 		\add_submenu_page(
 			Constants::ADMIN_PAGE_ID,
@@ -158,7 +155,7 @@ class Admin
 			__('Updates', 'grootmade'),
 			'access_' . Constants::ADMIN_PAGE_ID,
 			Constants::ADMIN_PAGE_ID . '#/updates',
-			[$this, 'render_page']
+			[$this, 'render_page'],
 		);
 		\add_submenu_page(
 			Constants::ADMIN_PAGE_ID,
@@ -166,7 +163,7 @@ class Admin
 			__('License', 'grootmade'),
 			'access_' . Constants::ADMIN_PAGE_ID,
 			Constants::ADMIN_PAGE_ID . '#/activation',
-			[$this, 'render_page']
+			[$this, 'render_page'],
 		);
 		\add_submenu_page(
 			Constants::ADMIN_PAGE_ID,
@@ -174,7 +171,7 @@ class Admin
 			__('Settings', 'grootmade'),
 			'access_' . Constants::ADMIN_PAGE_ID,
 			Constants::ADMIN_PAGE_ID . '#/settings',
-			[$this, 'render_page']
+			[$this, 'render_page'],
 		);
 	}
 
@@ -182,7 +179,7 @@ class Admin
 	{
 		$assets = new ViteAssets(
 			Plugin::p_dir('build'),
-			Plugin::p_url('build')
+			Plugin::p_url('build'),
 		);
 		$assets->enqueue('src/index.tsx', [
 			'handle' => Constants::SLUG . '-script',
@@ -197,14 +194,14 @@ class Admin
 		$locale = \get_user_meta(
 			\get_current_user_id(),
 			Constants::SLUG . '_lang',
-			true
+			true,
 		);
 
 		if (!$locale) {
 			\update_user_meta(
 				\get_current_user_id(),
 				Constants::SLUG . '_lang',
-				'en-US'
+				'en-US',
 			);
 		}
 		wp_localize_script(Constants::SLUG . '-script', 'AVAILABLE_I18NS', [
@@ -212,7 +209,7 @@ class Admin
 			'available' => Helper::get_available_languages(),
 		]);
 		$lang_content = Helper::get_langauge_file(
-			str_replace('-', '_', $locale)
+			str_replace('-', '_', $locale),
 		);
 		if ($lang_content) {
 			wp_add_inline_script(
@@ -222,7 +219,7 @@ class Admin
 					'",' .
 					json_encode($lang_content) .
 					');',
-				'after'
+				'after',
 			);
 		}
 	}
@@ -252,7 +249,7 @@ class Admin
 		$plugin_meta,
 		$plugin_file,
 		$plugin_data,
-		$status
+		$status,
 	) {
 		if (
 			$this->update_details &&
@@ -267,7 +264,7 @@ class Admin
 				) {
 					$plugin_meta[] = sprintf(
 						'<span style="color: green;">Forked from <strong>%s</strong></span>',
-						$item['original_title']
+						$item['original_title'],
 					);
 				}
 			}
@@ -284,20 +281,20 @@ class Admin
 	public function plugin_action_links($links)
 	{
 		$settings_url = \admin_url(
-			'admin.php?page=' . Constants::ADMIN_PAGE_ID . '#/settings'
+			'admin.php?page=' . Constants::ADMIN_PAGE_ID . '#/settings',
 		);
 
 		$custom_links = [
 			'settings' => sprintf(
 				'<a href="%s">%s</a>',
 				\esc_url($settings_url),
-				__('Settings', 'grootmade')
+				__('Settings', 'grootmade'),
 			),
 			'check_updates' => sprintf(
 				'<a href="#" id="%s-check-updates" data-nonce="%s">%s</a>',
 				\esc_attr(Constants::SLUG),
 				\wp_create_nonce(Constants::SLUG . '_check_updates'),
-				__('Check for updates', 'grootmade')
+				__('Check for updates', 'grootmade'),
 			),
 		];
 
@@ -314,12 +311,12 @@ class Admin
 			!\check_ajax_referer(
 				Constants::SLUG . '_check_updates',
 				'nonce',
-				false
+				false,
 			)
 		) {
 			\wp_send_json_error(
 				['message' => __('Unauthorized', 'grootmade')],
-				403
+				403,
 			);
 		}
 
@@ -344,9 +341,9 @@ class Admin
 					/* translators: %s: version number */
 					__(
 						'Update available: version %s. Reload the page to update.',
-						'grootmade'
+						'grootmade',
 					),
-					$new_version
+					$new_version,
 				),
 				'update_url' => \admin_url('plugins.php'),
 			]);
@@ -355,7 +352,7 @@ class Admin
 				'update_available' => false,
 				'message' => __(
 					'You are running the latest version.',
-					'grootmade'
+					'grootmade',
 				),
 			]);
 		}
@@ -403,7 +400,7 @@ class Admin
 							}, 3000);
 						} else {
 							link.textContent = '<?php echo \esc_js(
-       	__('Error checking updates', 'grootmade')
+       	__('Error checking updates', 'grootmade'),
        ); ?>';
 							link.style.color = '#d63638';
 							link.style.opacity = '1';
@@ -416,7 +413,7 @@ class Admin
 					})
 					.catch(function(){
 						link.textContent = '<?php echo \esc_js(
-      	__('Error checking updates', 'grootmade')
+      	__('Error checking updates', 'grootmade'),
       ); ?>';
 						link.style.color = '#d63638';
 						link.style.opacity = '1';
@@ -443,11 +440,11 @@ class Admin
 		if (empty($activation_key)) {
 			$message = __(
 				'Activate your GrootMade license to unlock downloads, auto-updates, and bulk actions.',
-				'grootmade'
+				'grootmade',
 			);
 			$cta_text = __('Activate License', 'grootmade');
 			$cta_url = \admin_url(
-				'admin.php?page=' . Constants::ADMIN_PAGE_ID . '#/activation'
+				'admin.php?page=' . Constants::ADMIN_PAGE_ID . '#/activation',
 			);
 		} else {
 			$detail = Helper::get_activation_detail();
@@ -463,7 +460,7 @@ class Admin
 			if (!$download_allowed) {
 				$message = __(
 					'Upgrade your GrootMade plan to unlock downloads, auto-updates, and premium features.',
-					'grootmade'
+					'grootmade',
 				);
 				$cta_text = __('View Plans', 'grootmade');
 				$cta_url = 'https://grootmade.com/pricing';
@@ -472,7 +469,7 @@ class Admin
 			} elseif (in_array($plan_type, ['recurring', 'onetime'], true)) {
 				$message = __(
 					'Go Lifetime — Upgrade to a lifetime plan for unlimited access with no recurring fees.',
-					'grootmade'
+					'grootmade',
 				);
 				$cta_text = __('Upgrade', 'grootmade');
 				$cta_url = 'https://grootmade.com/pricing';
@@ -484,13 +481,13 @@ class Admin
 		$logo_url = Plugin::p_url('public/logo.svg');
 
 		echo '<style>';
-		echo '.grootmade-upgrade-notice{border:none;border-left:4px solid #2563eb;background:linear-gradient(135deg,#fff 0%,#eff6ff 100%);padding:0;margin:5px 0 15px;display:flex;align-items:stretch;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08);}';
-		echo '.grootmade-upgrade-notice .grootmade-notice-logo{flex-shrink:0;width:52px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1d4ed8 0%,#2563eb 100%);padding:12px;}';
-		echo '.grootmade-upgrade-notice .grootmade-notice-logo img{width:28px;height:28px;filter:brightness(0) invert(1);}';
-		echo '.grootmade-upgrade-notice .grootmade-notice-body{flex:1;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 20px;}';
-		echo '.grootmade-upgrade-notice .grootmade-notice-text{font-size:13.5px;line-height:1.5;color:#1d2327;}';
+		echo '.grootmade-upgrade-notice{border:none;border-left:4px solid #2563eb;background:linear-gradient(135deg,#fff 0%,#eff6ff 100%);padding:0;margin:5px 0 10px;display:flex;align-items:stretch;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,0.08);}';
+		echo '.grootmade-upgrade-notice .grootmade-notice-logo{flex-shrink:0;width:46px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1d4ed8 0%,#2563eb 100%);padding:8px;}';
+		echo '.grootmade-upgrade-notice .grootmade-notice-logo img{width:24px;height:24px;filter:brightness(0) invert(1);}';
+		echo '.grootmade-upgrade-notice .grootmade-notice-body{flex:1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;}';
+		echo '.grootmade-upgrade-notice .grootmade-notice-text{font-size:13px;line-height:1.35;color:#1d2327;}';
 		echo '.grootmade-upgrade-notice .grootmade-notice-text strong{color:#2563eb;}';
-		echo '.grootmade-upgrade-notice .grootmade-notice-cta{display:inline-flex;align-items:center;gap:6px;padding:8px 20px;background:linear-gradient(135deg,#1d4ed8 0%,#2563eb 100%);color:#fff;text-decoration:none;border-radius:6px;font-weight:600;font-size:13px;white-space:nowrap;transition:opacity .2s,transform .2s;box-shadow:0 2px 8px rgba(37,99,235,0.3);}';
+		echo '.grootmade-upgrade-notice .grootmade-notice-cta{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:linear-gradient(135deg,#1d4ed8 0%,#2563eb 100%);color:#fff;text-decoration:none;border-radius:6px;font-weight:600;font-size:12.5px;white-space:nowrap;transition:opacity .2s,transform .2s;box-shadow:0 2px 6px rgba(37,99,235,0.25);}';
 		echo '.grootmade-upgrade-notice .grootmade-notice-cta:hover{opacity:.9;color:#fff;transform:translateY(-1px);}';
 		echo '.grootmade-upgrade-notice .grootmade-notice-cta svg{width:14px;height:14px;fill:currentColor;}';
 		echo '</style>';
@@ -511,7 +508,7 @@ class Admin
 			\esc_url($cta_url),
 			empty($activation_key) ? '_self' : '_blank',
 			\esc_html($cta_text),
-			$arrow
+			$arrow,
 		);
 	}
 

@@ -5,7 +5,6 @@
 		"@prettier/plugin-php",
 		"prettier-plugin-tailwindcss"
 	],
-	"tailwindConfig": "./tailwind.config.js",
 	"arrowParens": "always",
 	"printWidth": 80,
 	"tabWidth": 4,

@@ -33,7 +33,7 @@ export default function Announcements({
 		>
 			<CardHeader
 				className={cn(
-					'flex shrink-0 flex-row items-center justify-between space-y-0 border-b border-border/80 bg-muted/30',
+					'border-border/80 bg-muted/30 flex shrink-0 flex-row items-center justify-between space-y-0 border-b',
 					compact ? 'py-2.5' : 'py-4'
 				)}
 			>
@@ -46,10 +46,10 @@ export default function Announcements({
 					{__('Announcements')}
 				</h3>
 				<a
-					href="https://meta.Grootmade.com/c/announcements/11"
+					href="https://meta.grootmade.com/c/announcements/6"
 					target="_blank"
 					className={cn(
-						'font-medium text-primary underline-offset-4 hover:underline',
+						'text-primary font-medium underline-offset-4 hover:underline',
 						compact ? 'text-xs' : 'text-sm'
 					)}
 					rel="noreferrer"
@@ -61,8 +61,8 @@ export default function Announcements({
 				className={cn(
 					'min-h-0 flex-1 overflow-y-auto',
 					compact
-						? 'pb-4 pt-3'
-						: 'pb-6 pt-4 lg:max-h-[min(26rem,50vh)]'
+						? 'pt-3 pb-4'
+						: 'pt-4 pb-6 lg:max-h-[min(26rem,50vh)]'
 				)}
 			>
 				{list && list.length > 0 ? (
@@ -79,17 +79,29 @@ export default function Announcements({
 							>
 								<div>
 									<a
-										href={`https://meta.Grootmade.com/t/${item.slug}/${item.id}`}
+										href={`https://meta.grootmade.com/t/${item.slug}/${item.id}`}
 										target="_blank"
-										className="transition-colors hover:text-muted-foreground"
+										className="hover:text-muted-foreground transition-colors"
 										rel="noreferrer"
 									>
 										{item.title}
 									</a>
+									{item.excerpt && (
+										<p
+											className={cn(
+												'text-muted-foreground mt-1',
+												compact
+													? 'line-clamp-1 text-[11px] sm:text-xs'
+													: 'line-clamp-2 text-xs sm:text-sm'
+											)}
+										>
+											{item.excerpt}
+										</p>
+									)}
 								</div>
 								<div
 									className={cn(
-										'whitespace-nowrap text-muted-foreground',
+										'text-muted-foreground whitespace-nowrap',
 										compact && 'text-[11px] sm:text-xs'
 									)}
 								>
@@ -104,7 +116,7 @@ export default function Announcements({
 				) : (
 					<div
 						className={cn(
-							'text-center italic text-muted-foreground',
+							'text-muted-foreground text-center italic',
 							compact ? 'text-xs' : 'text-sm'
 						)}
 					>

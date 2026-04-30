@@ -32,7 +32,7 @@ export default function QuickActions({ compact = false }: Props) {
 			>
 				<Palette
 					className={cn(
-						'shrink-0 text-primary',
+						'text-primary shrink-0',
 						compact ? 'h-3.5 w-3.5' : 'h-4 w-4'
 					)}
 				/>
@@ -46,7 +46,7 @@ export default function QuickActions({ compact = false }: Props) {
 			>
 				<Puzzle
 					className={cn(
-						'shrink-0 text-primary',
+						'text-primary shrink-0',
 						compact ? 'h-3.5 w-3.5' : 'h-4 w-4'
 					)}
 				/>
@@ -59,7 +59,7 @@ export default function QuickActions({ compact = false }: Props) {
 			>
 				<RefreshCw
 					className={cn(
-						'shrink-0 text-primary',
+						'text-primary shrink-0',
 						compact ? 'h-3.5 w-3.5' : 'h-4 w-4'
 					)}
 				/>
@@ -72,7 +72,7 @@ export default function QuickActions({ compact = false }: Props) {
 			>
 				<Settings
 					className={cn(
-						'shrink-0 text-primary',
+						'text-primary shrink-0',
 						compact ? 'h-3.5 w-3.5' : 'h-4 w-4'
 					)}
 				/>

@@ -1,5 +1,7 @@
+import useApiFetch from '@/hooks/use-api-fetch';
+import { API } from '@/lib/api-endpoints';
 import { __ } from '@/lib/i18n';
-import { TPostItem } from '@/types/item';
+import { TCommentResponse, TPostItem } from '@/types/item';
 import { useMemo } from '@wordpress/element';
 import { decodeEntities } from '@wordpress/html-entities';
 import {
@@ -9,6 +11,7 @@ import {
 	Hash,
 	Key,
 	LayoutGrid,
+	MessageCircle,
 	Monitor,
 	Tag,
 	User
@@ -27,7 +30,7 @@ function StatRow({
 }) {
 	return (
 		<li className="flex items-center gap-3 py-1">
-			<p className="flex min-w-0 items-center gap-1.5 text-muted-foreground [&_svg]:size-[1.1em] [&_svg]:shrink-0 [&_svg]:opacity-75">
+			<p className="text-muted-foreground flex min-w-0 items-center gap-1.5 [&_svg]:size-[1.1em] [&_svg]:shrink-0 [&_svg]:opacity-75">
 				{icon}
 				<span className="flex-1 truncate">{label}</span>
 			</p>
@@ -49,6 +52,20 @@ type Row = {
 };
 
 export default function ItemDetail({ item }: Props) {
+	const parsedTopicId = Number(item.topic_id ?? 0);
+	const { data: commentsData } = useApiFetch<TCommentResponse>(
+		API.item.comments,
+		{
+			item_id: Number(item.id),
+			topic_id: parsedTopicId
+		},
+		Number.isFinite(parsedTopicId) && parsedTopicId > 0
+	);
+	const commentCount =
+		typeof commentsData?.posts_count === 'number'
+			? Math.max(0, commentsData.posts_count - 1)
+			: null;
+
 	const rows = useMemo<Row[]>(
 		() => [
 			{
@@ -145,9 +162,15 @@ export default function ItemDetail({ item }: Props) {
 				enabled:
 					item.terms.filter((i) => i.taxonomy === 'fv_access_level')
 						.length > 0
+			},
+			{
+				icon: <MessageCircle />,
+				label: __('Comments'),
+				value: commentCount !== null ? commentCount : '—',
+				enabled: parsedTopicId > 0
 			}
 		],
-		[item]
+		[item, commentCount, parsedTopicId]
 	);
 
 	return (

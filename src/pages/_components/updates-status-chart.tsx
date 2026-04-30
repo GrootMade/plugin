@@ -49,7 +49,7 @@ export default function UpdatesStatusChart() {
 
 	if (!list?.length) {
 		return (
-			<div className="flex h-[160px] items-center justify-center text-sm text-muted-foreground">
+			<div className="text-muted-foreground flex h-[160px] items-center justify-center text-sm">
 				{__('No installs to compare.')}
 			</div>
 		);

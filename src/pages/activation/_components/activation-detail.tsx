@@ -44,11 +44,19 @@ type Props = {
 export function ActivationDetailItemSkeleton() {
 	return (
 		<Card>
-			<CardContent className="mt-4 space-y-2 pb-0">
-				<Skeleton className=" h-4 w-full" />
-				<Skeleton className="h-4 w-3/4" />
-				<Skeleton className="h-4 w-3/4" />
+			<CardHeader className="flex flex-row items-center justify-between space-y-0 border-b">
+				<Skeleton className="h-5 w-24" />
+				<Skeleton className="h-4 w-4 rounded-full" />
+			</CardHeader>
+			<CardContent className="space-y-3">
+				<Skeleton className="h-6 w-1/2" />
+				<Skeleton className="h-4 w-2/3" />
+				<Skeleton className="h-4 w-2/3" />
+				<Skeleton className="h-4 w-full" />
 			</CardContent>
+			<CardFooter>
+				<Skeleton className="h-9 w-28" />
+			</CardFooter>
 		</Card>
 	);
 }
@@ -74,11 +82,11 @@ export default function ActivationDetailItem({ detail }: Props) {
 				<CardTitle className="text-lg font-medium uppercase">
 					{detail.plan_type}
 				</CardTitle>
-				<Globe className="h-4 w-4 text-muted-foreground" />
+				<Globe className="text-muted-foreground h-4 w-4" />
 			</CardHeader>
 			<CardContent className="space-y-2">
 				<div className="text-xl font-bold">{detail.plan_title}</div>
-				<div className="flex flex-row gap-1 text-xs text-muted-foreground">
+				<div className="text-muted-foreground flex flex-row gap-1 text-xs">
 					<span>{__('Expires:')}</span>
 					<span>
 						{detail.expires > 0
@@ -86,11 +94,11 @@ export default function ActivationDetailItem({ detail }: Props) {
 							: __('LIFETIME')}
 					</span>
 				</div>
-				<div className="flex flex-row gap-1 text-xs text-muted-foreground">
+				<div className="text-muted-foreground flex flex-row gap-1 text-xs">
 					<span>{__('Status:')}</span>
 					<span>{ActivationStatusToString[detail.status]}</span>
 				</div>
-				<div className="flex flex-row gap-1 text-xs text-muted-foreground">
+				<div className="text-muted-foreground flex flex-row gap-1 text-xs">
 					<span>{__('Install ID:')}</span>
 					<span>{detail.activation_key}</span>
 				</div>

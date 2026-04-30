@@ -2,8 +2,8 @@
 /*
  * Plugin Name: GrootMade
  * Plugin URI: https://grootmade.com
- * Description: Access to 25K+ premium themes and plugins directly from your dashboard.
- * Version: 5.0.0-beta.3.1.0
+ * Description: Your all-in-one dashboard for discovering, installing, and managing premium themes, plugins, and template kits.
+ * Version: 6.1.30
  * Requires at Least: 6.0
  * Requires PHP: 7.4
  * Author: Grootmade

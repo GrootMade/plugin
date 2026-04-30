@@ -26,7 +26,7 @@ export function MobileSidenav() {
 
 			<SheetContent
 				side="left"
-				className="px-3 pb-3 pt-10"
+				className="px-3 pt-10 pb-3"
 			>
 				<SheetHeader className="hidden">
 					<SheetTitle></SheetTitle>

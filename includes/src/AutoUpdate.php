@@ -24,7 +24,7 @@ class AutoUpdate
 			Constants::SLUG . '/autoupdate/item',
 			[$this, 'autoupdate_item'],
 			10,
-			2
+			2,
 		);
 		add_action(Constants::SLUG . '/pending-installs', [
 			$this,
@@ -34,7 +34,7 @@ class AutoUpdate
 			Constants::SLUG . '/pending-install/item',
 			[$this, 'execute_pending_action'],
 			10,
-			4
+			4,
 		);
 		add_filter('cron_schedules', [$this, 'add_cron_intervals']);
 	}
@@ -59,7 +59,7 @@ class AutoUpdate
 		}
 		$settings = get_option(
 			Constants::SETTING_KEY,
-			Constants::DEFAULT_SETTINGS
+			Constants::DEFAULT_SETTINGS,
 		);
 		if (!isset($settings['autoupdate_day_of_week'])) {
 			$days = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -84,13 +84,13 @@ class AutoUpdate
 						version_compare(
 							$item['version'],
 							$item['installed_version'],
-							'gt'
+							'gt',
 						) === true
 					) {
 						wp_schedule_single_event(
 							time(),
 							Constants::SLUG . '/autoupdate/item',
-							[$item['id'], $item['slug']]
+							[$item['id'], $item['slug']],
 						);
 					}
 				}
@@ -174,7 +174,7 @@ class AutoUpdate
 			wp_schedule_event(
 				time(),
 				'five_minutes',
-				Constants::SLUG . '/pending-installs'
+				Constants::SLUG . '/pending-installs',
 			);
 		}
 	}
@@ -224,7 +224,7 @@ class AutoUpdate
 					$item['pending_install_id'],
 					$item['action'] ?? 'install',
 					$item['slug'] ?? '',
-				]
+				],
 			);
 		}
 
@@ -247,7 +247,7 @@ class AutoUpdate
 		$item_id,
 		$pending_install_id,
 		$action = 'install',
-		$slug = ''
+		$slug = '',
 	) {
 		$activation_detail = Helper::get_activation_detail();
 		if ($activation_detail === false) {
@@ -265,7 +265,7 @@ class AutoUpdate
 				return $this->uninstall_item(
 					$item_id,
 					$pending_install_id,
-					$slug
+					$slug,
 				);
 			}
 
@@ -308,7 +308,7 @@ class AutoUpdate
 			if ($action === 'install') {
 				$settings = get_option(
 					Constants::SETTING_KEY,
-					Constants::DEFAULT_SETTINGS
+					Constants::DEFAULT_SETTINGS,
 				);
 				if (
 					$item_detail['type'] === 'plugin' &&
@@ -325,7 +325,7 @@ class AutoUpdate
 								$installed_items['data'],
 								function ($_item) use ($item_id) {
 									return $_item['id'] == $item_id;
-								}
+								},
 							);
 							if (!empty($matched)) {
 								$item = array_shift($matched);
@@ -376,7 +376,7 @@ class AutoUpdate
 						$installed_items['data'],
 						function ($_item) use ($item_id) {
 							return $_item['id'] == $item_id;
-						}
+						},
 					);
 					if (!empty($matched)) {
 						$item = array_shift($matched);
@@ -483,7 +483,7 @@ class AutoUpdate
 		if (false === wp_next_scheduled(Constants::SLUG . '/autoupdate')) {
 			$settings = get_option(
 				Constants::SETTING_KEY,
-				Constants::DEFAULT_SETTINGS
+				Constants::DEFAULT_SETTINGS,
 			);
 			if (
 				isset($settings['autoupdate']) &&
@@ -492,7 +492,7 @@ class AutoUpdate
 				wp_schedule_event(
 					time(),
 					'daily',
-					Constants::SLUG . '/autoupdate'
+					Constants::SLUG . '/autoupdate',
 				);
 			}
 		}

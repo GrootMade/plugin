@@ -9,7 +9,7 @@ const ButtonGroup = ({ className, ...props }: ButtonGroupProps) => {
 		<div
 			role="group"
 			className={cn(
-				'flex items-center [&>*:first-child]:rounded-l-md [&>*:last-child]:rounded-r-md [&>*:not(:first-child)]:-ml-px [&>*]:rounded-none [&>*]:focus-within:z-10',
+				'flex items-center [&>*]:rounded-none [&>*]:focus-within:z-10 [&>*:first-child]:rounded-l-md [&>*:last-child]:rounded-r-md [&>*:not(:first-child)]:-ml-px',
 				className
 			)}
 			{...props}

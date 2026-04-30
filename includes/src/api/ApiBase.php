@@ -28,7 +28,7 @@ abstract class ApiBase
 					$args,
 					[
 						'callback' => function (\WP_REST_Request $request) use (
-							$args
+							$args,
 						) {
 							$response = $args['callback']($request);
 							$code = 200;
@@ -41,8 +41,8 @@ abstract class ApiBase
 							}
 							return new \WP_REST_Response($response, $code);
 						},
-					]
-				)
+					],
+				),
 			);
 		}
 	}

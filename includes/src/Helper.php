@@ -27,7 +27,7 @@ class Helper
 					'X-Install-ID' => get_option(Constants::ACTIVATION_KEY, ''),
 				],
 				'body' => $content_body,
-			]
+			],
 		);
 		$status = is_wp_error($result)
 			? 0
@@ -60,7 +60,7 @@ class Helper
 			}
 			return new \WP_Error(
 				400,
-				$message ?? __('Something went wrong', 'grootmade')
+				$message ?? __('Something went wrong', 'grootmade'),
 			);
 		}
 		return $body;
@@ -76,7 +76,7 @@ class Helper
 				set_transient(
 					$cache_key,
 					$license_detail,
-					30 * MINUTE_IN_SECONDS
+					30 * MINUTE_IN_SECONDS,
 				);
 			}
 		}
@@ -109,8 +109,8 @@ class Helper
 							$item['slug'] = $slug;
 							$item['install_dir'] = self::wp_content_rel_path(
 								trailingslashit(
-									$installed_themes[$slug]['theme_root']
-								) . trim($installed_themes[$slug]['path'], '/')
+									$installed_themes[$slug]['theme_root'],
+								) . trim($installed_themes[$slug]['path'], '/'),
 							);
 
 							$item['data'] = $installed_themes[$slug];
@@ -130,9 +130,9 @@ class Helper
 									trailingslashit(WP_PLUGIN_DIR) .
 										trim(
 											$installed_plugins[$slug]['path'],
-											'/'
-										)
-								)
+											'/',
+										),
+								),
 							);
 							$data[] = $item;
 						}
@@ -146,14 +146,14 @@ class Helper
 				return version_compare(
 					$item['version'],
 					$item['installed_version'],
-					'gt'
+					'gt',
 				);
 			});
 			$data = array_filter($data, function ($item) {
 				return version_compare(
 					$item['version'],
 					$item['installed_version'],
-					'le'
+					'le',
 				);
 			});
 			$data = array_values(array_merge($updatable, $data));
@@ -277,7 +277,7 @@ class Helper
 		) {
 			$settings = get_option(
 				Constants::SETTING_KEY,
-				Constants::DEFAULT_SETTINGS
+				Constants::DEFAULT_SETTINGS,
 			);
 			$enabled_roles =
 				isset($settings['roles']) && is_array($settings['roles'])
@@ -310,7 +310,7 @@ class Helper
 		$wp_content_dir = trailingslashit(\wp_normalize_path(\WP_CONTENT_DIR));
 		return rtrim(
 			str_replace($wp_content_dir, '', \wp_normalize_path($path)),
-			'/'
+			'/',
 		);
 	}
 	public static function get_langauge_file($language)
@@ -320,7 +320,7 @@ class Helper
 				Constants::TEXTDOMAIN .
 				"-{$language}-" .
 				Constants::SLUG .
-				'-script.json'
+				'-script.json',
 		);
 		if (\file_exists($file) && \is_readable($file)) {
 			return json_decode(\file_get_contents($file));

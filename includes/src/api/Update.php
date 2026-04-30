@@ -71,7 +71,7 @@ class Update extends ApiBase
 		return $this->persist_autoupdate(
 			$request->get_param('type'),
 			$request->get_param('slug'),
-			$request->get_param('enabled')
+			$request->get_param('enabled'),
 		);
 	}
 
@@ -80,7 +80,7 @@ class Update extends ApiBase
 		return $this->persist_autoupdate(
 			$request->get_param('type'),
 			$request->get_param('slug'),
-			true
+			true,
 		);
 	}
 
@@ -89,7 +89,7 @@ class Update extends ApiBase
 		return $this->persist_autoupdate(
 			$request->get_param('type'),
 			$request->get_param('slug'),
-			false
+			false,
 		);
 	}
 
@@ -109,14 +109,14 @@ class Update extends ApiBase
 					array_filter($setting[$type], function ($item) {
 						return is_string($item);
 					}),
-					[$slug]
-				)
+					[$slug],
+				),
 			);
 		} else {
 			$setting[$type] = array_unique(
 				array_filter($setting[$type], function ($item) use ($slug) {
 					return $item !== $slug;
-				})
+				}),
 			);
 		}
 		update_option(Constants::AUTOUPDATE_SETTING_KEY, $setting);

@@ -20,7 +20,7 @@ export type Props = {
 
 export default function FilterToolbar({ label, collection }: Props) {
 	return (
-		<div className="flex  flex-row flex-wrap items-center gap-4">
+		<div className="flex flex-row flex-wrap items-center gap-4">
 			<Select
 				value={collection.sorting.order_by}
 				onValueChange={(value) =>
@@ -32,7 +32,7 @@ export default function FilterToolbar({ label, collection }: Props) {
 				</SelectTrigger>
 				<SelectContent>
 					<SelectGroup>
-						<SelectLabel className="p-2 text-sm text-muted-foreground">
+						<SelectLabel className="text-muted-foreground p-2 text-sm">
 							{__('Order By')}
 						</SelectLabel>
 						{collection.sort.map((item) => (

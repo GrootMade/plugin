@@ -62,15 +62,15 @@ export default function AvailableUpdates({ className }: Props) {
 						))}
 					</div>
 				) : (
-					<div className="text-center text-sm italic text-muted-foreground">
+					<div className="text-muted-foreground text-center text-sm italic">
 						{__('No Update Found')}
 					</div>
 				)}
 			</CardContent>
-			<CardFooter className="justify-center border-t border-border text-center">
+			<CardFooter className="border-border justify-center border-t text-center">
 				<Link
 					to="/updates"
-					className="border-b border-dashed border-primary text-sm text-primary"
+					className="border-primary text-primary border-b border-dashed text-sm"
 				>
 					{__('View All Updates')}
 				</Link>

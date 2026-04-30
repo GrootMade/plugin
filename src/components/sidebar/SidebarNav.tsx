@@ -18,7 +18,7 @@ import { cn, isLinkActive } from '@/lib/utils';
 import { memo, useMemo } from '@wordpress/element';
 import { type VariantProps } from 'class-variance-authority';
 import { ChevronDown, ExternalLinkIcon } from 'lucide-react';
-import millify from 'millify';
+import { millify } from 'millify';
 import { Link, useLocation } from 'react-router-dom';
 import BulkAction from '../bulk-action';
 
@@ -69,14 +69,14 @@ export function SidebarNav({ isCollapsed = false }: SidebarNavProps) {
 			disableHoverableContent
 			delayDuration={0}
 		>
-			<nav className="flex flex-col gap-4">
+			<nav className="flex flex-col gap-2">
 				<div className="flex flex-row gap-2 lg:hidden">
 					<BulkAction />
 				</div>
 				{memoizedItems.map((nav, index) => (
 					<div key={nav.id}>
 						{nav.showLabel && !isCollapsed && (
-							<h3 className="mb-2 px-2 pt-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+							<h3 className="text-muted-foreground mb-2 px-2 pt-2 text-[11px] font-semibold tracking-wider uppercase">
 								{nav.label}
 							</h3>
 						)}
@@ -114,13 +114,13 @@ export function SidebarNav({ isCollapsed = false }: SidebarNavProps) {
 																}
 															)}
 														>
-															<div className="flex items-center justify-start gap-3 ">
+															<div className="flex items-center justify-start gap-3">
 																<item.icon
 																	className={cn(
-																		'flex-shrink-0',
+																		'shrink-0',
 																		isCollapsed
 																			? 'h-5 w-5'
-																			: 'h-4 w-4 '
+																			: 'h-4 w-4'
 																	)}
 																/>
 																{!isCollapsed && (
@@ -136,7 +136,7 @@ export function SidebarNav({ isCollapsed = false }: SidebarNavProps) {
 													{isCollapsed && (
 														<TooltipContent
 															side="right"
-															className="flex items-center gap-2 font-medium "
+															className="flex items-center gap-2 font-medium"
 														>
 															<span>
 																{item.label}
@@ -147,10 +147,10 @@ export function SidebarNav({ isCollapsed = false }: SidebarNavProps) {
 												</Tooltip>
 												<AccordionContent
 													className={cn(
-														' flex flex-col gap-1 pt-1',
+														'flex flex-col gap-1 pt-1',
 														isCollapsed
 															? ''
-															: 'relative pl-7 pr-0'
+															: 'relative pr-0 pl-7'
 													)}
 												>
 													{item.subMenu.map(
@@ -190,7 +190,7 @@ export function SidebarNav({ isCollapsed = false }: SidebarNavProps) {
 													{!isCollapsed && (
 														<Separator
 															orientation="vertical"
-															className="absolute bottom-2 left-5 right-auto"
+															className="absolute right-auto bottom-2 left-5"
 														/>
 													)}
 												</AccordionContent>
@@ -219,7 +219,7 @@ export function SidebarNav({ isCollapsed = false }: SidebarNavProps) {
 													{'href' in item &&
 														typeof item.count ===
 															'number' && (
-															<span className="tabular-nums text-muted-foreground">
+															<span className="text-muted-foreground tabular-nums">
 																(
 																{formatSidebarCount(
 																	item.count
@@ -236,7 +236,7 @@ export function SidebarNav({ isCollapsed = false }: SidebarNavProps) {
 						</ul>
 
 						{index !== memoizedItems.length - 1 && (
-							<Separator className="my-3 opacity-60" />
+							<Separator className="my-1.5 opacity-60" />
 						)}
 					</div>
 				))}
@@ -271,10 +271,7 @@ function NavLink({
 	const content = (
 		<>
 			<Icon
-				className={cn(
-					'flex-shrink-0',
-					isCollapsed ? 'h-5 w-5' : 'h-4 w-4 '
-				)}
+				className={cn('shrink-0', isCollapsed ? 'h-5 w-5' : 'h-4 w-4')}
 			/>
 			{!isCollapsed && (
 				<span className="min-w-0 flex-1 truncate text-left">
@@ -282,7 +279,7 @@ function NavLink({
 				</span>
 			)}
 			{isExternal && (
-				<span className="shrink-0 text-muted-foreground">
+				<span className="text-muted-foreground shrink-0">
 					<ExternalLinkIcon className="ml-1 h-3 w-3" />
 				</span>
 			)}
@@ -290,7 +287,7 @@ function NavLink({
 				<Badge
 					variant="secondary"
 					size="sm"
-					className="ml-1.5 shrink-0 font-normal tabular-nums text-muted-foreground"
+					className="text-muted-foreground ml-1.5 shrink-0 font-normal tabular-nums"
 					title={String(count)}
 				>
 					{formatSidebarCount(count)}

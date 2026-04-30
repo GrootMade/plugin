@@ -80,6 +80,7 @@ export type TCommentResponse = {
 	slug: string;
 	topic_id: number;
 	views: number;
+	posts_count?: number;
 	title: string;
 	created_at: number;
 	comments: Array<TComment>;

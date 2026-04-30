@@ -11,13 +11,13 @@ import useActivation from '@/hooks/use-activation';
 import { __ } from '@/lib/i18n';
 import { TPostItem } from '@/types/item';
 import { decodeEntities } from '@wordpress/html-entities';
-import { Eye, LayoutTemplate, Paintbrush, Plug } from 'lucide-react';
+import { Eye, LayoutTemplate, LifeBuoy, Paintbrush, Plug } from 'lucide-react';
 import ItemRequestUpdate from './item-request-update';
 
 export function ItemDetailHeaderSkeleton() {
 	return (
 		<div className="flex flex-col gap-7 lg:gap-10">
-			<div className="flex flex-col gap-4 rounded-lg border bg-background/80 p-4 sm:flex-row sm:items-center sm:gap-3">
+			<div className="bg-background/80 flex flex-col gap-4 rounded-lg border p-4 sm:flex-row sm:items-center sm:gap-3">
 				<div className="flex min-w-0 flex-1 items-center gap-3">
 					<Skeleton className="size-8 rounded-md" />
 					<Skeleton className="h-5 w-52" />
@@ -91,8 +91,8 @@ function TypeIcon({ type }: { type: string }) {
 				: LayoutTemplate;
 
 	return (
-		<div className="flex size-8 shrink-0 items-center justify-center rounded-md border bg-accent p-1.5">
-			<Icon className="size-full text-muted-foreground" />
+		<div className="bg-accent flex size-8 shrink-0 items-center justify-center rounded-md border p-1.5">
+			<Icon className="text-muted-foreground size-full" />
 		</div>
 	);
 }
@@ -105,10 +105,10 @@ export default function ItemDetailHeader({ item }: Props) {
 	const isRequest = item.type === 'request';
 
 	return (
-		<div className="sticky top-0 z-10 flex flex-col gap-3 rounded-lg border bg-background/80 p-4 backdrop-blur-sm sm:flex-row sm:items-center sm:gap-4">
+		<div className="bg-background/80 sticky top-0 z-10 flex flex-col gap-3 rounded-lg border p-4 backdrop-blur-sm sm:flex-row sm:items-center sm:gap-4">
 			<div className="flex min-w-0 flex-1 items-center gap-3">
 				<TypeIcon type={item.type} />
-				<h1 className="truncate text-lg font-semibold leading-tight">
+				<h1 className="truncate text-lg leading-tight font-semibold">
 					{decodeEntities(item.title)}
 				</h1>
 				{item.version && !isRequest && (
@@ -155,6 +155,22 @@ export default function ItemDetailHeader({ item }: Props) {
 								title={__('View Original Product Page')}
 							>
 								<Eye className="h-4 w-4" />
+							</a>
+						</Button>
+					)}
+					{item.topic_id && item.topic_id > 0 && (
+						<Button
+							variant="secondary"
+							size="sm"
+							asChild
+						>
+							<a
+								href={`https://meta.grootmade.com/t/${item.topic_id}`}
+								target="_blank"
+								rel="noreferrer"
+								title={__('View Support Topic')}
+							>
+								<LifeBuoy className="h-4 w-4" />
 							</a>
 						</Button>
 					)}

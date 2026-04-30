@@ -13,13 +13,13 @@ if (!defined('ABSPATH')) {
 	<title></title>
 	<base target="_parent">
 	<link
-		href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
+		href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
 		rel="stylesheet" />
 	<style>
 		/* Critical inline styles to prevent flash of unstyled content */
 		:root { --background: 0 0% 100%; }
-		/* Match Once UI slate page (neutral-background-weak dark) */
-		.dark { --background: 240 33% 5%; }
+		/* Match grootmade.com dark theme — pure near-black */
+		.dark { --background: 0 0% 5%; }
 		html, body { margin: 0; background-color: hsl(var(--background)); }
 		#app { opacity: 0; transition: opacity .15s ease-in; }
 		#app.ready { opacity: 1; }

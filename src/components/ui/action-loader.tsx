@@ -23,16 +23,16 @@ export default function ActionLoader({
 			<span className="relative inline-flex items-center justify-center">
 				<Loader2
 					className={cn(
-						'size-4 animate-spin text-primary',
+						'text-primary size-4 animate-spin',
 						iconClassName
 					)}
 				/>
 				{showPulse && (
-					<span className="absolute inline-flex size-2 animate-ping rounded-full bg-primary/70 opacity-70" />
+					<span className="bg-primary/70 absolute inline-flex size-2 animate-ping rounded-full opacity-70" />
 				)}
 			</span>
 			{label ? (
-				<span className="text-xs font-medium text-muted-foreground">
+				<span className="text-muted-foreground text-xs font-medium">
 					{label}
 				</span>
 			) : null}

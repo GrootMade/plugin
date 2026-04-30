@@ -47,7 +47,7 @@ export function DataTableToolbar<TData>({
 											.getColumn(String(column.id))
 											?.setFilterValue(event.target.value)
 									}
-									className="h-8 w-[150px] bg-background lg:w-[250px]"
+									className="bg-background h-8 w-[150px] lg:w-[250px]"
 								/>
 							)
 					)}

@@ -32,7 +32,7 @@ export default function FilterBar({
 		<div
 			className={cn(
 				'flex flex-row flex-wrap items-center justify-between gap-2',
-				compact && 'border-t border-border/60 pt-3'
+				compact && 'border-border/60 border-t pt-3'
 			)}
 		>
 			<Search
@@ -89,21 +89,21 @@ export default function FilterBar({
 		return (
 			<div
 				className={cn(
-					'rounded-lg border border-border/80 bg-card p-3 shadow-sm sm:p-4',
+					'border-border/80 bg-card rounded-lg border p-3 shadow-sm sm:p-4',
 					'flex flex-col gap-3'
 				)}
 			>
 				<div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
 					<div className="min-w-0 flex-1">
 						{pageTitle ? (
-							<h1 className="font-heading text-lg font-semibold tracking-tight text-foreground sm:text-xl">
+							<h1 className="font-heading text-foreground text-lg font-semibold tracking-tight sm:text-xl">
 								{pageTitle}
 							</h1>
 						) : null}
 						{pageDescription ? (
 							<div
 								className={cn(
-									'text-xs leading-snug text-muted-foreground sm:text-sm',
+									'text-muted-foreground text-xs leading-snug sm:text-sm',
 									pageTitle && 'mt-0.5'
 								)}
 							>

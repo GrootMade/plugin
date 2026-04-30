@@ -6,6 +6,7 @@ use Grootmade\api\{
 	Announcement,
 	ApiBase,
 	Collection,
+	Documentation,
 	Disclaimer,
 	History,
 	Item,
@@ -14,7 +15,8 @@ use Grootmade\api\{
 	PendingInstall,
 	Popular,
 	Setting,
-	Update
+	Update,
+	Videos,
 };
 
 class RestAPI
@@ -31,12 +33,14 @@ class RestAPI
 		$this->register(new Update());
 		$this->register(new Setting());
 		$this->register(new Announcement());
+		$this->register(new Documentation());
 		$this->register(new History());
 		$this->register(new Collection());
 		$this->register(new Pack());
 		$this->register(new Popular());
 		$this->register(new Disclaimer());
 		$this->register(new PendingInstall());
+		$this->register(new Videos());
 	}
 
 	public static function get_instance()

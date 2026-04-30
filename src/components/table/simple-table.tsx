@@ -55,7 +55,7 @@ export default function SimpleTable<TData>({ columns, data }: Props<TData>) {
 								<TableCell
 									key={`${column.id}_${row.id}`}
 									className={cn(
-										'group/body-row-cell border-b p-4 first:pl-0 last:pr-0 group-last/body-row:border-b-0 group-last/body-row:pb-0',
+										'group/body-row-cell border-b p-4 group-last/body-row:border-b-0 group-last/body-row:pb-0 first:pl-0 last:pr-0',
 										column.className
 									)}
 								>
